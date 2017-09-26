@@ -95,19 +95,12 @@ end
 automaton blinker:
 	cont timer der 1;
 	disc bool tQ1;
-	disc bool tQ2;
 	location Start:
 		initial;
 		edge when s_Tinitialized and s_Binitialized do timer := 0 goto Wait;
 	location Wait2s:
-		edge when timer > 2 do tQ2 := true goto ActivateQ2;
+		edge when timer > 2 do tQ1 := true goto ActivateQ2;
 	location Q2Activated:
-		edge when s_TstartButton do tQ2 := false;
-	location WaitForRelease:
-		edge when not s_TstartButton goto BinkQ1On;
-	location BlinkQ1On:
-		edge when timer > 0.5 do timer := 0 goto BlinkQ1Off;
-	location BlinkQ1Off:
-		edge when timer > 0.5 do timer := 0 goto BlinkQ1On;
+
 
 end
