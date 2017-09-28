@@ -1,4 +1,0 @@
-svgfile "drawing.svg";
-import "testing_buffering_station_ctrl.cif";
-
-svgin id "circle" event s_Tstartbutton;
