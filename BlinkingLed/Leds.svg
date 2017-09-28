@@ -28,7 +28,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="188.20163"
+     inkscape:cx="209.01023"
      inkscape:cy="96.388781"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -60,11 +60,13 @@
        id="Q1"
        cx="100"
        cy="100"
-       r="75" />
+       r="75"
+       style="fill:#000000" />
     <circle
        id="Q2"
        cx="300"
        cy="100"
-       r="75" />
+       r="75"
+       style="fill:#ff0000" />
   </g>
 </svg>
