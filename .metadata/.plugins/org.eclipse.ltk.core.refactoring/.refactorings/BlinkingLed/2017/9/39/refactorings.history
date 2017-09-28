@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;BlinkingLed/Visual.cif&apos; to &apos;Visual.svg&apos;" description="Rename resource &apos;Visual.cif&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Visual.cif" name="Visual.svg" stamp="1506438352556" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;BlinkingLed/Visual.svg&apos; to &apos;Visual.cif&apos;" description="Rename resource &apos;Visual.svg&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Visual.svg" name="Visual.cif" stamp="1506438387442" updateReferences="true"/>
+</session>
