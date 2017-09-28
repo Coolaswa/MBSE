@@ -28,13 +28,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="209.01023"
-     inkscape:cy="96.388781"
+     inkscape:cx="200.37154"
+     inkscape:cy="101.30388"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     scale-x="1"
+     scale-x="1e-005"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -68,21 +68,26 @@
        cy="100"
        r="75"
        style="fill:#ff0000" />
-    <circle
-       style="fill:#00ff00"
-       id="Start"
-       cx="200"
-       cy="175"
-       r="15" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="190"
-       y="177"
-       id="text24"><tspan
-         sodipodi:role="line"
-         id="tspan22"
-         x="190"
-         y="176">Start</tspan></text>
+    <g
+       id="g15"
+       x="180"
+       y="180">
+      <circle
+         style="fill:#00ff00"
+         id="Start"
+         cy="175"
+         r="15"
+         cx="200" />
+      <text
+         id="text32"
+         y="177"
+         x="187"
+         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="177"
+           x="187"
+           id="tspan30"
+           sodipodi:role="line">START</tspan></text>
+    </g>
   </g>
 </svg>
