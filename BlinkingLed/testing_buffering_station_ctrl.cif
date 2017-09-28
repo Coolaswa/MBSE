@@ -3,9 +3,10 @@
 // INPUTS
 
 // TESTING:
-event testEvent;
-/**input bool s_Tstartbutton;     // 0
-input bool s_Tstopbutton;      // 1
+event e_startClicked;
+event q2Clicked;
+alg bool s_Tstartbutton = startBttn.state;     // 0
+/**input bool s_Tstopbutton;      // 1
 input bool s_Tautoswitch;      // 2
 input bool s_Tresetbutton;     // 3
 
@@ -95,30 +96,48 @@ end*/
 
 automaton blinker:
 	cont timer der 1;
-	disc bool tQ1;
-	disc bool tQ2;
 	location Start:
 		initial;
 		//edge when s_Tinitialized and s_Binitialized do timer := 0 goto Wait2s;
 		edge do timer := 0 goto Wait2s;
 	location Wait2s:
-		edge when timer > 2 do tQ2 := true goto Q2Activated;
+		edge when timer > 2 goto TurnQ2LedOn;
+	location TurnQ2LedOn:
+		edge led2.turnOn ! 1 goto Q2Activated;
 	location Q2Activated:
-		//edge when s_Tstartbutton do tQ2 := false goto WaitForRelease;
-		edge when Button.Pressed do tQ2 := false goto WaitForRelease;
+		edge when startBttn.Pressed goto TurnQ2LedOff;
+	location TurnQ2LedOff:
+		edge led2.turnOff ! 1 goto WaitForRelease;
 	location WaitForRelease:
-		edge when not Button.Pressed goto BlinkQ1On;
+		edge when not startBttn.Pressed goto BlinkQ1On;
 	location BlinkQ1On:
-		edge when timer > 0.5 do timer := 0 goto BlinkQ1Off;
-	location BlinkQ1Off:
-		edge when timer > 0.5 do timer := 0 goto BlinkQ1On;
+		edge led1.turnOff ! 1 when timer > 0.5 do timer := 0 goto BlinkQ1Off;
+		location BlinkQ1Off:
+		edge led1.turnOn ! 1 when timer > 0.5 do timer := 0 goto BlinkQ1On;
 
 end
+startBttn: Button(e_startClicked);
+led1: Led();
+led2: Led();
 
-automaton Button:
+automaton def Button(event Clicked):
+	alg bool state;
 	location Released:
+		equation state = false;
 		initial;
-		edge testEvent goto Pressed;
+		edge Clicked goto Pressed;
 	location Pressed:
-		edge testEvent goto Released;
+		equation state = true;
+		edge Clicked goto Released;
+end
+
+automaton def Led():
+	event int turnOn, turnOff;
+	location On:
+		edge turnOff ? goto Off;
+		edge turnOn ?;
+	location Off:
+		initial;
+		edge turnOn ? goto On;
+		edge turnOff?;
 end
