@@ -1,0 +1,15 @@
+alg bool s_Tstartbutton = startBttn.state;
+event e_startBttnClicked;
+
+startBttn: Button(e_startBttnClicked);
+
+automaton def Button(event Clicked):
+	alg bool state;
+	location Released:
+		initial;
+		equation state = false;
+		edge Clicked goto Pressed;
+	location Pressed:
+		equation state = true;
+		edge Clicked goto Released;
+end
