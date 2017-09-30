@@ -1,0 +1,14 @@
+import "testing_buffering_station_ctrl.cif";
+import "testing_buffering_station_plant.cif";
+svgfile "SystemSVG.svg";
+
+group def Button_svg(event action; alg string idfier, onColor, offColor; alg bool state):
+	svgin id idfier event action;
+	svgout id idfier attr "fill" value if state: onColor
+									   else offColor end;
+end
+
+svgout id "platform" attr "transform" value fmt("translate(0, %f)", -1*Lift.y);
+
+
+svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);

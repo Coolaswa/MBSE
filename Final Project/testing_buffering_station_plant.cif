@@ -1,0 +1,94 @@
+import "testing_buffering_station_svg.cif";
+
+alg bool s_Tstartbutton = startBttn.state;
+alg bool s_Tstopbutton = startBttn.state;
+//alg bool s_Tautoswitch;
+alg bool s_Tresetbutton = startBttn.state;
+alg bool a_elevator_up = LiftContr.Up;
+alg bool a_elevator_down = LiftContr.Down;
+alg bool a_pusher = PusherContr.Extending;
+
+event startClicked, stopClicked, resetClicked, dummyEvent;
+event lift_up_clicked, lift_down_clicked;
+event pusher_clicked;
+
+startBttn: Button(startClicked);
+start_svg: Button_svg(startClicked, "start", "yellow", "grey",  startBttn.state);
+
+stopBttn: Button(stopClicked);
+stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  stopBttn.state);
+//resetBttn: Button(e_resetClicked);
+
+svg_s_lift_up: Button_svg(dummyEvent, "s_lift_up", "yellow", "grey", LiftSensorUp.isActive);
+svg_s_lift_down: Button_svg(dummyEvent, "s_lift_down", "yellow", "grey", LiftSensorDown.isActive);
+
+b_lift_up: Button(lift_up_clicked);
+svg_a_lift_up: Button_svg(lift_up_clicked, "a_lift_up", "yellow", "grey", b_lift_up.state);
+
+b_lift_down: Button(lift_down_clicked);
+svg_a_lift_down: Button_svg(lift_down_clicked, "a_lift_down", "yellow", "grey", b_lift_down.state);
+
+b_pusher: Button(pusher_clicked);
+svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.state);
+svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.isActive);
+
+
+automaton dummy:
+	location:
+		initial;
+		edge dummyEvent when false;
+end
+
+automaton def Button(event Clicked):
+	alg bool state;
+
+	location Released:
+		initial;
+		equation state = false;
+		edge Clicked goto Pressed;
+	location Pressed:
+		equation state = true;
+		edge Clicked goto Released;
+end
+
+automaton Lift:
+	alg real speed;
+	cont y der speed;
+	location Up:
+		equation speed = if not LiftSensorUp.isActive: 10 else 0 end;
+		edge when not a_elevator_up goto Stop;
+		edge when a_elevator_down goto Down;
+	location Stop:
+		initial;
+		equation speed = 0;
+		edge when a_elevator_up goto Up;
+		edge when a_elevator_down goto Down;
+	location Down:
+		equation speed = if not LiftSensorDown.isActive: -10 else 0 end;
+		edge when not a_elevator_down goto Stop;
+		edge when a_elevator_up goto Up;
+end
+
+automaton Pusher:
+	alg real speed;
+	cont x der speed;
+	location Extending:
+		equation speed = if not PusherSensor.isActive: -20 else 0 end;
+		edge when not a_pusher goto Retracting;
+	location Retracting:
+		initial;
+		equation speed = if x < 0: 20 else 0 end;
+		edge when a_pusher goto Extending;
+end
+
+group LiftSensorUp:
+	alg bool isActive = a_elevator_up and Lift.y >= 62;
+end
+
+group LiftSensorDown:
+	alg bool isActive = a_elevator_down and Lift.y <= 0;
+end
+
+group PusherSensor:
+	alg bool isActive = Pusher.Extending and Pusher.x < -35;
+end

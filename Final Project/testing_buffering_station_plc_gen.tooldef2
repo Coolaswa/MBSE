@@ -1,0 +1,26 @@
+from "lib:cif3" import *;
+
+string name = "testing_buffering";
+
+string gen_dir     = "generated_files";
+string ctrl_file   = fmt("%s_station_ctrl.cif",                name);
+string hw_file     = fmt("%s_station_hw.cif",                  name);
+string merged_file = fmt("%s/%s_station_ctrl_hw.cif", gen_dir, name);
+string plc_dir     = fmt("%s_station_plc",                     name);
+
+if not isdir(gen_dir):: mkdir(gen_dir);
+if isfile(merged_file):: rmfile(merged_file);
+
+//cif3merge(fmt("%s %s -o %s", ctrl_file, hw_file, merged_file));
+// cif3plc(fmt("%s -o %s -t twincat", merged_file, plc_dir));
+//cif3merge(fmt("%s %s %s -o %s", "testing_buffering_station_plant.cif", "Visual.cif", ctrl_file, merged_file));
+cif3sim(
+	"testing_buffering_station_svg.cif",
+    //merged_file,
+    "--stateviz=1",
+    //"--plotviz-filter=*",
+    "--speed=1",
+   // "--env-events=*",
+    "-i svg",
+    "--auto-choose=tau",
+);
