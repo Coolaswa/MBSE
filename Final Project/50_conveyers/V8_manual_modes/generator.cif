@@ -1,0 +1,61 @@
+// gen   : Generator(6, 2, ...);
+// gen   : GeneratorList([6, 10, 13], 2, ...);
+// gen   : GeneratorStochastic(5, 15, 2, ...);
+
+import "svg_def.cif";
+
+group def Generator(alg real t_next_delay, t_initial; event e_signal_prd):
+    automaton gen:
+        event prodArrival;
+        cont  t_next = t_initial  der -1; // timer next product arrival time (of head at sensor)
+
+        /*  The two locations below could be merged into one location.
+            Separating the two is clearer, especially for the visualization, because it separates two
+            different reasons for waiting.
+        */
+        location WaitNextBox:
+            initial;
+            edge prodArrival        when t_next <= 0            goto SignalArrival;
+
+        location SignalArrival:
+            edge e_signal_prd       do t_next  := t_next_delay  goto WaitNextBox;
+    end
+    svg: Gen_SVG(<string>gen, gen.t_next);
+end
+
+
+group def GeneratorList(alg list real ts_next_delay; alg real t_initial; event e_signal_prd):
+    automaton gen:
+        event prodArrival;
+        cont  t_next = t_initial  der -1; // timer next product arrival time (of head at sensor)
+
+        disc int    i = 0;                      // next index in arrival delays
+
+        location WaitNextBox:
+            initial;
+            edge prodArrival        when t_next <= 0                                goto SignalArrival;
+
+        location SignalArrival:
+            edge e_signal_prd       do t_next  := ts_next_delay[i],
+                                       i       := (i + 1) mod size(ts_next_delay)   goto WaitNextBox;
+    end
+    svg: Gen_SVG(<string>gen, gen.t_next);
+end
+
+
+group def GeneratorStochastic(alg real t_next_min, t_next_max, t_initial; event e_signal_prd):
+    automaton gen:
+        event prodArrival;
+        cont  t_next = t_initial  der -1; // timer next product arrival time (of head at sensor)
+
+        disc dist real  d = uniform(t_next_min, t_next_max);
+
+        location WaitNextBox:
+            initial;
+            edge prodArrival        when t_next <= 0            goto SignalArrival;
+
+        location SignalArrival:
+            edge e_signal_prd       do (t_next, d) := sample d  goto WaitNextBox;
+     end
+    svg: Gen_SVG(<string>gen, gen.t_next);
+ end

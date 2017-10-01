@@ -1,0 +1,1238 @@
+alg int[0..1] a_motor_0 = ctrl.ctrl0.a_motor_int;
+alg int[0..1] a_motor_1 = ctrl.ctrl1.a_motor_int;
+alg int[0..1] a_motor_2 = ctrl.ctrl2.a_motor_int;
+alg int[0..1] a_motor_3 = ctrl.ctrl3.a_motor_int;
+alg int[0..1] a_motor_4 = ctrl.ctrl4.a_motor_int;
+alg bool ctrl0_R2R = ctrl.ctrl0.R2R;
+alg bool s_PEC_0 = plnt.conv0.s;
+alg bool s_PEC_1 = plnt.conv1.s;
+alg bool s_PEC_2 = plnt.conv2.s;
+alg bool s_PEC_3 = plnt.conv3.s;
+alg bool s_PEC_4 = plnt.conv4.s;
+alg tuple(bool next_reset_ES; bool R2S; bool TIP) entry_tpl = (plnt.entry.next_reset_ES, plnt.entry.R2S, plnt.entry.TIP);
+event product ec0;
+func bool x_covers_sensor(real x):
+  return sensor_position <= x and x <= sensor_position + prod_length;
+end
+func bool x_next_covers_sensor(real x):
+  return not is_empty(x) and x + conv_length <= sensor_position + prod_length;
+end
+func bool is_empty(product prod):
+  return prod < -0.5;
+end
+func bool not_empty(product prod):
+  return not is_empty(prod);
+end
+type svg_unit = real;
+type model_unit = real;
+const real SVG_scale = 30.0;
+type degrees = real;
+type radians = real;
+enum Control_Status = RUNNING, STARTING_UP, ENERGY_SAVE, ERROR, DIEFORWARD_DIEBACK, HOLD, IMPOSSIBLE;
+const real PI = 3.14159;
+const real conv_length = 6.0;
+const real prod_length = 2.0;
+const real sensor_position = conv_length - 1.0;
+type product = real;
+const real ES_distance = 3.0;
+group plnt:
+  event product ec0p;
+  event product c0c4_c1p;
+  event product c1c2p;
+  event product c2c3p;
+  event product c3c4p;
+  event product dummyp;
+  automaton gen:
+    event prodArrival;
+    cont t_next = t_initial der -1.0;
+    disc dist real d = uniform(t_next_min, t_next_max);
+    alg real t_next_min = 8.0;
+    alg real t_next_max = 24.0;
+    alg real t_initial = 0.0;
+    svgout id "gen_state" text value <string>self file "conv_circle_4.svg";
+    svgout id "t_next" text value fmt("t_next: %.1f", t_next) file "conv_circle_4.svg";
+    location WaitNextBox:
+      initial;
+      edge prodArrival when t_next <= 0 goto SignalArrival;
+    location SignalArrival:
+      edge entry.e_R2S_pos do (t_next, d) := sample d goto WaitNextBox;
+  end
+  group entry:
+    event e_R2S_pos;
+    alg bool motor = entry.motor;
+    alg bool R2S = entry.R2S;
+    alg bool TIP = entry.TIP;
+    alg bool next_reset_ES = true;
+    alg bool next_can_receive = ctrl0_R2R;
+    automaton entry:
+      alg bool motor;
+      alg bool R2S;
+      alg bool TIP;
+      event toSend;
+      event toWaitR2S;
+      alg int[0..1] a_v = if motor: 1 else 0 end;
+      cont t_atend der -1.0;
+      cont x = -1.0;
+      equation x' = if -0.5 < x: a_v * 1.0 else 0.0 end;
+      location WaitR2SPosition:
+        initial;
+        equation motor = true,
+                 R2S = false,
+                 TIP = false;
+        edge e_R2S_pos do x := conv_length - 0.5 goto WaitR2R;
+      location WaitR2R:
+        equation motor = next_can_receive,
+                 R2S = true,
+                 TIP = false;
+        edge toSend when next_can_receive goto SignalController;
+      location SignalController:
+        equation motor = next_can_receive,
+                 R2S = true,
+                 TIP = true;
+        edge ec0!2.0 when x >= conv_length goto SendProduct;
+      location SendProduct:
+        equation motor = next_can_receive,
+                 R2S = true,
+                 TIP = true;
+        edge ec0p!0.0 goto WaitTail;
+      location WaitTail:
+        equation motor = next_can_receive,
+                 R2S = true,
+                 TIP = true;
+        edge toWaitR2S when x >= conv_length + prod_length do x := -1.0 goto WaitR2SPosition;
+    end
+    group svg:
+      alg string state = <string>entry;
+      alg real x = entry.x;
+      svgout id "entry_gbox" attr "transform" value fmt("translate(%.1f,0)", SVG_scale * (x - conv_length)) file "conv_circle_4.svg";
+      svgout id "entry_gbox" attr "display" value if x <= conv_length: "inline" else "none" end file "conv_circle_4.svg";
+      svgout id "entry_state" text value state file "conv_circle_4.svg";
+      svgout id "t_atend" text value fmt("x: %.1f", max(6 - x, 0)) file "conv_circle_4.svg";
+      svgout id "time_txt" text value fmt("Time: %.1f", time) file "conv_circle_4.svg";
+    end
+  end
+  group conv0:
+    alg bool s = x_covers_sensor(conv.x0) or x_next_covers_sensor(next_x);
+    alg real xlast = conv.xlast;
+    alg int nr = 0;
+    alg real next_x = conv1.xlast;
+    alg int[0..1] a_motor_int = a_motor_0;
+    automaton conv:
+      cont x0 = -1.0;
+      cont x1 = -1.0;
+      cont x2 = -1.0;
+      alg real xlast = if is_empty(x0): -1.0 elif is_empty(x1): x0 elif is_empty(x2): x1 else x2 end;
+      equation x0' = if not_empty(x0): a_motor_int * 0.95 else 0.0 end,
+               x1' = if not_empty(x1): a_motor_int * 0.95 else 0.0 end,
+               x2' = if not_empty(x2): a_motor_int * 0.95 else 0.0 end;
+      location:
+        initial;
+        edge ec0p? when is_empty(x2) do if is_empty(x0): x0 := ? elif is_empty(x1): x1 := ? elif is_empty(x2): x2 := ? end;
+        edge c0c4_c1p!x0 - conv_length when x0 >= conv_length + prod_length / 2 do x0 := x1, x1 := x2, x2 := -1.0;
+    end
+    group svg:
+      alg int nr = .plnt.conv0.nr;
+      alg bool s = .plnt.conv0.s;
+      alg real x0 = conv.x0;
+      alg real x1 = conv.x1;
+      alg real x2 = conv.x2;
+      group prod0:
+        alg int prod_nr = 0;
+        alg real position = x0;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod1:
+        alg int prod_nr = 1;
+        alg real position = x1;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod2:
+        alg int prod_nr = 2;
+        alg real position = x2;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_sensor" attr "fill" value if s: "green" else "white" end file "conv_circle_4.svg";
+    end
+  end
+  group conv1:
+    alg bool s = x_covers_sensor(conv.x0) or x_next_covers_sensor(next_x);
+    alg real xlast = conv.xlast;
+    alg int nr = 1;
+    alg real next_x = conv2.xlast;
+    alg int[0..1] a_motor_int = a_motor_1;
+    automaton conv:
+      cont x0 = -1.0;
+      cont x1 = -1.0;
+      cont x2 = -1.0;
+      alg real xlast = if is_empty(x0): -1.0 elif is_empty(x1): x0 elif is_empty(x2): x1 else x2 end;
+      equation x0' = if not_empty(x0): a_motor_int * 0.95 else 0.0 end,
+               x1' = if not_empty(x1): a_motor_int * 0.95 else 0.0 end,
+               x2' = if not_empty(x2): a_motor_int * 0.95 else 0.0 end;
+      location:
+        initial;
+        edge c0c4_c1p? when is_empty(x2) do if is_empty(x0): x0 := ? elif is_empty(x1): x1 := ? elif is_empty(x2): x2 := ? end;
+        edge c1c2p!x0 - conv_length when x0 >= conv_length + prod_length / 2 do x0 := x1, x1 := x2, x2 := -1.0;
+    end
+    group svg:
+      alg int nr = .plnt.conv1.nr;
+      alg bool s = .plnt.conv1.s;
+      alg real x0 = conv.x0;
+      alg real x1 = conv.x1;
+      alg real x2 = conv.x2;
+      group prod0:
+        alg int prod_nr = 0;
+        alg real position = x0;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod1:
+        alg int prod_nr = 1;
+        alg real position = x1;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod2:
+        alg int prod_nr = 2;
+        alg real position = x2;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_sensor" attr "fill" value if s: "green" else "white" end file "conv_circle_4.svg";
+    end
+  end
+  group conv2:
+    alg bool s = x_covers_sensor(conv.x0) or x_next_covers_sensor(next_x);
+    alg real xlast = conv.xlast;
+    alg int nr = 2;
+    alg real next_x = conv3.xlast;
+    alg int[0..1] a_motor_int = a_motor_2;
+    automaton conv:
+      cont x0 = -1.0;
+      cont x1 = -1.0;
+      cont x2 = -1.0;
+      alg real xlast = if is_empty(x0): -1.0 elif is_empty(x1): x0 elif is_empty(x2): x1 else x2 end;
+      equation x0' = if not_empty(x0): a_motor_int * 0.95 else 0.0 end,
+               x1' = if not_empty(x1): a_motor_int * 0.95 else 0.0 end,
+               x2' = if not_empty(x2): a_motor_int * 0.95 else 0.0 end;
+      location:
+        initial;
+        edge c1c2p? when is_empty(x2) do if is_empty(x0): x0 := ? elif is_empty(x1): x1 := ? elif is_empty(x2): x2 := ? end;
+        edge c2c3p!x0 - conv_length when x0 >= conv_length + prod_length / 2 do x0 := x1, x1 := x2, x2 := -1.0;
+    end
+    group svg:
+      alg int nr = .plnt.conv2.nr;
+      alg bool s = .plnt.conv2.s;
+      alg real x0 = conv.x0;
+      alg real x1 = conv.x1;
+      alg real x2 = conv.x2;
+      group prod0:
+        alg int prod_nr = 0;
+        alg real position = x0;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod1:
+        alg int prod_nr = 1;
+        alg real position = x1;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod2:
+        alg int prod_nr = 2;
+        alg real position = x2;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_sensor" attr "fill" value if s: "green" else "white" end file "conv_circle_4.svg";
+    end
+  end
+  group conv3:
+    alg bool s = x_covers_sensor(conv.x0) or x_next_covers_sensor(next_x);
+    alg real xlast = conv.xlast;
+    alg int nr = 3;
+    alg real next_x = conv4.xlast;
+    alg int[0..1] a_motor_int = a_motor_3;
+    automaton conv:
+      cont x0 = -1.0;
+      cont x1 = -1.0;
+      cont x2 = -1.0;
+      alg real xlast = if is_empty(x0): -1.0 elif is_empty(x1): x0 elif is_empty(x2): x1 else x2 end;
+      equation x0' = if not_empty(x0): a_motor_int * 0.95 else 0.0 end,
+               x1' = if not_empty(x1): a_motor_int * 0.95 else 0.0 end,
+               x2' = if not_empty(x2): a_motor_int * 0.95 else 0.0 end;
+      location:
+        initial;
+        edge c2c3p? when is_empty(x2) do if is_empty(x0): x0 := ? elif is_empty(x1): x1 := ? elif is_empty(x2): x2 := ? end;
+        edge c3c4p!x0 - conv_length when x0 >= conv_length + prod_length / 2 do x0 := x1, x1 := x2, x2 := -1.0;
+    end
+    group svg:
+      alg int nr = .plnt.conv3.nr;
+      alg bool s = .plnt.conv3.s;
+      alg real x0 = conv.x0;
+      alg real x1 = conv.x1;
+      alg real x2 = conv.x2;
+      group prod0:
+        alg int prod_nr = 0;
+        alg real position = x0;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod1:
+        alg int prod_nr = 1;
+        alg real position = x1;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod2:
+        alg int prod_nr = 2;
+        alg real position = x2;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_sensor" attr "fill" value if s: "green" else "white" end file "conv_circle_4.svg";
+    end
+  end
+  group conv4:
+    alg bool s = x_covers_sensor(conv.x0) or x_next_covers_sensor(next_x);
+    alg real xlast = conv.xlast;
+    alg int nr = 4;
+    alg real next_x = conv5.xlast;
+    alg int[0..1] a_motor_int = a_motor_4;
+    automaton conv:
+      cont x0 = -1.0;
+      cont x1 = -1.0;
+      cont x2 = -1.0;
+      alg real xlast = if is_empty(x0): -1.0 elif is_empty(x1): x0 elif is_empty(x2): x1 else x2 end;
+      equation x0' = if not_empty(x0): a_motor_int * 0.95 else 0.0 end,
+               x1' = if not_empty(x1): a_motor_int * 0.95 else 0.0 end,
+               x2' = if not_empty(x2): a_motor_int * 0.95 else 0.0 end;
+      location:
+        initial;
+        edge c3c4p? when is_empty(x2) do if is_empty(x0): x0 := ? elif is_empty(x1): x1 := ? elif is_empty(x2): x2 := ? end;
+        edge c0c4_c1p!x0 - conv_length when x0 >= conv_length + prod_length / 2 do x0 := x1, x1 := x2, x2 := -1.0;
+    end
+    group svg:
+      alg int nr = .plnt.conv4.nr;
+      alg bool s = .plnt.conv4.s;
+      alg real x0 = conv.x0;
+      alg real x1 = conv.x1;
+      alg real x2 = conv.x2;
+      group prod0:
+        alg int prod_nr = 0;
+        alg real position = x0;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod1:
+        alg int prod_nr = 1;
+        alg real position = x1;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      group prod2:
+        alg int prod_nr = 2;
+        alg real position = x2;
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * position) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display" value if position > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_sensor" attr "fill" value if s: "green" else "white" end file "conv_circle_4.svg";
+    end
+  end
+  group conv5:
+    alg real xlast = conv.x;
+    automaton conv:
+      event isEmpty;
+      cont x = -1.0;
+      location WaitBox:
+        initial;
+        equation x' = 0.0;
+        edge dummyp? do x := ? goto WaitBoxTail;
+      location WaitBoxTail:
+        equation x' = 1.0;
+        edge isEmpty when x >= prod_length do x := -1.0 goto WaitBox;
+    end
+    group svg:
+      alg real x = conv.x;
+      svgout id "exit_gbox" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conv_circle_4.svg";
+      svgout id "exit_gbox" attr "display" value if x > -0.5: "inline" else "none" end file "conv_circle_4.svg";
+    end
+  end
+end
+group ctrl:
+  event product c0c4_c1;
+  event product c1c2;
+  event product c2c3;
+  event product c3c4;
+  event product dummy;
+  group mrg_c:
+    alg bool R2R_zero = discrete.R2R and policy.zero;
+    alg bool R2R_one = discrete.R2R and policy.one;
+    alg bool next_reset_ES = if policy.zero: reset_ES_from_prev_0 else reset_ES_from_prev_1 end;
+    alg bool TIP = discrete.TIP;
+    alg bool R2S = discrete.R2S;
+    alg bool alg_TIP = prev_TIP;
+    alg bool alg_R2S = if policy.zero: prev_R2S_0 else prev_R2S_1 end;
+    alg bool alg_R2R = next_R2R;
+    alg bool reset_ES_from_prev_0 = ctrl0.next_reset_ES;
+    alg bool prev_R2S_0 = ctrl0.R2S;
+    alg bool reset_ES_from_prev_1 = ctrl4.next_reset_ES;
+    alg bool prev_R2S_1 = ctrl4.R2S;
+    alg bool prev_TIP = ctrl0.TIP or ctrl4.TIP;
+    alg bool next_R2R = ctrl1.R2R;
+    automaton policy:
+      event toOne;
+      event toZero;
+      cont t = switch_time der -1.0;
+      const real switch_time = 12.0;
+      alg bool to_zero = not prev_R2S_1 and (prev_R2S_0 or reset_ES_from_prev_0 and not reset_ES_from_prev_1);
+      alg bool to_one = not prev_R2S_0 and (prev_R2S_1 or reset_ES_from_prev_1 and not reset_ES_from_prev_0);
+      location zero:
+        initial;
+        edge toOne when not alg_TIP and t <= 0 do t := switch_time goto one;
+        edge toOne when not alg_TIP and to_one do t := switch_time goto one;
+      location one:
+        edge toZero when not alg_TIP and t <= 0 do t := switch_time goto zero;
+        edge toZero when not alg_TIP and to_zero do t := switch_time goto zero;
+    end
+    automaton discrete:
+      disc bool R2R = false;
+      disc bool R2S = false;
+      disc bool TIP = false;
+      event sync_R2R;
+      event sync_R2S;
+      location:
+        initial;
+        edge sync_R2R when R2R != alg_R2R do R2R := alg_R2R;
+        edge sync_R2S when R2S != alg_R2S or TIP != alg_TIP do R2S := alg_R2S, TIP := alg_TIP;
+    end
+  end
+  group ctrl0:
+    alg bool next_reset_ES = conv_length - tracker.x0 < 2 and not self_error and not dieforward;
+    alg bool TIP = sender.TIP;
+    alg bool R2S = sender.R2S and not dieforward and not self_error;
+    alg bool R2R = if prev_TIP: not(self_error or hold or dieback) else has_space_to_receive and not(self_error or hold or dieback) end;
+    alg int[0..1] a_motor_int = if a_motor: 1 else 0 end;
+    func bool is_empty(real prod):
+      return prod < -0.5;
+    end
+    func bool not_empty(real prod):
+      return not is_empty(prod);
+    end
+    alg bool conv_empty = tracker.tracker_empty;
+    alg bool conv_full = tracker.tracker_full;
+    alg real last_head = if is_empty(tracker.x1): tracker.x0 else tracker.x1 end;
+    alg real last_tail = last_head - prod_length;
+    alg real space_to_receive = if conv_empty: conv_length else last_tail end;
+    alg bool has_space_to_receive = 0.5 <= space_to_receive and not conv_full;
+    alg bool self_error = status.Error;
+    alg bool hold = R2S and not TIP and not next_R2R;
+    alg bool dieforward = prev_TIP and not prev_R2S;
+    alg bool dieback = TIP and not next_R2R;
+    alg bool a_motor = sender.motor and status.motor and not dieforward and not self_error;
+    uncontrollable u_error;
+    uncontrollable u_reset;
+    alg int nr = 0;
+    alg bool s = s_PEC_0;
+    alg bool reset_ES_from_prev = entry_tpl[next_reset_ES];
+    alg bool prev_R2S = entry_tpl[R2S];
+    alg bool prev_TIP = entry_tpl[TIP];
+    alg bool next_R2R = mrg_c.R2R_zero;
+    automaton tracker:
+      alg bool tracker_empty = is_empty(x0) and is_empty(x1) and is_empty(x2);
+      alg bool tracker_full = not is_empty(x2);
+      cont x0 = -1.0 der if is_empty(x0): 0.0 else a_motor_int * 1.0 end;
+      disc int i = 0;
+      cont x1 = -1.0 der if is_empty(x1): 0.0 else a_motor_int * 1.0 end;
+      cont x2 = -1.0 der if is_empty(x2): 0.0 else a_motor_int * 1.0 end;
+      location:
+        initial;
+        edge ec0? when not conv_full do if is_empty(x0): x0 := ? else x1 := ? end;
+        edge sensor.e_calibrate do if i = 0: x0 := conv_length - 1.0 elif i = 1: x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := i + 1;
+        edge sensor.e_UFO do if i = 0: x2 := x1, x1 := x0, x0 := conv_length - 1.0 elif i = 1: x2 := x1, x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := max(2, i + 1);
+        edge sensor.e_missing do if i = 0: x0 := x1, x1 := x2 elif i = 1: x1 := x2 else x2 := -1.0 end;
+        edge sender.e_TIP_done do x0 := x1, x1 := x2, x2 := -1.0, i := min(i - 1, 0);
+    end
+    automaton sensor:
+      const real missing_offset = 0.4;
+      const real UFO_offset = 1.0;
+      event e_calibrate;
+      event e_UFO;
+      event e_missing;
+      event sensor_off;
+      location WaitSensorOrMissing:
+        initial;
+        edge e_calibrate when s and sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end goto WaitSensorOff;
+        edge e_UFO when s and not(sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end) goto WaitSensorOff;
+        edge e_missing when not s and sensor_position + missing_offset < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end;
+      location WaitSensorOff:
+        edge sensor_off when not s goto WaitSensorOrMissing;
+    end
+    automaton sender:
+      alg bool motor;
+      alg bool TIP;
+      alg bool R2S;
+      event e_TIP_done;
+      event toTIP;
+      event R2S_pos;
+      location WaitR2SPosition:
+        initial;
+        equation motor = true,
+                 R2S = false,
+                 TIP = false;
+        edge R2S_pos when tracker.x0 >= conv_length - 0.5 goto WaitR2R;
+      location WaitR2R:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = false;
+        edge toTIP when next_R2R goto TIPstarted;
+      location TIPstarted:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge c0c4_c1!tracker.x0 - conv_length when tracker.x0 >= conv_length + prod_length / 2 goto WaitTail;
+      location WaitTail:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge e_TIP_done when tracker.x0 >= conv_length + prod_length goto WaitR2SPosition;
+    end
+    automaton status:
+      monitor u_error, u_reset;
+      alg bool motor;
+      cont x_start = conv_length der if StartingUp: -1.0 else 0.0 end;
+      alg Control_Status abstract_status = if a_motor and Running or WaitES: RUNNING elif StartingUp: STARTING_UP elif EnergySave: ENERGY_SAVE elif Error: ERROR elif dieforward or dieback: DIEFORWARD_DIEBACK elif hold: HOLD else IMPOSSIBLE end;
+      alg bool ES_ok = conv_empty and not TIP and not prev_TIP and not reset_ES_from_prev;
+      cont x_ES_ok der if WaitES: -1.0 else 0.0 end;
+      event toWaitES;
+      event toES;
+      event toRun;
+      location StartingUp:
+        initial;
+        equation motor = true;
+        edge toRun when x_start <= 0 goto Running;
+      location Running:
+        equation motor = true;
+        edge toWaitES when ES_ok do x_ES_ok := ES_distance goto WaitES;
+        edge u_error goto Error;
+      location WaitES:
+        equation motor = true;
+        edge toRun when not ES_ok goto Running;
+        edge toES when x_ES_ok <= 0 and ES_ok goto EnergySave;
+        edge u_error goto Error;
+      location EnergySave:
+        equation motor = false;
+        edge toRun when not ES_ok goto Running;
+        edge u_error goto Error;
+      location Error:
+        equation motor = false;
+        edge u_reset goto Running;
+    end
+    group svg:
+      alg int nr = .ctrl.ctrl0.nr;
+      alg string ctrl_state = <string>status;
+      alg Control_Status ctrl_status = status.abstract_status;
+      alg real head0 = tracker.x0;
+      alg real head1 = tracker.x1;
+      alg real head2 = tracker.x2;
+      alg bool dieforward = .ctrl.ctrl0.dieforward;
+      alg bool dieback = .ctrl.ctrl0.dieback;
+      alg bool R2R = .ctrl.ctrl0.R2R;
+      alg bool R2S = .ctrl.ctrl0.R2S;
+      alg bool TIP = .ctrl.ctrl0.TIP;
+      group virt_head0:
+        alg int prod_nr = 0;
+        alg real x = head0;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head1:
+        alg int prod_nr = 1;
+        alg real x = head1;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head2:
+        alg int prod_nr = 2;
+        alg real x = head2;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_ctrl_state" text value ctrl_state file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_belt" attr "fill" value switch ctrl_status: case RUNNING: "green" case STARTING_UP: "lightgreen" case ENERGY_SAVE: "yellow" case ERROR: "red" case DIEFORWARD_DIEBACK: "orchid" case HOLD: "rgb(220,220,220)" else "black" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_ctrl_error" text value if dieforward: "dieforward " else "" end + if dieback: "dieback" else "" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_tip" text value if R2R: "r2r " else "" end + if R2S: "r2s " else "" end + if TIP: "tip" else "" end file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_error" event u_error file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_reset" event u_reset file "conv_circle_4.svg";
+    end
+    print "\nUFO at conveyer " + <string>nr + "\n" for sensor.e_UFO file ":stdout";
+    print "\nmissing at conveyer " + <string>nr + "\n" for sensor.e_missing file ":stdout";
+  end
+  group ctrl1:
+    alg bool next_reset_ES = conv_length - tracker.x0 < 2 and not self_error and not dieforward;
+    alg bool TIP = sender.TIP;
+    alg bool R2S = sender.R2S and not dieforward and not self_error;
+    alg bool R2R = if prev_TIP: not(self_error or hold or dieback) else has_space_to_receive and not(self_error or hold or dieback) end;
+    alg int[0..1] a_motor_int = if a_motor: 1 else 0 end;
+    func bool is_empty(real prod):
+      return prod < -0.5;
+    end
+    func bool not_empty(real prod):
+      return not is_empty(prod);
+    end
+    alg bool conv_empty = tracker.tracker_empty;
+    alg bool conv_full = tracker.tracker_full;
+    alg real last_head = if is_empty(tracker.x1): tracker.x0 else tracker.x1 end;
+    alg real last_tail = last_head - prod_length;
+    alg real space_to_receive = if conv_empty: conv_length else last_tail end;
+    alg bool has_space_to_receive = 0.5 <= space_to_receive and not conv_full;
+    alg bool self_error = status.Error;
+    alg bool hold = R2S and not TIP and not next_R2R;
+    alg bool dieforward = prev_TIP and not prev_R2S;
+    alg bool dieback = TIP and not next_R2R;
+    alg bool a_motor = sender.motor and status.motor and not dieforward and not self_error;
+    uncontrollable u_error;
+    uncontrollable u_reset;
+    alg int nr = 1;
+    alg bool s = s_PEC_1;
+    alg bool reset_ES_from_prev = mrg_c.next_reset_ES;
+    alg bool prev_R2S = mrg_c.R2S;
+    alg bool prev_TIP = mrg_c.TIP;
+    alg bool next_R2R = ctrl2.R2R;
+    automaton tracker:
+      alg bool tracker_empty = is_empty(x0) and is_empty(x1) and is_empty(x2);
+      alg bool tracker_full = not is_empty(x2);
+      cont x0 = -1.0 der if is_empty(x0): 0.0 else a_motor_int * 1.0 end;
+      disc int i = 0;
+      cont x1 = -1.0 der if is_empty(x1): 0.0 else a_motor_int * 1.0 end;
+      cont x2 = -1.0 der if is_empty(x2): 0.0 else a_motor_int * 1.0 end;
+      location:
+        initial;
+        edge c0c4_c1? when not conv_full do if is_empty(x0): x0 := ? else x1 := ? end;
+        edge sensor.e_calibrate do if i = 0: x0 := conv_length - 1.0 elif i = 1: x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := i + 1;
+        edge sensor.e_UFO do if i = 0: x2 := x1, x1 := x0, x0 := conv_length - 1.0 elif i = 1: x2 := x1, x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := max(2, i + 1);
+        edge sensor.e_missing do if i = 0: x0 := x1, x1 := x2 elif i = 1: x1 := x2 else x2 := -1.0 end;
+        edge sender.e_TIP_done do x0 := x1, x1 := x2, x2 := -1.0, i := min(i - 1, 0);
+    end
+    automaton sensor:
+      const real missing_offset = 0.4;
+      const real UFO_offset = 1.0;
+      event e_calibrate;
+      event e_UFO;
+      event e_missing;
+      event sensor_off;
+      location WaitSensorOrMissing:
+        initial;
+        edge e_calibrate when s and sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end goto WaitSensorOff;
+        edge e_UFO when s and not(sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end) goto WaitSensorOff;
+        edge e_missing when not s and sensor_position + missing_offset < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end;
+      location WaitSensorOff:
+        edge sensor_off when not s goto WaitSensorOrMissing;
+    end
+    automaton sender:
+      alg bool motor;
+      alg bool TIP;
+      alg bool R2S;
+      event e_TIP_done;
+      event toTIP;
+      event R2S_pos;
+      location WaitR2SPosition:
+        initial;
+        equation motor = true,
+                 R2S = false,
+                 TIP = false;
+        edge R2S_pos when tracker.x0 >= conv_length - 0.5 goto WaitR2R;
+      location WaitR2R:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = false;
+        edge toTIP when next_R2R goto TIPstarted;
+      location TIPstarted:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge c1c2!tracker.x0 - conv_length when tracker.x0 >= conv_length + prod_length / 2 goto WaitTail;
+      location WaitTail:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge e_TIP_done when tracker.x0 >= conv_length + prod_length goto WaitR2SPosition;
+    end
+    automaton status:
+      monitor u_error, u_reset;
+      alg bool motor;
+      cont x_start = conv_length der if StartingUp: -1.0 else 0.0 end;
+      alg Control_Status abstract_status = if a_motor and Running or WaitES: RUNNING elif StartingUp: STARTING_UP elif EnergySave: ENERGY_SAVE elif Error: ERROR elif dieforward or dieback: DIEFORWARD_DIEBACK elif hold: HOLD else IMPOSSIBLE end;
+      alg bool ES_ok = conv_empty and not TIP and not prev_TIP and not reset_ES_from_prev;
+      cont x_ES_ok der if WaitES: -1.0 else 0.0 end;
+      event toWaitES;
+      event toES;
+      event toRun;
+      location StartingUp:
+        initial;
+        equation motor = true;
+        edge toRun when x_start <= 0 goto Running;
+      location Running:
+        equation motor = true;
+        edge toWaitES when ES_ok do x_ES_ok := ES_distance goto WaitES;
+        edge u_error goto Error;
+      location WaitES:
+        equation motor = true;
+        edge toRun when not ES_ok goto Running;
+        edge toES when x_ES_ok <= 0 and ES_ok goto EnergySave;
+        edge u_error goto Error;
+      location EnergySave:
+        equation motor = false;
+        edge toRun when not ES_ok goto Running;
+        edge u_error goto Error;
+      location Error:
+        equation motor = false;
+        edge u_reset goto Running;
+    end
+    group svg:
+      alg int nr = .ctrl.ctrl1.nr;
+      alg string ctrl_state = <string>status;
+      alg Control_Status ctrl_status = status.abstract_status;
+      alg real head0 = tracker.x0;
+      alg real head1 = tracker.x1;
+      alg real head2 = tracker.x2;
+      alg bool dieforward = .ctrl.ctrl1.dieforward;
+      alg bool dieback = .ctrl.ctrl1.dieback;
+      alg bool R2R = .ctrl.ctrl1.R2R;
+      alg bool R2S = .ctrl.ctrl1.R2S;
+      alg bool TIP = .ctrl.ctrl1.TIP;
+      group virt_head0:
+        alg int prod_nr = 0;
+        alg real x = head0;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head1:
+        alg int prod_nr = 1;
+        alg real x = head1;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head2:
+        alg int prod_nr = 2;
+        alg real x = head2;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_ctrl_state" text value ctrl_state file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_belt" attr "fill" value switch ctrl_status: case RUNNING: "green" case STARTING_UP: "lightgreen" case ENERGY_SAVE: "yellow" case ERROR: "red" case DIEFORWARD_DIEBACK: "orchid" case HOLD: "rgb(220,220,220)" else "black" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_ctrl_error" text value if dieforward: "dieforward " else "" end + if dieback: "dieback" else "" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_tip" text value if R2R: "r2r " else "" end + if R2S: "r2s " else "" end + if TIP: "tip" else "" end file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_error" event u_error file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_reset" event u_reset file "conv_circle_4.svg";
+    end
+    print "\nUFO at conveyer " + <string>nr + "\n" for sensor.e_UFO file ":stdout";
+    print "\nmissing at conveyer " + <string>nr + "\n" for sensor.e_missing file ":stdout";
+  end
+  group ctrl2:
+    alg bool next_reset_ES = conv_length - tracker.x0 < 2 and not self_error and not dieforward;
+    alg bool TIP = sender.TIP;
+    alg bool R2S = sender.R2S and not dieforward and not self_error;
+    alg bool R2R = if prev_TIP: not(self_error or hold or dieback) else has_space_to_receive and not(self_error or hold or dieback) end;
+    alg int[0..1] a_motor_int = if a_motor: 1 else 0 end;
+    func bool is_empty(real prod):
+      return prod < -0.5;
+    end
+    func bool not_empty(real prod):
+      return not is_empty(prod);
+    end
+    alg bool conv_empty = tracker.tracker_empty;
+    alg bool conv_full = tracker.tracker_full;
+    alg real last_head = if is_empty(tracker.x1): tracker.x0 else tracker.x1 end;
+    alg real last_tail = last_head - prod_length;
+    alg real space_to_receive = if conv_empty: conv_length else last_tail end;
+    alg bool has_space_to_receive = 0.5 <= space_to_receive and not conv_full;
+    alg bool self_error = status.Error;
+    alg bool hold = R2S and not TIP and not next_R2R;
+    alg bool dieforward = prev_TIP and not prev_R2S;
+    alg bool dieback = TIP and not next_R2R;
+    alg bool a_motor = sender.motor and status.motor and not dieforward and not self_error;
+    uncontrollable u_error;
+    uncontrollable u_reset;
+    alg int nr = 2;
+    alg bool s = s_PEC_2;
+    alg bool reset_ES_from_prev = ctrl1.next_reset_ES;
+    alg bool prev_R2S = ctrl1.R2S;
+    alg bool prev_TIP = ctrl1.TIP;
+    alg bool next_R2R = ctrl3.R2R;
+    automaton tracker:
+      alg bool tracker_empty = is_empty(x0) and is_empty(x1) and is_empty(x2);
+      alg bool tracker_full = not is_empty(x2);
+      cont x0 = -1.0 der if is_empty(x0): 0.0 else a_motor_int * 1.0 end;
+      disc int i = 0;
+      cont x1 = -1.0 der if is_empty(x1): 0.0 else a_motor_int * 1.0 end;
+      cont x2 = -1.0 der if is_empty(x2): 0.0 else a_motor_int * 1.0 end;
+      location:
+        initial;
+        edge c1c2? when not conv_full do if is_empty(x0): x0 := ? else x1 := ? end;
+        edge sensor.e_calibrate do if i = 0: x0 := conv_length - 1.0 elif i = 1: x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := i + 1;
+        edge sensor.e_UFO do if i = 0: x2 := x1, x1 := x0, x0 := conv_length - 1.0 elif i = 1: x2 := x1, x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := max(2, i + 1);
+        edge sensor.e_missing do if i = 0: x0 := x1, x1 := x2 elif i = 1: x1 := x2 else x2 := -1.0 end;
+        edge sender.e_TIP_done do x0 := x1, x1 := x2, x2 := -1.0, i := min(i - 1, 0);
+    end
+    automaton sensor:
+      const real missing_offset = 0.4;
+      const real UFO_offset = 1.0;
+      event e_calibrate;
+      event e_UFO;
+      event e_missing;
+      event sensor_off;
+      location WaitSensorOrMissing:
+        initial;
+        edge e_calibrate when s and sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end goto WaitSensorOff;
+        edge e_UFO when s and not(sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end) goto WaitSensorOff;
+        edge e_missing when not s and sensor_position + missing_offset < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end;
+      location WaitSensorOff:
+        edge sensor_off when not s goto WaitSensorOrMissing;
+    end
+    automaton sender:
+      alg bool motor;
+      alg bool TIP;
+      alg bool R2S;
+      event e_TIP_done;
+      event toTIP;
+      event R2S_pos;
+      location WaitR2SPosition:
+        initial;
+        equation motor = true,
+                 R2S = false,
+                 TIP = false;
+        edge R2S_pos when tracker.x0 >= conv_length - 0.5 goto WaitR2R;
+      location WaitR2R:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = false;
+        edge toTIP when next_R2R goto TIPstarted;
+      location TIPstarted:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge c2c3!tracker.x0 - conv_length when tracker.x0 >= conv_length + prod_length / 2 goto WaitTail;
+      location WaitTail:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge e_TIP_done when tracker.x0 >= conv_length + prod_length goto WaitR2SPosition;
+    end
+    automaton status:
+      monitor u_error, u_reset;
+      alg bool motor;
+      cont x_start = conv_length der if StartingUp: -1.0 else 0.0 end;
+      alg Control_Status abstract_status = if a_motor and Running or WaitES: RUNNING elif StartingUp: STARTING_UP elif EnergySave: ENERGY_SAVE elif Error: ERROR elif dieforward or dieback: DIEFORWARD_DIEBACK elif hold: HOLD else IMPOSSIBLE end;
+      alg bool ES_ok = conv_empty and not TIP and not prev_TIP and not reset_ES_from_prev;
+      cont x_ES_ok der if WaitES: -1.0 else 0.0 end;
+      event toWaitES;
+      event toES;
+      event toRun;
+      location StartingUp:
+        initial;
+        equation motor = true;
+        edge toRun when x_start <= 0 goto Running;
+      location Running:
+        equation motor = true;
+        edge toWaitES when ES_ok do x_ES_ok := ES_distance goto WaitES;
+        edge u_error goto Error;
+      location WaitES:
+        equation motor = true;
+        edge toRun when not ES_ok goto Running;
+        edge toES when x_ES_ok <= 0 and ES_ok goto EnergySave;
+        edge u_error goto Error;
+      location EnergySave:
+        equation motor = false;
+        edge toRun when not ES_ok goto Running;
+        edge u_error goto Error;
+      location Error:
+        equation motor = false;
+        edge u_reset goto Running;
+    end
+    group svg:
+      alg int nr = .ctrl.ctrl2.nr;
+      alg string ctrl_state = <string>status;
+      alg Control_Status ctrl_status = status.abstract_status;
+      alg real head0 = tracker.x0;
+      alg real head1 = tracker.x1;
+      alg real head2 = tracker.x2;
+      alg bool dieforward = .ctrl.ctrl2.dieforward;
+      alg bool dieback = .ctrl.ctrl2.dieback;
+      alg bool R2R = .ctrl.ctrl2.R2R;
+      alg bool R2S = .ctrl.ctrl2.R2S;
+      alg bool TIP = .ctrl.ctrl2.TIP;
+      group virt_head0:
+        alg int prod_nr = 0;
+        alg real x = head0;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head1:
+        alg int prod_nr = 1;
+        alg real x = head1;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head2:
+        alg int prod_nr = 2;
+        alg real x = head2;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_ctrl_state" text value ctrl_state file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_belt" attr "fill" value switch ctrl_status: case RUNNING: "green" case STARTING_UP: "lightgreen" case ENERGY_SAVE: "yellow" case ERROR: "red" case DIEFORWARD_DIEBACK: "orchid" case HOLD: "rgb(220,220,220)" else "black" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_ctrl_error" text value if dieforward: "dieforward " else "" end + if dieback: "dieback" else "" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_tip" text value if R2R: "r2r " else "" end + if R2S: "r2s " else "" end + if TIP: "tip" else "" end file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_error" event u_error file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_reset" event u_reset file "conv_circle_4.svg";
+    end
+    print "\nUFO at conveyer " + <string>nr + "\n" for sensor.e_UFO file ":stdout";
+    print "\nmissing at conveyer " + <string>nr + "\n" for sensor.e_missing file ":stdout";
+  end
+  group ctrl3:
+    alg bool next_reset_ES = conv_length - tracker.x0 < 2 and not self_error and not dieforward;
+    alg bool TIP = sender.TIP;
+    alg bool R2S = sender.R2S and not dieforward and not self_error;
+    alg bool R2R = if prev_TIP: not(self_error or hold or dieback) else has_space_to_receive and not(self_error or hold or dieback) end;
+    alg int[0..1] a_motor_int = if a_motor: 1 else 0 end;
+    func bool is_empty(real prod):
+      return prod < -0.5;
+    end
+    func bool not_empty(real prod):
+      return not is_empty(prod);
+    end
+    alg bool conv_empty = tracker.tracker_empty;
+    alg bool conv_full = tracker.tracker_full;
+    alg real last_head = if is_empty(tracker.x1): tracker.x0 else tracker.x1 end;
+    alg real last_tail = last_head - prod_length;
+    alg real space_to_receive = if conv_empty: conv_length else last_tail end;
+    alg bool has_space_to_receive = 0.5 <= space_to_receive and not conv_full;
+    alg bool self_error = status.Error;
+    alg bool hold = R2S and not TIP and not next_R2R;
+    alg bool dieforward = prev_TIP and not prev_R2S;
+    alg bool dieback = TIP and not next_R2R;
+    alg bool a_motor = sender.motor and status.motor and not dieforward and not self_error;
+    uncontrollable u_error;
+    uncontrollable u_reset;
+    alg int nr = 3;
+    alg bool s = s_PEC_3;
+    alg bool reset_ES_from_prev = ctrl2.next_reset_ES;
+    alg bool prev_R2S = ctrl2.R2S;
+    alg bool prev_TIP = ctrl2.TIP;
+    alg bool next_R2R = ctrl4.R2R;
+    automaton tracker:
+      alg bool tracker_empty = is_empty(x0) and is_empty(x1) and is_empty(x2);
+      alg bool tracker_full = not is_empty(x2);
+      cont x0 = -1.0 der if is_empty(x0): 0.0 else a_motor_int * 1.0 end;
+      disc int i = 0;
+      cont x1 = -1.0 der if is_empty(x1): 0.0 else a_motor_int * 1.0 end;
+      cont x2 = -1.0 der if is_empty(x2): 0.0 else a_motor_int * 1.0 end;
+      location:
+        initial;
+        edge c2c3? when not conv_full do if is_empty(x0): x0 := ? else x1 := ? end;
+        edge sensor.e_calibrate do if i = 0: x0 := conv_length - 1.0 elif i = 1: x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := i + 1;
+        edge sensor.e_UFO do if i = 0: x2 := x1, x1 := x0, x0 := conv_length - 1.0 elif i = 1: x2 := x1, x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := max(2, i + 1);
+        edge sensor.e_missing do if i = 0: x0 := x1, x1 := x2 elif i = 1: x1 := x2 else x2 := -1.0 end;
+        edge sender.e_TIP_done do x0 := x1, x1 := x2, x2 := -1.0, i := min(i - 1, 0);
+    end
+    automaton sensor:
+      const real missing_offset = 0.4;
+      const real UFO_offset = 1.0;
+      event e_calibrate;
+      event e_UFO;
+      event e_missing;
+      event sensor_off;
+      location WaitSensorOrMissing:
+        initial;
+        edge e_calibrate when s and sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end goto WaitSensorOff;
+        edge e_UFO when s and not(sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end) goto WaitSensorOff;
+        edge e_missing when not s and sensor_position + missing_offset < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end;
+      location WaitSensorOff:
+        edge sensor_off when not s goto WaitSensorOrMissing;
+    end
+    automaton sender:
+      alg bool motor;
+      alg bool TIP;
+      alg bool R2S;
+      event e_TIP_done;
+      event toTIP;
+      event R2S_pos;
+      location WaitR2SPosition:
+        initial;
+        equation motor = true,
+                 R2S = false,
+                 TIP = false;
+        edge R2S_pos when tracker.x0 >= conv_length - 0.5 goto WaitR2R;
+      location WaitR2R:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = false;
+        edge toTIP when next_R2R goto TIPstarted;
+      location TIPstarted:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge c3c4!tracker.x0 - conv_length when tracker.x0 >= conv_length + prod_length / 2 goto WaitTail;
+      location WaitTail:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge e_TIP_done when tracker.x0 >= conv_length + prod_length goto WaitR2SPosition;
+    end
+    automaton status:
+      monitor u_error, u_reset;
+      alg bool motor;
+      cont x_start = conv_length der if StartingUp: -1.0 else 0.0 end;
+      alg Control_Status abstract_status = if a_motor and Running or WaitES: RUNNING elif StartingUp: STARTING_UP elif EnergySave: ENERGY_SAVE elif Error: ERROR elif dieforward or dieback: DIEFORWARD_DIEBACK elif hold: HOLD else IMPOSSIBLE end;
+      alg bool ES_ok = conv_empty and not TIP and not prev_TIP and not reset_ES_from_prev;
+      cont x_ES_ok der if WaitES: -1.0 else 0.0 end;
+      event toWaitES;
+      event toES;
+      event toRun;
+      location StartingUp:
+        initial;
+        equation motor = true;
+        edge toRun when x_start <= 0 goto Running;
+      location Running:
+        equation motor = true;
+        edge toWaitES when ES_ok do x_ES_ok := ES_distance goto WaitES;
+        edge u_error goto Error;
+      location WaitES:
+        equation motor = true;
+        edge toRun when not ES_ok goto Running;
+        edge toES when x_ES_ok <= 0 and ES_ok goto EnergySave;
+        edge u_error goto Error;
+      location EnergySave:
+        equation motor = false;
+        edge toRun when not ES_ok goto Running;
+        edge u_error goto Error;
+      location Error:
+        equation motor = false;
+        edge u_reset goto Running;
+    end
+    group svg:
+      alg int nr = .ctrl.ctrl3.nr;
+      alg string ctrl_state = <string>status;
+      alg Control_Status ctrl_status = status.abstract_status;
+      alg real head0 = tracker.x0;
+      alg real head1 = tracker.x1;
+      alg real head2 = tracker.x2;
+      alg bool dieforward = .ctrl.ctrl3.dieforward;
+      alg bool dieback = .ctrl.ctrl3.dieback;
+      alg bool R2R = .ctrl.ctrl3.R2R;
+      alg bool R2S = .ctrl.ctrl3.R2S;
+      alg bool TIP = .ctrl.ctrl3.TIP;
+      group virt_head0:
+        alg int prod_nr = 0;
+        alg real x = head0;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head1:
+        alg int prod_nr = 1;
+        alg real x = head1;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head2:
+        alg int prod_nr = 2;
+        alg real x = head2;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_ctrl_state" text value ctrl_state file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_belt" attr "fill" value switch ctrl_status: case RUNNING: "green" case STARTING_UP: "lightgreen" case ENERGY_SAVE: "yellow" case ERROR: "red" case DIEFORWARD_DIEBACK: "orchid" case HOLD: "rgb(220,220,220)" else "black" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_ctrl_error" text value if dieforward: "dieforward " else "" end + if dieback: "dieback" else "" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_tip" text value if R2R: "r2r " else "" end + if R2S: "r2s " else "" end + if TIP: "tip" else "" end file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_error" event u_error file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_reset" event u_reset file "conv_circle_4.svg";
+    end
+    print "\nUFO at conveyer " + <string>nr + "\n" for sensor.e_UFO file ":stdout";
+    print "\nmissing at conveyer " + <string>nr + "\n" for sensor.e_missing file ":stdout";
+  end
+  group ctrl4:
+    alg bool next_reset_ES = conv_length - tracker.x0 < 2 and not self_error and not dieforward;
+    alg bool TIP = sender.TIP;
+    alg bool R2S = sender.R2S and not dieforward and not self_error;
+    alg bool R2R = if prev_TIP: not(self_error or hold or dieback) else has_space_to_receive and not(self_error or hold or dieback) end;
+    alg int[0..1] a_motor_int = if a_motor: 1 else 0 end;
+    func bool is_empty(real prod):
+      return prod < -0.5;
+    end
+    func bool not_empty(real prod):
+      return not is_empty(prod);
+    end
+    alg bool conv_empty = tracker.tracker_empty;
+    alg bool conv_full = tracker.tracker_full;
+    alg real last_head = if is_empty(tracker.x1): tracker.x0 else tracker.x1 end;
+    alg real last_tail = last_head - prod_length;
+    alg real space_to_receive = if conv_empty: conv_length else last_tail end;
+    alg bool has_space_to_receive = 0.5 <= space_to_receive and not conv_full;
+    alg bool self_error = status.Error;
+    alg bool hold = R2S and not TIP and not next_R2R;
+    alg bool dieforward = prev_TIP and not prev_R2S;
+    alg bool dieback = TIP and not next_R2R;
+    alg bool a_motor = sender.motor and status.motor and not dieforward and not self_error;
+    uncontrollable u_error;
+    uncontrollable u_reset;
+    alg int nr = 4;
+    alg bool s = s_PEC_4;
+    alg bool reset_ES_from_prev = ctrl3.next_reset_ES;
+    alg bool prev_R2S = ctrl3.R2S;
+    alg bool prev_TIP = ctrl3.TIP;
+    alg bool next_R2R = mrg_c.R2R_one;
+    automaton tracker:
+      alg bool tracker_empty = is_empty(x0) and is_empty(x1) and is_empty(x2);
+      alg bool tracker_full = not is_empty(x2);
+      cont x0 = -1.0 der if is_empty(x0): 0.0 else a_motor_int * 1.0 end;
+      disc int i = 0;
+      cont x1 = -1.0 der if is_empty(x1): 0.0 else a_motor_int * 1.0 end;
+      cont x2 = -1.0 der if is_empty(x2): 0.0 else a_motor_int * 1.0 end;
+      location:
+        initial;
+        edge c3c4? when not conv_full do if is_empty(x0): x0 := ? else x1 := ? end;
+        edge sensor.e_calibrate do if i = 0: x0 := conv_length - 1.0 elif i = 1: x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := i + 1;
+        edge sensor.e_UFO do if i = 0: x2 := x1, x1 := x0, x0 := conv_length - 1.0 elif i = 1: x2 := x1, x1 := conv_length - 1.0 else x2 := conv_length - 1.0 end, i := max(2, i + 1);
+        edge sensor.e_missing do if i = 0: x0 := x1, x1 := x2 elif i = 1: x1 := x2 else x2 := -1.0 end;
+        edge sender.e_TIP_done do x0 := x1, x1 := x2, x2 := -1.0, i := min(i - 1, 0);
+    end
+    automaton sensor:
+      const real missing_offset = 0.4;
+      const real UFO_offset = 1.0;
+      event e_calibrate;
+      event e_UFO;
+      event e_missing;
+      event sensor_off;
+      location WaitSensorOrMissing:
+        initial;
+        edge e_calibrate when s and sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end goto WaitSensorOff;
+        edge e_UFO when s and not(sensor_position - 1.0 < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end) goto WaitSensorOff;
+        edge e_missing when not s and sensor_position + missing_offset < switch tracker.i: case 0: tracker.x0 case 1: tracker.x1 else tracker.x2 end;
+      location WaitSensorOff:
+        edge sensor_off when not s goto WaitSensorOrMissing;
+    end
+    automaton sender:
+      alg bool motor;
+      alg bool TIP;
+      alg bool R2S;
+      event e_TIP_done;
+      event toTIP;
+      event R2S_pos;
+      location WaitR2SPosition:
+        initial;
+        equation motor = true,
+                 R2S = false,
+                 TIP = false;
+        edge R2S_pos when tracker.x0 >= conv_length - 0.5 goto WaitR2R;
+      location WaitR2R:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = false;
+        edge toTIP when next_R2R goto TIPstarted;
+      location TIPstarted:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge c0c4_c1!tracker.x0 - conv_length when tracker.x0 >= conv_length + prod_length / 2 goto WaitTail;
+      location WaitTail:
+        equation motor = next_R2R,
+                 R2S = true,
+                 TIP = true;
+        edge e_TIP_done when tracker.x0 >= conv_length + prod_length goto WaitR2SPosition;
+    end
+    automaton status:
+      monitor u_error, u_reset;
+      alg bool motor;
+      cont x_start = conv_length der if StartingUp: -1.0 else 0.0 end;
+      alg Control_Status abstract_status = if a_motor and Running or WaitES: RUNNING elif StartingUp: STARTING_UP elif EnergySave: ENERGY_SAVE elif Error: ERROR elif dieforward or dieback: DIEFORWARD_DIEBACK elif hold: HOLD else IMPOSSIBLE end;
+      alg bool ES_ok = conv_empty and not TIP and not prev_TIP and not reset_ES_from_prev;
+      cont x_ES_ok der if WaitES: -1.0 else 0.0 end;
+      event toWaitES;
+      event toES;
+      event toRun;
+      location StartingUp:
+        initial;
+        equation motor = true;
+        edge toRun when x_start <= 0 goto Running;
+      location Running:
+        equation motor = true;
+        edge toWaitES when ES_ok do x_ES_ok := ES_distance goto WaitES;
+        edge u_error goto Error;
+      location WaitES:
+        equation motor = true;
+        edge toRun when not ES_ok goto Running;
+        edge toES when x_ES_ok <= 0 and ES_ok goto EnergySave;
+        edge u_error goto Error;
+      location EnergySave:
+        equation motor = false;
+        edge toRun when not ES_ok goto Running;
+        edge u_error goto Error;
+      location Error:
+        equation motor = false;
+        edge u_reset goto Running;
+    end
+    group svg:
+      alg int nr = .ctrl.ctrl4.nr;
+      alg string ctrl_state = <string>status;
+      alg Control_Status ctrl_status = status.abstract_status;
+      alg real head0 = tracker.x0;
+      alg real head1 = tracker.x1;
+      alg real head2 = tracker.x2;
+      alg bool dieforward = .ctrl.ctrl4.dieforward;
+      alg bool dieback = .ctrl.ctrl4.dieback;
+      alg bool R2R = .ctrl.ctrl4.R2R;
+      alg bool R2S = .ctrl.ctrl4.R2S;
+      alg bool TIP = .ctrl.ctrl4.TIP;
+      group virt_head0:
+        alg int prod_nr = 0;
+        alg real x = head0;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head1:
+        alg int prod_nr = 1;
+        alg real x = head1;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      group virt_head2:
+        alg int prod_nr = 2;
+        alg real x = head2;
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display" value if -0.5 < x: "inline" else "none" end file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform" value fmt("translate(%f,0)", SVG_scale * x) file "conv_circle_4.svg";
+        svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr file "conv_circle_4.svg";
+      end
+      svgout id "cv" + <string>nr + "_ctrl_state" text value ctrl_state file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_belt" attr "fill" value switch ctrl_status: case RUNNING: "green" case STARTING_UP: "lightgreen" case ENERGY_SAVE: "yellow" case ERROR: "red" case DIEFORWARD_DIEBACK: "orchid" case HOLD: "rgb(220,220,220)" else "black" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_ctrl_error" text value if dieforward: "dieforward " else "" end + if dieback: "dieback" else "" end file "conv_circle_4.svg";
+      svgout id "cv" + <string>nr + "_tip" text value if R2R: "r2r " else "" end + if R2S: "r2s " else "" end + if TIP: "tip" else "" end file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_error" event u_error file "conv_circle_4.svg";
+      svgin id "cv" + <string>nr + "_reset" event u_reset file "conv_circle_4.svg";
+    end
+    print "\nUFO at conveyer " + <string>nr + "\n" for sensor.e_UFO file ":stdout";
+    print "\nmissing at conveyer " + <string>nr + "\n" for sensor.e_missing file ":stdout";
+  end
+  automaton ctrl5:
+    alg bool R2R = true;
+    location:
+      initial;
+      edge dummy?;
+  end
+end

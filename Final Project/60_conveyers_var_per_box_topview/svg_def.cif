@@ -1,0 +1,105 @@
+import "common_SVG.cif";
+
+group def Ctrl_SVG
+        ( alg int nr
+        ; alg string ctrl_state             // controller status automaton location
+        ; alg Control_Status ctrl_status    // controller abstract status
+        ; alg real head0, head1, head2
+
+        ; alg bool dieforward, dieback
+        ; alg bool R2R, R2S, TIP
+        ; uncontrollable u_error, u_reset
+        ):
+
+    // controller state
+    svgout id "cv" + <string>nr + "_ctrl_state" text value ctrl_state;
+
+    // conveyer belt set colors according to controller state
+    svgout  id "cv" + <string>nr + "_belt" attr "fill" value
+        switch ctrl_status:
+            case RUNNING            : "green"
+            case STARTING_UP        : "lightgreen"
+            case ENERGY_SAVE        : "yellow"
+            case ERROR              : "red"
+            case DIEFORWARD_DIEBACK : "orchid"            // not in Error
+            case HOLD               : "rgb(220,220,220)"  // not in: Error/dieforward/dieback
+            else                      "black"             // should not be possible
+        end;
+
+    // visualization of virtual heads
+    group def VirtHead(alg int prod_nr; alg real x):
+
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "display"
+            value if   -0.5 < x : "inline"
+                  else            "none"
+                  end;
+
+        svgout id "cv" + <string>nr + "_gvhead" + <string>prod_nr attr "transform"
+            value fmt("translate(%f,0)", SVG_scale * x);
+
+       svgout id "cv" + <string>nr + "_virt_head_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr;
+
+    end
+    virt_head0: VirtHead(0, head0);
+    virt_head1: VirtHead(1, head1);
+    virt_head2: VirtHead(2, head2);
+
+    // display controller status information on dieforward and dieback
+    svgout id "cv" + <string>nr + "_ctrl_error" text
+            value if dieforward: "dieforward " else "" end + if dieback: "dieback" else "" end;
+
+    svgout id "cv" + <string>nr + "_tip" text value
+           if R2R: "r2r " else "" end + if R2S: "r2s " else "" end + if TIP: "tip" else "" end;
+
+    // Connect svg input components to generate an error, and to perform and operator resets
+    svgin   id "cv" + <string>nr + "_error" event u_error;
+    svgin   id "cv" + <string>nr + "_reset" event u_reset;
+end
+
+group def Conv_SVG  ( alg int nr
+                    ; alg bool s                        // sensor
+                    ; alg real x0, x1, x2
+                    ):
+    // assume that prod_length / 2 >= 1 (distance sensor to end of conveyor)
+    // because the product is sent to the next conveyer when the product midpoint crosses the conveyer intersection
+    // when the midpoint is before the intersection, the sending conveyer defines the product speed
+    // when the midpoint is after the intersection, the receiving conveyer defines the product speed
+
+    // visualization declarations for a product
+    group def ProdViz(alg int prod_nr; alg real position):
+//         svgcopy id "cv" + <string>nr + "_gbox"   post <string>prod_nr;  // copy box group
+//         svgcopy id "cv" + <string>nr + "_gvhead" post <string>prod_nr;  // copy virtual head group for controller
+
+        // box local position and visibility, nr is a parameter of the Conveyer group from above
+        svgout  id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "transform"
+            value fmt("translate(%f,0)", SVG_scale * position);
+        svgout  id "cv" + <string>nr + "_gbox" + <string>prod_nr attr "display"
+            value if position > -0.5: "inline" else "none" end;
+
+//         svgout id "cv" + <string>nr + "_box_id" + <string>prod_nr text value <string>nr + "_" + <string>prod_nr;
+    end
+    prod0: ProdViz(0, x0);
+    prod1: ProdViz(1, x1);
+    prod2: ProdViz(2, x2);
+
+    // sensor color
+    svgout  id "cv" + <string>nr + "_sensor" attr "fill"     value if s: "green" else "white" end;
+end
+
+group def Entry_SVG(alg string state; alg real x):
+    svgout  id "entry_gbox" attr "transform" value
+        fmt("translate(%.1f,0)", SVG_scale * (x - conv_length));    // should be zero when head at end of exit
+
+    svgout id "entry_gbox" attr "display" value if x <= conv_length: "inline" else "none" end;
+
+    svgout id "entry_state" text value state;                           // entry state
+    svgout id "t_atend"     text value fmt("x: %.1f", max(6 - x, 0));   // time until product at end of exit
+    svgout id "time_txt"    text value fmt("Time: %.1f", time);         // global time
+
+end
+
+group def Exit_SVG(alg real x):
+    // box: move, visibility
+    svgout id "exit_gbox" attr "transform"  value fmt("translate(%s,0)", SVG_scale * x);
+    svgout id "exit_gbox" attr "display" value if x > -0.5: "inline" else "none" end;
+end

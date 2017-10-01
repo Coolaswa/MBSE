@@ -1,0 +1,23 @@
+automaton def Sensor():
+    event void e_on, e_off;
+    alg int val = if On: 2 else 0 end;  // only used for plotting
+                                        // in controller refer to location of sensor s.
+                                        // In controller refer to "s.On", in tooldef refer to "s.val"
+    location Off:
+        initial;
+        edge e_on?   goto On;
+        edge e_off?;
+
+    location On:
+        edge e_off?  goto Off;
+        edge e_on?;
+end
+
+automaton def EntrySensor():
+    event void e_off;
+    alg int s = if Off: 0 else 2 end;    // only used for plotting
+
+    location Off:
+        initial;
+        edge e_off?;
+end

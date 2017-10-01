@@ -1,0 +1,247 @@
+alg bool s_PEC_1 = xPositionsAtSensor(plnt.prod1.x, plnt.prod2.x, plnt.prod3.x, 5.0, 9.0);
+alg bool s_PEC_2 = xPositionsAtSensor(plnt.prod1.x, plnt.prod2.x, plnt.prod3.x, 11.0, 15.0);
+alg int[0..1] a_motor_1 = ctrl.c1.a_motor;
+alg int[0..1] a_motor_2 = ctrl.c2.a_motor;
+event void e_entry_c1;
+const real SVG_scale = 30.0;
+func bool xAtSensor(real x; real pos1; real pos2):
+  return x >= pos1 and x < pos2;
+end
+func bool xPositionsAtSensor(real x1; real x2; real x3; real pos1; real pos2):
+  return xAtSensor(x1, pos1, pos2) or xAtSensor(x2, pos1, pos2) or xAtSensor(x3, pos1, pos2);
+end
+const real xinit1 = 4.0;
+const real xinit2 = 9.0;
+const real xinit3 = -1.0;
+group ctrl:
+  event void e_c1_c2;
+  event void e_exit;
+  group c1:
+    alg int[0..1] a_motor = control.a_motor;
+    alg int nr = 1;
+    alg bool s = s_PEC_1;
+    automaton control:
+      cont t = 0.0 der 1.0;
+      alg int[0..1] a_motor;
+      event toAtSensOn;
+      event toAtSensOff;
+      event toEmptyOn;
+      event toEmptyOff;
+      event toEntering;
+      location Initialize:
+        initial;
+        equation a_motor = 1;
+        edge toAtSensOn when s do t := 0.0 goto AtSensorOn;
+        edge toEmptyOn when t >= 3.0 do t := 0.0 goto EmptyOn;
+      location EmptyOn:
+        equation a_motor = 1;
+        edge e_entry_c1? goto Entering;
+        edge toEmptyOff when t >= 5.0 goto EmptyOff;
+      location EmptyOff:
+        equation a_motor = 0;
+        edge e_entry_c1? goto Entering;
+      location Entering:
+        equation a_motor = 1;
+        edge toAtSensOn when s do t := 0.0 goto AtSensorOn;
+      location AtSensorOn:
+        equation a_motor = 1;
+        edge e_c1_c2! goto Leaving;
+        edge toAtSensOff when t >= 0.4 goto AtSensorOff;
+      location AtSensorOff:
+        equation a_motor = 0;
+        edge e_c1_c2! goto Leaving;
+      location Leaving:
+        equation a_motor = 1;
+        edge e_entry_c1? goto LeavingEntering;
+        edge toEmptyOn when not s do t := 0.0 goto EmptyOn;
+      location LeavingEntering:
+        equation a_motor = 1;
+        edge toEntering when not s goto Entering;
+    end
+    group svg:
+      alg int nr = .ctrl.c1.nr;
+      alg string state = <string>control;
+      svgout id "cv" + <string>nr + "_ctrl_state" text value state file "conveyers.svg";
+    end
+  end
+  group c2:
+    alg int[0..1] a_motor = control.a_motor;
+    alg int nr = 2;
+    alg bool s = s_PEC_2;
+    automaton control:
+      cont t = 0.0 der 1.0;
+      alg int[0..1] a_motor;
+      event toAtSensOn;
+      event toAtSensOff;
+      event toEmptyOn;
+      event toEmptyOff;
+      event toEntering;
+      location Initialize:
+        initial;
+        equation a_motor = 1;
+        edge toAtSensOn when s do t := 0.0 goto AtSensorOn;
+        edge toEmptyOn when t >= 3.0 do t := 0.0 goto EmptyOn;
+      location EmptyOn:
+        equation a_motor = 1;
+        edge e_c1_c2? goto Entering;
+        edge toEmptyOff when t >= 5.0 goto EmptyOff;
+      location EmptyOff:
+        equation a_motor = 0;
+        edge e_c1_c2? goto Entering;
+      location Entering:
+        equation a_motor = 1;
+        edge toAtSensOn when s do t := 0.0 goto AtSensorOn;
+      location AtSensorOn:
+        equation a_motor = 1;
+        edge e_exit! goto Leaving;
+        edge toAtSensOff when t >= 0.4 goto AtSensorOff;
+      location AtSensorOff:
+        equation a_motor = 0;
+        edge e_exit! goto Leaving;
+      location Leaving:
+        equation a_motor = 1;
+        edge e_c1_c2? goto LeavingEntering;
+        edge toEmptyOn when not s do t := 0.0 goto EmptyOn;
+      location LeavingEntering:
+        equation a_motor = 1;
+        edge toEntering when not s goto Entering;
+    end
+    group svg:
+      alg int nr = .ctrl.c2.nr;
+      alg string state = <string>control;
+      svgout id "cv" + <string>nr + "_ctrl_state" text value state file "conveyers.svg";
+    end
+  end
+  automaton exit:
+    location:
+      initial;
+      edge e_exit?;
+  end
+end
+group plnt:
+  event void e_entry_cv1;
+  group gen:
+    alg real t_next_min = 2.0;
+    alg real t_next_max = 10.0;
+    alg real t_initial = 2.0;
+    automaton gen:
+      event prodArrival;
+      cont t_next = t_initial der -1.0;
+      disc dist real d = uniform(t_next_min, t_next_max);
+      location WaitNextBox:
+        initial;
+        edge prodArrival when t_next <= 0 goto SignalArrival;
+      location SignalArrival:
+        edge e_entry_c1 do (t_next, d) := sample d goto WaitNextBox;
+    end
+    group svg:
+      alg string state = <string>gen;
+      alg real t_next = gen.t_next;
+      svgout id "gen_state" text value state file "conveyers.svg";
+      svgout id "t_next" text value fmt("t_next: %.1f", t_next) file "conveyers.svg";
+    end
+  end
+  automaton entry:
+    cont t_atend der -1.0;
+    svgout id "entry_state" text value <string>self file "conveyers.svg";
+    svgout id "t_atend" text value fmt("t_atend: %.1f", max(t_atend, 0)) file "conveyers.svg";
+    svgout id "time_txt" text value fmt("Time: %.1f", time) file "conveyers.svg";
+    location SignalController:
+      initial;
+      edge e_entry_c1! do t_atend := 1.0 goto SendProduct;
+    location SendProduct:
+      edge e_entry_cv1! when t_atend <= 0 goto SignalController;
+  end
+  group prod1:
+    alg real x = prod.x;
+    alg int nr = 1;
+    alg real xinit = xinit1;
+    alg int a_v1 = a_motor_1;
+    alg int a_v2 = a_motor_2;
+    automaton prod:
+      cont x = xinit;
+      event exit;
+      location Waiting:
+        initial x = -1.0;
+        equation x' = 0.0;
+        edge e_entry_cv1? do x := 0.0 goto Moving;
+      location Moving:
+        initial x > 0;
+        equation x' = if x < 8: a_v1 * 1.0 elif x >= 8 and x < 14: a_v2 * 1.0 else 1.0 end;
+        edge exit when x >= 16 do x := -1.0 goto Waiting;
+    end
+    group svg:
+      alg int nr = .plnt.prod1.nr;
+      alg real x = prod.x;
+      svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "display" value if x > -0.5: "inline" else "none" end file "conveyers.svg";
+    end
+  end
+  group prod2:
+    alg real x = prod.x;
+    alg int nr = 2;
+    alg real xinit = xinit2;
+    alg int a_v1 = a_motor_1;
+    alg int a_v2 = a_motor_2;
+    automaton prod:
+      cont x = xinit;
+      event exit;
+      location Waiting:
+        initial x = -1.0;
+        equation x' = 0.0;
+        edge e_entry_cv1? do x := 0.0 goto Moving;
+      location Moving:
+        initial x > 0;
+        equation x' = if x < 8: a_v1 * 1.0 elif x >= 8 and x < 14: a_v2 * 1.0 else 1.0 end;
+        edge exit when x >= 16 do x := -1.0 goto Waiting;
+    end
+    group svg:
+      alg int nr = .plnt.prod2.nr;
+      alg real x = prod.x;
+      svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "display" value if x > -0.5: "inline" else "none" end file "conveyers.svg";
+    end
+  end
+  group prod3:
+    alg real x = prod.x;
+    alg int nr = 3;
+    alg real xinit = xinit3;
+    alg int a_v1 = a_motor_1;
+    alg int a_v2 = a_motor_2;
+    automaton prod:
+      cont x = xinit;
+      event exit;
+      location Waiting:
+        initial x = -1.0;
+        equation x' = 0.0;
+        edge e_entry_cv1? do x := 0.0 goto Moving;
+      location Moving:
+        initial x > 0;
+        equation x' = if x < 8: a_v1 * 1.0 elif x >= 8 and x < 14: a_v2 * 1.0 else 1.0 end;
+        edge exit when x >= 16 do x := -1.0 goto Waiting;
+    end
+    group svg:
+      alg int nr = .plnt.prod3.nr;
+      alg real x = prod.x;
+      svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "display" value if x > -0.5: "inline" else "none" end file "conveyers.svg";
+    end
+  end
+end
+group SVG:
+  group io1:
+    alg int nr = 1;
+    alg int[0..1] a_motor = a_motor_1;
+    alg bool s = s_PEC_1;
+    svgout id "cv" + <string>nr + "_sensor_rect" attr "fill" value if s: "green" else "white" end file "conveyers.svg";
+    svgout id "cv" + <string>nr + "_belt_path" attr "fill" value switch a_motor: case 0: "rgb(220,220,220)" case 1: "green" else "black" end file "conveyers.svg";
+  end
+  group io2:
+    alg int nr = 2;
+    alg int[0..1] a_motor = a_motor_2;
+    alg bool s = s_PEC_2;
+    svgout id "cv" + <string>nr + "_sensor_rect" attr "fill" value if s: "green" else "white" end file "conveyers.svg";
+    svgout id "cv" + <string>nr + "_belt_path" attr "fill" value switch a_motor: case 0: "rgb(220,220,220)" case 1: "green" else "black" end file "conveyers.svg";
+  end
+end
+svgout id "layer3" attr "display" value "inline" file "conveyers.svg";

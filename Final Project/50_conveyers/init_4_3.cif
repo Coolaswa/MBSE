@@ -1,0 +1,2 @@
+const real xinit1 = 4.0;
+const real xinit2 = 3.0;

@@ -1,0 +1,19 @@
+svgfile "conveyers.svg";
+
+import "20_Cdef.cif";
+
+input bool s_PEC_1;
+input bool s_PEC_2;
+
+alg bool a_motor_1 = ctrl.c1.a_motor;
+alg bool a_motor_2 = ctrl.c2.a_motor;
+
+event void e_entry_c1;
+
+group ctrl:
+    event void e_c1_c2, e_exit;
+
+    c1  : Control(1, s_PEC_1, e_entry_c1, e_c1_c2);
+    c2  : Control(2, s_PEC_2, e_c1_c2, e_exit);
+    exit: ExitControl(e_exit);
+end

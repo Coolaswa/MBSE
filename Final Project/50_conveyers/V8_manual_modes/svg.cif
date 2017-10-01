@@ -1,0 +1,14 @@
+svgfile "conveyers.svg";
+
+import  "svg_def.cif";
+
+input bool a_motor_1;
+input bool a_motor_2;
+
+input bool s_PEC_1;
+input bool s_PEC_2;
+
+group SVG:
+    io1   : IO_SVG(1, a_motor_1, s_PEC_1);
+    io2   : IO_SVG(2, a_motor_2, s_PEC_2);
+end

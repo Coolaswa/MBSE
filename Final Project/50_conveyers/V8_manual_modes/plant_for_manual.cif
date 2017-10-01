@@ -1,0 +1,26 @@
+svgfile "conveyers.svg";
+
+// import "../init_empty.cif";
+import "../init_4_3.cif";
+
+import "conv.cif";
+
+// actuators
+input bool a_motor_1;
+input bool a_motor_2;
+
+// sensors
+alg bool s_PEC_1 = plnt.cv1.s;
+alg bool s_PEC_2 = plnt.cv2.s;
+
+group plnt:
+    event real e_entry_cv1, e_cv1_cv2, e_exit;
+
+    cv1 :     Conveyer(1, xinit1, cv2.x, a_motor_1, e_entry_cv1, e_cv1_cv2);
+    cv2 :     Conveyer(2, xinit2, cv3.x, a_motor_2,   e_cv1_cv2, e_exit);
+    cv3 : ExitConveyer(3                                       , e_exit);
+end
+
+svgout id "Control"     attr "display" value "none";    // Control layer invisible
+svgout id "Generator"   attr "display" value "none";    // Generator layer invisible
+svgout id "Environment" attr "display" value "none";    // Environment  layer invisible

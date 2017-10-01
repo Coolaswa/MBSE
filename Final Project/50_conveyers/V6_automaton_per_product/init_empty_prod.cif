@@ -1,0 +1,4 @@
+const real xinit1 = -1.0;
+const real xinit2 = -1.0;
+const real xinit3 = -1.0;
+

@@ -1,0 +1,317 @@
+// Tracking of product positions in controllers.
+import "common_syst.cif";
+import "common_SVG.cif";
+import "svg_def.cif";
+
+const real ES_distance = 3; // distance that a conveyer needs to run while ES_ok before going to energy save
+
+// RTR = Ready To Receive
+group def Control( alg int nr; alg bool s, reset_ES_from_prev, prev_R2S, prev_TIP, next_R2R
+                 ; event product e_rcv_prd?, e_snd_prd!~
+                 ):
+
+    alg bool next_reset_ES = (conv_length - tracker.x0) < 2 and not self_error and not dieforward;
+
+    alg bool TIP        = sender.TIP;
+    alg bool R2S        = sender.R2S and not dieforward and not self_error;
+
+    alg bool R2R =
+        /* Once sending has started (prev_TIP),
+           only error occurrences are relevant, not the space on the receiving conveyer.
+           (self error or hold or dieback) takes into account all local errors and all
+           sending related motor stops, but does not take into account dieforward
+        */
+        if   prev_TIP :
+                not (self_error or hold or dieback)
+        else    has_space_to_receive and not (self_error or hold or dieback)    // not prev_TIP
+        end;
+
+        alg int[0..1] a_motor_int =  if a_motor : 1 else 0 end;
+
+    /****************************** private ******************************/
+
+    // return whether prod represents an empty product (-1)
+    func bool is_empty(real prod):
+        return prod < -0.5;     // test could in theory be prod != -1 (unequal -1)
+                                // use -0.5 in view of numerical inaccuracies of solver
+                                // since (equation x' = 0, could lead to small fluctuations in x)
+    end
+
+    func bool not_empty(real prod):
+        return not is_empty(prod);
+    end
+
+    // prev_error stops the conveyer, but does not affect can_receive,
+    // otherwise there would be an algebraic loop.
+    alg bool conv_empty = tracker.tracker_empty;
+    alg bool conv_full  = tracker.tracker_full;
+
+    // first element is always x0: it is at head of the products, and closest to head of conveyer
+    // last  element is closest to tail of conveyer
+    alg real last_head  = if is_empty(tracker.x1): tracker.x0 else tracker.x1 end;   // head of last product
+    alg real last_tail  = last_head - prod_length;
+//     alg real first_head = tracker.x0;
+
+
+    alg real space_to_receive     = if conv_empty: conv_length else last_tail end;
+    alg bool has_space_to_receive = (0.5 <= space_to_receive) and not conv_full;
+
+
+    /*  Error propagation from surrounding conveyers only takes place when a product is actually exchanged.
+        This is reflected by the alg vars:
+        - dieforward
+        - dieback
+        which only indicate errors in surrounding conveyers when a product is being exchanged
+    */
+
+    alg bool self_error = status.Error;     // Error in conveyer itself, independently of both prev_error and dieback
+    alg bool hold       = R2S and not TIP and not next_R2R;
+    alg bool dieforward = prev_TIP and not prev_R2S;  // => dieforward
+    alg bool dieback    =      TIP and not next_R2R;  // => dieback
+
+    /*  motor actuator
+        EnergySave and Error are  taken care of by status.motor.
+        dieback and hold are taken care of by sender.motor
+    */
+    alg bool a_motor = sender.motor and status.motor and not dieforward and not self_error;
+
+     automaton tracker:
+        alg bool tracker_empty = is_empty(x0) and is_empty(x1) and is_empty(x2);
+        alg bool tracker_full  = not is_empty(x2);  // then also x0 and x1 must by non_empty
+
+        cont x0 = -1.0          der if is_empty(x0):        0.0 else a_motor_int * 1.0 end;
+
+        disc int i = 0;   // index of the next product that is expected to arrive at the sensor
+
+        /****************************** private ******************************/
+
+        cont x1 = -1.0          der if is_empty(x1):        0.0 else a_motor_int * 1.0 end;
+        cont x2 = -1.0          der if is_empty(x2):        0.0 else a_motor_int * 1.0 end;
+
+        location:
+            initial;
+            edge e_rcv_prd?             // Non-blocking receive: sender should test next_R2R before sending.
+                when not conv_full
+                do if  is_empty(x0): x0 := ?
+                   else              x1 := ?
+                   end;
+
+            edge sensor.e_calibrate
+                do   if i = 0: x0 := conv_length - 1    // calibrate x0
+                   elif i = 1: x1 := conv_length - 1    // calibrate x1
+                   else        x2 := conv_length - 1    // calibrate x2
+                   end,
+                   i := i + 1;
+
+            /*  We need an assertion here that there actually is space for a UFO, or we need an error message
+                If there is not enough space, we overwrite the last element x2.
+                Note that thanks to the semantics of CIF, the order of assignments below is irrelevant!!
+                So that instead of "x2 := x1, x1 := conv_length - 1", we could use "x1 := conv_length - 1, x2 := x1"
+             */
+            edge sensor.e_UFO
+                do   if i = 0: x2 := x1, x1 := x0, x0 := conv_length - 1
+                   elif i = 1: x2 := x1, x1 := conv_length - 1
+                   else        x2 := conv_length - 1
+                   end,
+                   i := max(2,i + 1);
+
+            edge sensor.e_missing
+                do   if i = 0: x0 := x1, x1 := x2
+                   elif i = 1: x1 := x2
+                   else        x2 := -1
+                   end;
+
+            // Receiver should not block this send.
+            // Double (simultaneous) tracking in sender and receiver while TIP = true.
+            // Sender automaton waits for this event to occur in location Sending.
+            edge sender.e_TIP_done
+                do x0 := x1, x1 := x2, x2 := -1,
+                   i := min(i - 1,0);               // We actually need an assertion that i >= 0 !!
+    end
+
+    print "\nUFO at conveyer "     + <string>nr + "\n" for sensor.e_UFO;
+    print "\nmissing at conveyer " + <string>nr + "\n" for sensor.e_missing;
+
+    automaton sensor:
+       const real missing_offset = 0.4;
+        /*  Cannot be bigger than 0.5, because at sensor position + 0.5, the head is sent to the next conveyer.
+            Therefore, if in such a case a missing would be detected, the original virtual head would be deleted,
+            but a copy of the virtual head would then already be on the next conveyer.
+       */
+
+       const real UFO_offset = 1;
+
+        event e_calibrate, e_UFO, e_missing, sensor_off;
+
+        location WaitSensorOrMissing:
+            initial;
+            edge e_calibrate
+                when s and sensor_position -1 <    switch tracker.i:
+                                                    case 0: tracker.x0
+                                                    case 1: tracker.x1
+                                                    else    tracker.x2
+                                                end
+                goto WaitSensorOff;
+
+            edge e_UFO
+                when s and not (sensor_position -1 <   switch tracker.i:
+                                                        case 0: tracker.x0
+                                                        case 1: tracker.x1
+                                                        else    tracker.x2
+                                                    end)
+                goto WaitSensorOff;
+
+            edge e_missing
+                when not s and (sensor_position + missing_offset <  switch tracker.i:
+                                                                    case 0: tracker.x0
+                                                                    case 1: tracker.x1
+                                                                    else    tracker.x2
+                                                                end);
+
+        location WaitSensorOff:
+            edge sensor_off
+                when not s
+                goto WaitSensorOrMissing;
+    end
+
+
+    automaton sender:
+        alg bool motor;
+        alg bool TIP;
+        alg bool R2S;   // Note that the global R2S is derived from this sender.R2S in conjunction with
+                        // not self_error and not dieforward
+
+        event e_TIP_done;
+
+        /****************************** private ******************************/
+
+        event toTIP, R2S_pos;
+
+        // wait for tracker signal that sending position has been reached
+        location WaitR2SPosition:
+            equation motor = true;
+            equation R2S   = false;
+            equation TIP   = false;
+
+            initial;
+            edge R2S_pos    when tracker.x0 >= conv_length - 0.5        goto WaitR2R;
+
+        /*  Wait until next conveyer can receive a product.
+            While waiting for permission, motor equals value of next_can_receive:
+            - if next_can_receive is immediately true, then immediately goto next state while motor remains on
+            - if next_can_receive is false, then motor is off while waiting for next_can_receive to become true
+            Defining the motor to be false in the state below would appear to be OK;
+            However, it would switch off and on the motor unnecessarily when next_can_receive would be true upon
+            entering the state below.
+        */
+        location WaitR2R:
+            equation motor = next_R2R;
+            equation R2S   = true;
+            equation TIP   = false;
+
+            edge toTIP      when next_R2R                               goto TIPstarted;
+
+        /*  Start sending a product to next conveyer.
+            Wait until tracker allows e_snd_prd (sending of product to next conveyer) to occur at end of conveyer.
+        */
+        location TIPstarted:
+            equation motor = next_R2R;
+            equation R2S   = true;
+            equation TIP   = true;
+
+            edge e_snd_prd ! tracker.x0 - conv_length
+                when tracker.x0 >= conv_length + prod_length / 2        goto WaitTail;
+
+        // Wait until product has completely left this conveyer,
+        // which is indicated by the tracker via tracker.e_TIP_done
+        location WaitTail:
+            equation motor = next_R2R;
+            equation R2S   = true;
+            equation TIP   = true;
+
+            edge e_TIP_done
+                when tracker.x0 >= conv_length + prod_length            goto WaitR2SPosition;
+    end
+
+    uncontrollable u_error, u_reset;
+
+    automaton status:
+        alg bool motor;
+        cont x_start = conv_length der if StartingUp: -1 else 0 end;
+
+        // for SVG visualization: conveyer belt set colors according to controller state
+        alg Control_Status abstract_status =
+              if a_motor and Running or WaitES      : RUNNING
+            elif StartingUp                         : STARTING_UP
+            elif EnergySave                         : ENERGY_SAVE
+            elif Error                              : ERROR
+            elif (dieforward or dieback)            : DIEFORWARD_DIEBACK  // not in Error
+            elif hold                               : HOLD                // not in: Error/dieforward/dieback
+            else                                      IMPOSSIBLE          // should not be possible
+            end;
+
+
+        /*  e_reset and e_error are (svg)input events so may occur in each location
+            In real-time mode, they originate from button presses, which also should not be blocked
+        */
+        monitor u_error, u_reset;
+
+        /****************************** private ******************************/
+
+        alg bool ES_ok = conv_empty and not TIP and not prev_TIP and not reset_ES_from_prev;
+
+        cont x_ES_ok der if WaitES: -1.0 else 0.0 end;  // assume conveyer speed to be 1
+
+        // private
+        event toWaitES, toES, toRun;
+
+        location StartingUp:
+            initial;
+            equation motor = true;
+
+            edge toRun when x_start <= 0            goto Running;
+
+        location Running:
+            equation motor = true;
+
+            edge toWaitES
+                when ES_ok
+                do x_ES_ok := ES_distance           goto WaitES;
+            edge u_error                            goto Error;
+
+        location WaitES:
+            equation motor = true;
+
+            edge toRun when not ES_ok               goto Running;
+            edge toES
+                when x_ES_ok <= 0 and ES_ok         goto EnergySave;
+            edge u_error                            goto Error;
+
+        location EnergySave:
+            equation motor   = false;
+
+            edge toRun when not ES_ok               goto Running;
+            edge u_error                            goto Error;
+
+        location Error:
+            equation motor   = false;
+
+            edge u_reset                            goto Running;
+    end
+
+    svg: Ctrl_SVG( nr, <string>status, status.abstract_status
+                 , tracker.x0, tracker.x1, tracker.x2
+                 , dieforward, dieback, R2R, R2S, TIP
+                 , u_error, u_reset
+                 );
+end
+
+
+automaton def ExitControl(event product e_rcv_prd?):
+    alg bool R2R = true;
+
+    /****************************** private ******************************/
+    location:
+        initial;
+        edge e_rcv_prd?;
+end

@@ -1,0 +1,12 @@
+import "common_syst.cif";
+
+type svg_unit = real;                // svg unit usually in pixels: number of pixels corresponding to 1 svg coordinate
+type model_unit = real;              // svg_unit = model_unit * SVG_scale
+const real SVG_scale = 30;
+
+type degrees = real;
+type radians = real;
+
+enum Control_Status = RUNNING, STARTING_UP, ENERGY_SAVE, ERROR, DIEFORWARD_DIEBACK, HOLD, IMPOSSIBLE;
+
+const real PI = 3.14159;

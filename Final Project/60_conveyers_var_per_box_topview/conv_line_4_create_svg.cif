@@ -1,0 +1,37 @@
+svgfile "conveyer.template.svg";
+
+import "svg_create_def.cif";
+
+const real angle = 0;
+const real x_start = 5;
+const real y_start = 5;
+const real gen_height = 6; // height of generator and surrounding text
+
+const real boxwidth = 2;
+const int maxnr = 4;
+
+entry: Create_Entry_SVG(0, (x_start * SVG_scale, y_start * SVG_scale));
+
+conv0: Create_Conv_SVG(0, angle, (x_start * SVG_scale, y_start * SVG_scale));
+conv1: Create_Conv_SVG(1, angle, conv0.conv_head);
+conv2: Create_Conv_SVG(2, angle, conv1.conv_head);
+conv3: Create_Conv_SVG(3, angle, conv2.conv_head);
+
+conv4: Create_Exit_SVG(   angle, conv3.conv_head);
+
+alg real rad_angle = degree2rad(angle);
+
+// Adjust visualization window depending on nr of conveyers
+svgout id "conv_template" attr "width"
+    value SVG_scale * (conv_length * maxnr * cos(rad_angle) + gen_height * sin(rad_angle) + x_start + 5);
+svgout id "conv_template" attr "height"
+    value SVG_scale * (conv_length * maxnr * sin(rad_angle) + gen_height * cos(rad_angle) + y_start + 5);
+
+// // Hide entry and exit block and status texts of generator, by hiding Environment layer, in which they are declared
+// svgout id "layer3" attr "display" value "none";
+
+// Show entry and exit block and status texts of generator, by displaying Environment layer in which they are declared
+svgout id "layer3" attr "display" value "inline";       // Show Environment layer, if hidden in drawing.
+
+svgout id "entry_rect" attr "display" value "none";     // Hide entry block (if desired) and see arriving products
+svgout id "exit"       attr "display" value "none";     // Hide exit block (if desired) and see leaving products

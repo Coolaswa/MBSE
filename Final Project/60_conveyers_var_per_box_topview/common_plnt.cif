@@ -1,0 +1,24 @@
+import "common_syst.cif";
+
+/*  x is position of the head of a product on a conveyer.
+    If the product is on the conveyer of the sensor, offset = 0.
+    If the product is on the conveyer following the sensor, offset = conv_length
+*/
+func bool x_covers_sensor(real x):
+    return sensor_position <= x and x <= sensor_position + prod_length;
+end
+
+func bool x_next_covers_sensor(real x):
+    return not is_empty(x) and x + conv_length <= sensor_position + prod_length;
+end
+
+// return whether prod represents an empty product (-1)
+func bool is_empty(product prod):
+    return prod < -0.5;     // test could in theory be prod != -1 (unequal -1)
+                            // use -0.5 in view of numerical inaccuracies of solver
+                            // since (equation x' = 0, could lead to small fluctuations in x)
+end
+
+func bool not_empty(product prod):
+    return not is_empty(prod);
+end

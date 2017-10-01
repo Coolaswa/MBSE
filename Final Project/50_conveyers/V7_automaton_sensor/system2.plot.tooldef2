@@ -1,0 +1,27 @@
+from "lib:cif3" import *;
+
+cif3merge(                      // 3 files to merge
+    "../control/10_control.cif",
+    "plant.cif",
+    "../svg.cif",
+    "-o system.cif"             // -o option for output file
+);
+
+cif3sim(
+    "system.cif",
+    "--option-dialog=no",
+
+    "-t 25",
+
+    "-i auto",
+
+    "-o -state-target",
+
+    "--solver-root-maxchk=0.1",
+
+    "--svg=0",
+
+    "--plotviz=1",
+    "--plotviz-mode=postponed",
+     "--plotviz-filter=a_motor_1,prod1_x,s_PEC_1;a_motor_2,prod2_x,s_PEC_2",
+);

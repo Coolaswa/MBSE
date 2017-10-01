@@ -1,0 +1,69 @@
+svgfile "conveyers.svg";
+
+// merges  with u_usecase_init event from conveyer model so that u_usecase_init causes conveyer model to
+// (re)initialize product position x to initial value from parameter list
+// u_usecase_init is executed as initialization step by first usecase in automaton mode
+uncontrollable u_usecase_init;
+
+alg bool a_motor_1 = gmode.a_motor_1;
+alg bool a_motor_2 = gmode.a_motor_2;
+
+group gmode:
+    alg bool a_motor_1 = if mode.Manual: aut_motor_1.On else mode.a_motor_1 end;
+    alg bool a_motor_2 = if mode.Manual: aut_motor_2.On else mode.a_motor_2 end;
+
+    uncontrollable u_manual;
+
+    aut_motor_1: Actuator("cv1_belt");
+    aut_motor_2: Actuator("cv2_belt");
+
+    automaton def Actuator(alg string svgid):
+        uncontrollable u_toggle;
+
+        location Off:
+            initial;
+            edge u_toggle goto On;
+            edge u_manual;
+
+        location On:
+            edge u_toggle, u_manual goto Off;   // u_manual causes all actuator to reset to Off state
+
+        svgin id svgid event u_toggle;
+    end
+
+    automaton mode:                     // operating modes: Use case and Manual
+        event end_usecase;
+        uncontrollable u_usecase;
+        monitor u_usecase, u_manual;
+
+        alg bool a_motor_1;
+        alg bool a_motor_2;
+        cont t der 1;
+
+        location Usecase_init:
+            equation a_motor_1 = false;
+            equation a_motor_2 = false;
+            edge u_usecase_init         do t := 0               goto Usecase_recipe;
+
+        location Usecase_recipe:
+            equation a_motor_1 =  true;
+            equation a_motor_2 =  true;
+
+            edge end_usecase    when 7 < t              goto Manual;
+            edge u_manual                               goto Manual;
+
+        location Manual:
+            equation a_motor_1 = false;
+            equation a_motor_2 = false;
+            initial;
+            edge u_usecase                              goto Usecase_init;
+
+        svgin  id "manual_button"  event u_manual;
+        svgin  id "usecase_button" event u_usecase;
+
+        svgout id "usecase_button" attr "fill"
+                                 value if not Manual: "green" else "lightgrey" end;
+        svgout id "manual_button"  attr "fill"
+                                 value if     Manual: "green" else "lightgrey" end;
+    end
+end

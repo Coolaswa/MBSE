@@ -40,8 +40,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="700.87956"
-     inkscape:cy="390.11373"
+     inkscape:cx="280.60484"
+     inkscape:cy="430.51983"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -332,7 +332,7 @@
        style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <circle
        style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="sensorLiftUp-4"
+       id="s_height"
        cx="254.53329"
        cy="136.28203"
        inkscape:transform-center-x="-0.40090429"
@@ -850,23 +850,13 @@
            id="tspan989-39-1"
            sodipodi:role="line">init</tspan></text>
     </g>
-    <g
-       id="g1438">
-      <rect
-         y="5.3642206"
-         x="13.414894"
-         height="26.860588"
-         width="28.063299"
-         id="Box"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.0856204;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         y="15.695058"
-         x="20.579754"
-         height="8.5526247"
-         width="7.4835467"
-         id="rect1432"
-         style="opacity:1;fill:#e1e1e1;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
+    <rect
+       style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.0856204;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="box"
+       width="28.063299"
+       height="26.860588"
+       x="138.30649"
+       y="137.88513" />
     <g
        id="g1001-7-7"
        transform="matrix(0.68985138,0,0,1,193.81317,-48.189078)">
@@ -894,5 +884,16 @@
            id="tspan993-2-4"
            sodipodi:role="line">ready</tspan></text>
     </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="8.2853556"
+       y="14.35871"
+       id="time"><tspan
+         sodipodi:role="line"
+         id="tspan1572"
+         x="8.2853556"
+         y="14.35871"
+         style="stroke-width:0.26458332">10</tspan></text>
   </g>
 </svg>

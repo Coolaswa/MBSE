@@ -1,0 +1,33 @@
+svgfile "../conveyers.svg";
+
+// import "../init_empty.cif";
+import "../init_4_3.cif";
+
+import "../entry.cif";
+
+import "conv.cif";
+
+import "../generator.cif";
+
+// actuators
+input int[0..1] a_motor_1;
+input int[0..1] a_motor_2;
+
+// sensors
+alg bool s_PEC_1 = plnt.cv1.s;
+alg bool s_PEC_2 = plnt.cv2.s;
+
+event void e_entry_c1;  // for controller
+
+group plnt:
+    event void e_entry_cv1, e_cv1_cv2, e_exit;
+
+    // gen   : Generator(6, 2, e_entry_c1);
+    // gen   : GeneratorList([6, 10, 13], 2, e_entry_c1);
+    gen   : GeneratorStochastic(2, 10, 2, e_entry_c1);
+    entry : Entry(e_entry_cv1, e_entry_c1);
+
+    cv1 :     Conveyer(1, xinit1, cv2.x, a_motor_1, e_entry_cv1, e_cv1_cv2);
+    cv2 :     Conveyer(2, xinit2, cv3.x, a_motor_2,   e_cv1_cv2, e_exit);
+    cv3 : ExitConveyer(3                                       , e_exit);
+end

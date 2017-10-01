@@ -1,0 +1,110 @@
+svgfile "../conveyers.svg";
+import  "../svg_def.cif";
+
+// import "../init_empty.cif";
+import "../init_4_3.cif";
+
+// actuators
+input int[0..1] a_motor_1;
+input int[0..1] a_motor_2;
+
+// sensors
+alg bool s_PEC_1 = plnt.conv1.s;
+alg bool s_PEC_2 = plnt.conv2.s;
+
+event void e_entry_c1;  // for controller
+
+group plnt:
+    const real t_initial = 2;
+    const real t_next_delay = 6;
+
+    event void e_entry_cv1, e_cv1_cv2, e_exit;
+
+    automaton gen:
+        event prodArrival;
+        cont  t_next = t_initial  der -1; // timer next product arrival time (of head at sensor)
+
+        location WaitNextBox:
+            initial;
+            edge prodArrival        when t_next <= 0            goto SignalArrival;
+
+        location SignalArrival:
+            edge e_entry_c1         do t_next  := t_next_delay  goto WaitNextBox;
+    end
+    svg_gen: Gen_SVG(<string>gen, gen.t_next);
+
+    automaton entry:
+        // PRIVATE
+        cont        t_atend             der -1; // timer head product at conveyer edge
+
+        location SignalController:
+            initial;
+            edge e_entry_c1!        do t_atend := 1  goto SendProduct;
+
+        location SendProduct:
+            edge e_entry_cv1!   when t_atend <= 0   goto SignalController;
+
+        svgout id "entry_state" text value <string>self;                            // entry state
+        svgout id "t_atend"     text value fmt("t_atend: %.1f", max(t_atend, 0));   // clock
+        svgout id "time_txt"    text value fmt("Time: %.1f", time);                 // global time
+    end
+
+    automaton conv1:
+        alg bool s = (x >= 5 or (-0.5 < conv2.x and conv2.x < 3));
+
+        cont x = xinit1;
+
+        location WaitBox:
+            initial x = -1.0;
+            equation x' = 0.0;
+
+            edge e_entry_cv1?        do x := 0.0                     goto WaitLeave;
+
+        location WaitLeave:
+            initial x >= 3.0;
+            equation x' = a_motor_1 * 1.0;
+
+            edge e_cv1_cv2!        when x >= 6.0 and a_motor_1 > 0
+                                do x := -1.0                    goto WaitBox;
+    end
+    svg_cv1: Conv_SVG(1, <string>conv1, conv1.x);
+
+    automaton conv2:
+        alg bool s = (x >= 5 or (-0.5 < exit.x and exit.x < 3));
+
+        cont x = xinit2;
+
+        location WaitBox:
+            initial x = -1.0;
+            equation x' = 0.0;
+
+            edge e_cv1_cv2?        do x := 0.0                     goto WaitLeave;
+
+        location WaitLeave:
+            initial x >= 3.0;
+            equation x' = a_motor_2 * 1.0;
+
+            edge e_exit!        when x >= 6.0 and a_motor_2 > 0
+                                do x := -1.0                    goto WaitBox;
+    end
+    svg_cv2: Conv_SVG(2, <string>conv2, conv2.x);
+
+    automaton exit:
+        cont x = -1.0;
+
+        event toWaitBox;
+
+        location WaitBox:
+            initial;
+            equation x' = 0.0;
+
+            edge e_exit?        do x := 0.0     goto WaitBoxTail;
+
+        location WaitBoxTail:
+            equation x' = 1.0;
+
+            edge toWaitBox      when x >= 4.0
+                                do x := -1.0    goto WaitBox;
+    end
+    svg_exit: Exit_SVG(3, exit.x);
+end

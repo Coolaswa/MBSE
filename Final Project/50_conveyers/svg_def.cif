@@ -1,0 +1,47 @@
+const real SVG_scale = 30.0;
+
+group def IO_SVG    ( alg int nr
+                    ; alg int[0..1] a_motor         // actuator
+                    ; alg bool s                    // sensor
+                    ):
+    // sensor
+    svgout id "cv" + <string>nr + "_sensor_rect" attr "fill" value if s: "green" else "white" end;
+
+    // actuator conveyer: colors
+    svgout id "cv" + <string>nr + "_belt_path" attr "fill" value
+        switch a_motor:
+            case 0 : "rgb(220,220,220)"
+            case 1 : "green"
+            else     "black"  // error
+        end;
+
+end
+
+group def Ctrl_SVG  ( alg int nr
+                    ; alg string state
+                    ):
+    // Controller state
+    svgout id "cv" + <string>nr + "_ctrl_state" text value state;
+end
+
+group def Conv_SVG  ( alg int nr
+                    ; alg string state; alg real x
+                    ):
+    // Plant/conveyer state
+    svgout id "cv" + <string>nr + "_state"      text value state;
+
+    // box: position, visibility
+    svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale *  x);
+    svgout id "cv" + <string>nr + "_box" attr "display"   value if x > -0.5: "inline" else "none" end;
+end
+
+group def Exit_SVG(alg int nr; alg real x):
+    // box: position, visibility
+    svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale *  x);
+    svgout id "cv" + <string>nr + "_box" attr "display"   value if x > -0.5: "inline" else "none" end;
+end
+
+group def Gen_SVG(alg string state; alg real t_next):
+    svgout id "gen_state"   text value state;                       // generator state
+    svgout id "t_next"      text value fmt("t_next: %.1f", t_next); // clock
+end

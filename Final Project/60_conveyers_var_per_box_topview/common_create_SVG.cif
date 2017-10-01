@@ -1,0 +1,30 @@
+import "common_SVG.cif";
+
+type svg_position  = tuple(svg_unit x,y);  // x, y are svg coordinates, for svgunit see above
+
+func radians degree2rad(degrees angle):
+    return angle/180 * PI;
+end
+
+/*
+    point:      origin for rotation, followed by translation
+    degr_angle: rotation angle in degrees
+    distance:   translation distance in model units
+    returns:    resulting point after rotation and translation
+*/
+func svg_position translate_point(svg_position point; degrees degr_angle; model_unit distance):
+    real rad_angle = degree2rad(degr_angle);
+    return
+        ( (point[x] + distance * SVG_scale * cos(rad_angle) )
+        , (point[y] + distance * SVG_scale * sin(rad_angle) )
+        );
+end
+
+type model_position  = tuple(model_unit x,y);  // x, y are model coordinates, for model_unit see above
+
+// when making 90 degree turn between conveyers, add extra space from head midpoint of sending conveyer to
+// tail midpoint of receiving conveyer
+func svg_position svg_pos_add_offset(svg_position point; model_position offset):
+    return (point[x] + offset[x] * SVG_scale, point[y] + offset[y] * SVG_scale);
+end
+

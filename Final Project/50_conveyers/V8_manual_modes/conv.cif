@@ -1,0 +1,54 @@
+import "svg_def.cif";
+
+// u_usecase_init is a global event, used by both definitions Conveyer and ExitConveyer below.
+// Therefore all Conveyer and ExitConveyer instances share this event.
+// Note that this global event is not passed via the parameter list
+uncontrollable u_usecase_init;
+
+group def Conveyer(alg int nr; alg real xinit; alg real next_x; alg bool a_motor; event real e_recv?, e_send!):
+    alg bool s = (x >= 5 or (-0.5 < next_x and next_x < 3));
+    alg real x = conv.x;
+
+    automaton conv:
+        uncontrollable u_add_prod, u_remove_prod;
+        monitor u_add_prod, u_remove_prod;
+
+        cont x = xinit;
+
+        location:   // single location automaton with self loops
+            initial;
+            equation x' = if a_motor and -0.5 <= x: 1 else 0 end;
+
+            edge e_recv?        when x < -0.5               do x := ?;
+            edge u_add_prod     when x < -0.5               do x := 0.0;
+
+            edge e_send ! x - 6 when 6 <= x and a_motor     do x := -1;
+            edge u_remove_prod  when -0.5 <= x              do x := -1;
+            edge u_usecase_init                             do x := xinit;
+    end
+
+    // collision when tail of next conveyer product (next_x + 6 - 4) is before head of current product
+    alg bool collision = -0.5 < next_x and next_x + 6 - 4 < x;
+    svg: Conv_SVG(nr, x, collision, conv.u_add_prod, conv.u_remove_prod);
+end
+
+
+group def ExitConveyer(alg int nr; event real e_recv?):
+    alg real x = conv.x;
+
+    automaton conv:
+        event sendProd;
+
+        cont x = -1.0;
+
+    location:   // single location automaton with self loops
+        initial;
+        equation x' = if -0.5 <= x: 1 else 0 end;
+
+        edge e_recv?        when x < -0.5               do x := ?;
+        edge sendProd       when 4 <= x                 do x := -1;
+        edge u_usecase_init                             do x := -1;
+    end
+
+    svg: Exit_SVG(nr, x);
+end

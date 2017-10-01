@@ -1,0 +1,171 @@
+uncontrollable u_usecase_init;
+alg bool a_motor_1 = gmode.a_motor_1;
+alg bool a_motor_2 = gmode.a_motor_2;
+alg bool s_PEC_1 = plnt.cv1.s;
+alg bool s_PEC_2 = plnt.cv2.s;
+const real xinit1 = 4.0;
+const real xinit2 = 3.0;
+const real SVG_scale = 30.0;
+group gmode:
+  alg bool a_motor_1 = if mode.Manual: aut_motor_1.On else mode.a_motor_1 end;
+  alg bool a_motor_2 = if mode.Manual: aut_motor_2.On else mode.a_motor_2 end;
+  uncontrollable u_manual;
+  automaton aut_motor_1:
+    uncontrollable u_toggle;
+    alg string svgid = "cv1_belt";
+    svgin id svgid event u_toggle file "conveyers.svg";
+    location Off:
+      initial;
+      edge u_toggle goto On;
+      edge u_manual;
+    location On:
+      edge u_toggle, u_manual goto Off;
+  end
+  automaton aut_motor_2:
+    uncontrollable u_toggle;
+    alg string svgid = "cv2_belt";
+    svgin id svgid event u_toggle file "conveyers.svg";
+    location Off:
+      initial;
+      edge u_toggle goto On;
+      edge u_manual;
+    location On:
+      edge u_toggle, u_manual goto Off;
+  end
+  automaton mode:
+    monitor u_usecase, u_manual;
+    event end_usecase;
+    uncontrollable u_usecase;
+    alg bool a_motor_1;
+    alg bool a_motor_2;
+    cont t der 1.0;
+    svgin id "manual_button" event u_manual file "conveyers.svg";
+    svgin id "usecase_button" event u_usecase file "conveyers.svg";
+    svgout id "usecase_button" attr "fill" value if not Manual: "green" else "lightgrey" end file "conveyers.svg";
+    svgout id "manual_button" attr "fill" value if Manual: "green" else "lightgrey" end file "conveyers.svg";
+    location Usecase_init:
+      equation a_motor_1 = false,
+               a_motor_2 = false;
+      edge u_usecase_init do t := 0.0 goto Usecase_recipe;
+    location Usecase_recipe:
+      equation a_motor_1 = true,
+               a_motor_2 = true;
+      edge end_usecase when 7 < t goto Manual;
+      edge u_manual goto Manual;
+    location Manual:
+      initial;
+      equation a_motor_1 = false,
+               a_motor_2 = false;
+      edge u_usecase goto Usecase_init;
+  end
+end
+group plnt:
+  event real e_entry_cv1;
+  event real e_cv1_cv2;
+  event real e_exit;
+  group cv1:
+    alg bool s = x >= 5 or -0.5 < next_x and next_x < 3;
+    alg real x = conv.x;
+    alg bool collision = -0.5 < next_x and next_x + 6.0 - 4.0 < x;
+    alg int nr = 1;
+    alg real xinit = xinit1;
+    alg real next_x = cv2.x;
+    alg bool a_motor = a_motor_1;
+    automaton conv:
+      monitor u_add_prod, u_remove_prod;
+      uncontrollable u_add_prod;
+      uncontrollable u_remove_prod;
+      cont x = xinit;
+      location:
+        initial;
+        equation x' = if a_motor and -0.5 <= x: 1.0 else 0.0 end;
+        edge e_entry_cv1? when x < -0.5 do x := ?;
+        edge u_add_prod when x < -0.5 do x := 0.0;
+        edge e_cv1_cv2!x - 6.0 when 6 <= x and a_motor do x := -1.0;
+        edge u_remove_prod when -0.5 <= x do x := -1.0;
+        edge u_usecase_init do x := xinit;
+    end
+    group svg:
+      alg int nr = .plnt.cv1.nr;
+      alg real x = .plnt.cv1.x;
+      alg bool collision = .plnt.cv1.collision;
+      svgout id "cv" + <string>nr + "_state" text value if collision: "Collision!!" else "" end file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "display" value if x > -0.5: "inline" else "none" end file "conveyers.svg";
+      svgin id "cv" + <string>nr + "_box" event conv.u_remove_prod file "conveyers.svg";
+      svgin id "add_prod_" + <string>nr event conv.u_add_prod file "conveyers.svg";
+    end
+  end
+  group cv2:
+    alg bool s = x >= 5 or -0.5 < next_x and next_x < 3;
+    alg real x = conv.x;
+    alg bool collision = -0.5 < next_x and next_x + 6.0 - 4.0 < x;
+    alg int nr = 2;
+    alg real xinit = xinit2;
+    alg real next_x = cv3.x;
+    alg bool a_motor = a_motor_2;
+    automaton conv:
+      monitor u_add_prod, u_remove_prod;
+      uncontrollable u_add_prod;
+      uncontrollable u_remove_prod;
+      cont x = xinit;
+      location:
+        initial;
+        equation x' = if a_motor and -0.5 <= x: 1.0 else 0.0 end;
+        edge e_cv1_cv2? when x < -0.5 do x := ?;
+        edge u_add_prod when x < -0.5 do x := 0.0;
+        edge e_exit!x - 6.0 when 6 <= x and a_motor do x := -1.0;
+        edge u_remove_prod when -0.5 <= x do x := -1.0;
+        edge u_usecase_init do x := xinit;
+    end
+    group svg:
+      alg int nr = .plnt.cv2.nr;
+      alg real x = .plnt.cv2.x;
+      alg bool collision = .plnt.cv2.collision;
+      svgout id "cv" + <string>nr + "_state" text value if collision: "Collision!!" else "" end file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "display" value if x > -0.5: "inline" else "none" end file "conveyers.svg";
+      svgin id "cv" + <string>nr + "_box" event conv.u_remove_prod file "conveyers.svg";
+      svgin id "add_prod_" + <string>nr event conv.u_add_prod file "conveyers.svg";
+    end
+  end
+  group cv3:
+    alg real x = conv.x;
+    alg int nr = 3;
+    automaton conv:
+      event sendProd;
+      cont x = -1.0;
+      location:
+        initial;
+        equation x' = if -0.5 <= x: 1.0 else 0.0 end;
+        edge e_exit? when x < -0.5 do x := ?;
+        edge sendProd when 4 <= x do x := -1.0;
+        edge u_usecase_init do x := -1.0;
+    end
+    group svg:
+      alg int nr = .plnt.cv3.nr;
+      alg real x = .plnt.cv3.x;
+      svgout id "cv" + <string>nr + "_box" attr "transform" value fmt("translate(%s,0)", SVG_scale * x) file "conveyers.svg";
+      svgout id "cv" + <string>nr + "_box" attr "display" value if x > -0.5: "inline" else "none" end file "conveyers.svg";
+    end
+  end
+end
+group SVG:
+  group io1:
+    alg int nr = 1;
+    alg bool a_motor = a_motor_1;
+    alg bool s = s_PEC_1;
+    svgout id "cv" + <string>nr + "_sensor_rect" attr "fill" value if s: "green" else "white" end file "conveyers.svg";
+    svgout id "cv" + <string>nr + "_belt_path" attr "fill" value switch a_motor: case false: "rgb(220,220,220)" case true: "green" else "black" end file "conveyers.svg";
+  end
+  group io2:
+    alg int nr = 2;
+    alg bool a_motor = a_motor_2;
+    alg bool s = s_PEC_2;
+    svgout id "cv" + <string>nr + "_sensor_rect" attr "fill" value if s: "green" else "white" end file "conveyers.svg";
+    svgout id "cv" + <string>nr + "_belt_path" attr "fill" value switch a_motor: case false: "rgb(220,220,220)" case true: "green" else "black" end file "conveyers.svg";
+  end
+end
+svgout id "Control" attr "display" value "none" file "conveyers.svg";
+svgout id "Generator" attr "display" value "none" file "conveyers.svg";
+svgout id "Environment" attr "display" value "none" file "conveyers.svg";

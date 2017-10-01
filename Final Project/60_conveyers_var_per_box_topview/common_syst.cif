@@ -1,0 +1,6 @@
+const real conv_length = 6;
+const real prod_length = 2;
+const real sensor_position = conv_length - 1;
+
+// a product on a conveyer is represented in a controller by its (relative) position
+type product = real;

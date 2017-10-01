@@ -1,0 +1,54 @@
+// Algebraic sensor.
+// No data communication for synchronization between Conveyer automata and Generator.
+
+import "../svg_def.cif";
+
+group def Conveyer(alg int nr; alg real xinit; alg real next_x; alg int a_motor; event void e_recv?, e_send!):
+    alg bool s = (x >= 5 or (-0.5 < next_x and next_x < 3));
+    alg real x = conv.x;
+
+    automaton conv:
+        cont x = xinit;
+
+        location WaitBox:
+            initial x = -1.0;
+            equation x' = 0.0;
+
+            edge e_recv?        do x := 0.0                     goto WaitLeave;
+
+        location WaitLeave:
+            initial x >= 3.0;
+            equation x' = a_motor * 1.0;
+
+            edge e_send!        when x >= 6.0 and a_motor > 0
+                                do x := -1.0                    goto WaitBox;
+    //                             now do x := -1.0                goto WaitBox;
+    end
+
+    svg: Conv_SVG(nr, <string>conv, x);
+end
+
+
+group def ExitConveyer(alg int nr; event void e_recv?):
+    alg real x = conv.x;
+
+    automaton conv:
+        cont x = -1.0;
+
+        event toWaitBox;
+
+        location WaitBox:
+            initial;
+            equation x' = 0.0;
+
+            edge e_recv?        do x := 0.0     goto WaitBoxTail;
+
+        location WaitBoxTail:
+            equation x' = 1.0;
+
+            edge toWaitBox      when x >= 4.0
+                                do x := -1.0    goto WaitBox;
+    end
+
+    svg: Exit_SVG(nr, x);
+end

@@ -1,0 +1,71 @@
+import "common_plnt.cif";
+import "svg_def.cif";
+
+group def Conveyer( alg int nr; alg real next_x; alg int[0..1] a_motor_int; event product e_recv_prod?, e_send_prod!
+                  ):
+    // assume that prod_length / 2 >= 1 (distance sensor to end of conveyor)
+    // because the product is sent to the next conveyer when the product midpoint crosses the conveyer intersection
+    // when the midpoint is before the intersection, the sending conveyer defines the product speed
+    // when the midpoint is after the intersection, the receiving conveyer defines the product speed
+
+    alg bool s     = (x_covers_sensor(conv.x0) or x_next_covers_sensor(next_x));
+
+    alg real xlast = conv.xlast;    // xlast is position of last product on conveyer
+                                    // required by previous conveyor to see if there is space for sending a product
+
+    automaton conv:
+        cont     x0 = -1.0;
+        cont     x1 = -1.0;
+        cont     x2 = -1.0;       // allow max 3 products on conveyer
+
+        alg real xlast =
+                    if   is_empty(x0): -1   // if x0 empty, then x1 and x2 must also be empty
+                    elif is_empty(x1): x0   // x0 not empty
+                    elif is_empty(x2): x1   // x0 and x1 both not empty
+                    else               x2   // conveyer full
+                    end;
+
+        equation x0' = if not_empty(x0): a_motor_int * 0.95 else 0.0 end;
+        equation x1' = if not_empty(x1): a_motor_int * 0.95 else 0.0 end;
+        equation x2' = if not_empty(x2): a_motor_int * 0.95 else 0.0 end;
+
+        location:
+        initial;
+            edge e_recv_prod?
+                when is_empty(x2)       // new product can be received (at least room for one more product)
+                do if   is_empty(x0): x0 := ?   // if x0 empty, then x1 and x2 must also be empty
+                   elif is_empty(x1): x1 := ?   // x0 not empty
+                   elif is_empty(x2): x2 := ?   // x0 and x1 both not empty
+                   end;
+
+            edge e_send_prod ! x0 - conv_length
+                when x0 >= conv_length + prod_length / 2
+                // assert nonblocking
+                do  x0 := x1, x1 := x2, x2 := -1.0;
+    end
+
+    svg: Conv_SVG(nr, s, conv.x0, conv.x1, conv.x2);
+end
+
+group def ExitConv(event product e_recv_prod?):
+    alg real xlast = conv.x;     // Required: upstream conveyer checks xlast to see if there is space for sending a product.
+
+    automaton conv:
+        event isEmpty;
+
+        cont x = -1.0;
+
+        location WaitBox:
+            initial;
+            equation x' = 0.0;
+
+            edge e_recv_prod?                       do x := ?       goto WaitBoxTail;
+
+        location WaitBoxTail:
+            equation x' = 1.0;
+
+            edge isEmpty   when x >= prod_length    do x := -1.0    goto WaitBox;
+    end
+
+    svg: Exit_SVG(conv.x);
+end
