@@ -8,8 +8,8 @@ group def Button_svg(event action; alg string idfier, onColor, offColor; alg boo
 									   else offColor end;
 end
 
-svgout id "platform" attr "transform" value fmt("translate(0, %f)", -1*Lift.y);
+svgout id "platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
 
 svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);
-svgout id "box" attr "transform" value fmt("translate(%f, %f)", box1.x, -box1.y);
+svgout id "box" attr "transform" value fmt("translate(%f, %f)", box1.x, box1.y);
 svgout id "time"   text value round(time);

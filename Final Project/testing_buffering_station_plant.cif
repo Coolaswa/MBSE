@@ -8,16 +8,16 @@ alg bool a_elevator_up = LiftContr.Up;
 alg bool a_elevator_down = LiftContr.Down;
 alg bool a_pusher = PusherContr.Extending;
 
-event startClicked, stopClicked, resetClicked, dummyEvent;
+event e_startClicked, stopClicked, resetClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
 
-startBttn: Button(startClicked);
-start_svg: Button_svg(startClicked, "start", "yellow", "grey",  startBttn.state);
+startBttn: Button(e_startClicked);
+start_svg: Button_svg(e_startClicked, "start", "yellow", "grey",  startBttn.state);
 
 stopBttn: Button(stopClicked);
 stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  stopBttn.state);
-//resetBttn: Button(e_resetClicked);
+//resetBttn: Button(resetClicked);
 
 svg_s_lift_up: Button_svg(dummyEvent, "s_lift_up", "yellow", "grey", LiftSensorUp.isActive);
 svg_s_lift_down: Button_svg(dummyEvent, "s_lift_down", "yellow", "grey", LiftSensorDown.isActive);
@@ -34,14 +34,9 @@ svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.
 
 svg_s_height: Button_svg(dummyEvent, "s_height", "yellow", "grey", HeightSensor.isActive);
 
-
-type BoxStatData = tuple(int height; bool isCapacitive);
-type BoxDynData = tuple(real speedX, speedY);
+event void e_pusher_activated;
 type Point = tuple(real x, y);
-
-const BoxDynData upData = (0,-10);
-const BoxDynData stopData = (0,0);
-const BoxDynData downData = (0,10);
+type Rectangle = tuple(real x, y, width, height);
 
 box1: Box(35, true);
 
@@ -52,36 +47,47 @@ automaton dummy:
 end
 
 automaton BoxUpdater:
-	alg list[3] BoxDynData data;
+	alg list[3] Rectangle data;
 	location:
-		equation data = [(box1.x,box1.y), (1,1), (2,2)];
+		equation data = [(box1.x,box1.y, 10,10), (1,1,1,1), (2,2,2,2)];
 		initial;
-
 end
 
-func bool Collision(Point topLeft, botRight, p1; list BoxDynData stuffs):
+func bool RectRectColl(Rectangle rect; list[3] Rectangle boxes):
 	int i = 0;
-	int length = size(stuffs);
-	bool result = false;
+	int length = size(boxes);
 	while i < length:
-		if (topLeft[x] <= p1[x] and topLeft[y] <= p1[y] and
-			botRight[x] >= p1[x] and botRight[y] >= p1[y]):
-			result := true;
+		if (PointInRect(boxes[i], (rect[x], rect[y])) or 							// top left
+			PointInRect(boxes[i], (rect[x]+rect[width], rect[y])) or				// top right
+			PointInRect(boxes[i], (rect[x], rect[y] + rect[height])) or				// bot left
+			PointInRect(boxes[i], (rect[x] + rect[width], rect[y]+rect[height]))):	// bot right
+			return true;
 		end
 		i := i + 1;
 	end
 
-	return result;
+	return false;
 end
 
-automaton def Box(alg int height; alg bool isCapacitive):
-alg BoxStatData statData = (height, isCapacitive);
-disc BoxDynData dynData = (0, 0);
-cont x, y;
+func bool PointInRect(Rectangle rect; Point p):
+	bool result = false;
+	if (rect[x] <= p[x] and rect[y] <= p[y] and
+		rect[x]+rect[width] >= p[x] and rect[y]+rect[height] >= p[y]):
+		return true;
+	end
+	return false;
+end
+
+automaton def Box(alg int h; alg bool isCap):
+	alg int height = h;
+	alg bool isCapacitive = isCap;
+	cont x = 138.30649, y=137.88513;
 	location InLift:
 		initial;
-		equation x' = 0;
-		equation y' = Lift.speed;
+		equation x' = 0, y' = Lift.speed;
+		edge e_pusher_activated? when LiftSensorUp.isActive goto OnAirslide;
+	location OnAirslide:
+		equation x' = -20, y' = 0;
 end
 
 automaton def Button(event Clicked):
@@ -96,12 +102,11 @@ automaton def Button(event Clicked):
 		edge Clicked goto Released;
 end
 
-
 automaton Lift:
 	alg real speed;
 	cont y der speed;
 	location Up:
-		equation speed = 10;
+		equation speed = -10;
 		edge when not a_elevator_up goto Stop;
 		edge when a_elevator_down goto Down;
 		edge when LiftSensorUp.isActive goto Stop;
@@ -111,7 +116,7 @@ automaton Lift:
 		edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
 		edge when a_elevator_down and not LiftSensorDown.isActive  goto Down;
 	location Down:
-		equation speed = -10;
+		equation speed = 10;
 		edge when not a_elevator_down goto Stop;
 		edge when a_elevator_up goto Up;
 		edge when LiftSensorDown.isActive goto Stop;
@@ -126,15 +131,15 @@ automaton Pusher:
 	location Retracting:
 		initial;
 		equation speed = if x < 0: 20 else 0 end;
-		edge when a_pusher goto Extending;
+		edge e_pusher_activated! when a_pusher goto Extending;
 end
 
 group LiftSensorUp:
-	alg bool isActive = Lift.y >= 62;
+	alg bool isActive = Lift.y <= -62;
 end
 
 group LiftSensorDown:
-	alg bool isActive = Lift.y <= 0;
+	alg bool isActive = Lift.y >= 0;
 end
 
 group PusherSensor:
@@ -142,5 +147,5 @@ group PusherSensor:
 end
 
 group HeightSensor:
-	alg bool isActive = Collision((0,0), (100,box1.y), (50,42), BoxUpdater.data);
+	alg bool isActive = RectRectColl((157,54,9,37), BoxUpdater.data);
 end
