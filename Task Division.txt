@@ -1,0 +1,9 @@
+Lennard:
+- Buffer cif stuff
+- Documentatie
+
+Michiel:
+- SVG visualizatie van buffer & testing station
+
+Martijn:
+- Testing station cif
