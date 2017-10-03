@@ -40,7 +40,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="215.45"
+     inkscape:cx="253.05913"
      inkscape:cy="430.51983"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -74,25 +74,27 @@
        x="229.68863"
        y="112.83912" />
     <g
-       id="Pusher1"
-       transform="translate(-14.81667)">
+       id="g1725">
+      <g
+         id="a_height_head">
+        <rect
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.993976;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect1389-7"
+           width="17.736874"
+           height="4.4867277"
+           x="156.84251"
+           y="84.718102" />
+        <rect
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.34342241;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect4530-4"
+           width="8.8684368"
+           height="37.842014"
+           x="161.63203"
+           y="47.574253" />
+      </g>
       <rect
-         y="91.240021"
-         x="153.06717"
-         height="4.4867277"
-         width="17.736874"
-         id="rect1389-7"
-         style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.993976;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         y="54.096169"
-         x="157.85669"
-         height="37.842014"
-         width="8.8684368"
-         id="rect4530-4"
-         style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.34342241;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         y="44.124657"
-         x="150.65469"
+         y="37.602741"
+         x="154.43004"
          height="26.920366"
          width="22.171093"
          id="rect4528-0"
@@ -100,7 +102,7 @@
     </g>
     <g
        id="Conveyer1"
-       transform="translate(-14.81667)">
+       transform="matrix(1.1321034,0,0,0.98812951,-18.448517,1.3414922)">
       <rect
          ry="8.8415432"
          y="104.03722"
@@ -126,7 +128,7 @@
     </g>
     <g
        id="Conveyer2"
-       transform="translate(-14.81667)">
+       transform="matrix(1.1321034,0,0,0.98812951,-18.614047,2.0864032)">
       <rect
          ry="8.8415432"
          y="166.79039"
@@ -278,19 +280,19 @@
        id="platform">
       <rect
          y="164.39369"
-         x="133.77866"
+         x="149.01302"
          height="12.950989"
-         width="83.43325"
+         width="68.198883"
          id="rect1497"
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.2267642;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.01322961;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <rect
          ry="0.66145831"
          y="140.66335"
-         x="144.90488"
+         x="164.14828"
          height="1.3229166"
-         width="40.82143"
+         width="21.578024"
          id="rect2291"
-         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:2.18113708;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <g
          id="a_pusher">
         <rect
@@ -298,14 +300,14 @@
            id="rect1389"
            width="4.7322621"
            height="16.047403"
-           x="167.42812"
+           x="180.12811"
            y="145.52335" />
         <rect
            style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.45108676;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="rect4530"
            width="48.353355"
            height="8.8517723"
-           x="167.42812"
+           x="180.12811"
            y="149.22746" />
       </g>
       <rect
@@ -834,29 +836,29 @@
        inkscape:transform-center-x="-0.40090429"
        inkscape:transform-center-y="-2.80633"
        r="3" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.49171877px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.21975574"
+       x="288.11414"
+       y="119.88293"
+       id="text991-0-59"
+       transform="scale(0.83057292,1.2039882)"><tspan
+         sodipodi:role="line"
+         id="tspan989-39-1"
+         x="288.11414"
+         y="119.88293"
+         style="stroke-width:0.21975574"
+         transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">init</tspan></text>
     <g
-       id="g1001-3-3"
-       transform="matrix(0.68985138,0,0,1,132.43226,-46.657639)">
-      <text
-         id="text991-0-59"
-         y="190.99527"
-         x="154.91385"
-         style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         xml:space="preserve"><tspan
-           transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
-           style="stroke-width:0.26458332"
-           y="190.99527"
-           x="154.91385"
-           id="tspan989-39-1"
-           sodipodi:role="line">init</tspan></text>
+       id="g1652">
+      <rect
+         y="0"
+         x="0"
+         height="26.860588"
+         width="28.063299"
+         id="box"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.0856204;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
-    <rect
-       style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.0856204;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="box"
-       width="28.063299"
-       height="26.860588"
-       x="0"
-       y="0" />
     <g
        id="g1001-7-7"
        transform="matrix(0.68985138,0,0,1,193.81317,-48.189078)">
@@ -895,5 +897,12 @@
          x="8.2853556"
          y="14.35871"
          style="stroke-width:0.26458332">10</tspan></text>
+    <rect
+       style="opacity:1;fill:#ffff00;fill-opacity:0.35714291;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="debugRect"
+       width="18.441597"
+       height="17.639788"
+       x="63.075607"
+       y="17.833214" />
   </g>
 </svg>

@@ -49,7 +49,7 @@ end
 automaton BoxUpdater:
 	alg list[3] Rectangle data;
 	location:
-		equation data = [(box1.x,box1.y, 10,10), (1,1,1,1), (2,2,2,2)];
+		equation data = [(box1.x,box1.y, 28,28), (1,1,1,1), (2,2,2,2)];
 		initial;
 end
 
@@ -81,7 +81,7 @@ end
 automaton def Box(alg int h; alg bool isCap):
 	alg int height = h;
 	alg bool isCapacitive = isCap;
-	cont x = 138.30649, y=137.88513;
+	cont x = 152.06, y=137.36;
 	location InLift:
 		initial;
 		equation x' = 0, y' = Lift.speed;
@@ -146,6 +146,18 @@ group PusherSensor:
 	alg bool isActive = Pusher.Extending and Pusher.x < -35;
 end
 
-group HeightSensor:
-	alg bool isActive = RectRectColl((157,54,9,37), BoxUpdater.data);
+automaton HeightSensor:
+	alg bool isActive = RectRectColl((161,47.6,17,41), BoxUpdater.data);
+	cont y;
+	location:
+		equation y' = if isActive: Lift.speed else 0 end;
+		initial;
+end
+
+group DebugRect:
+const Rectangle rect = (161,47.6,17,41);
+alg real x = rect[x];
+alg real y = rect[y];
+alg real width = rect[width];
+alg real height = rect[height];
 end
