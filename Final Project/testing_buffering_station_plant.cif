@@ -147,7 +147,7 @@ group PusherSensor:
 end
 
 automaton HeightSensor:
-	alg bool isActive = RectRectColl((161,47.6,17,41), BoxUpdater.data);
+	alg bool isActive = RectRectColl((156.84251,47.6,17,41), BoxUpdater.data);
 	cont y;
 	location:
 		equation y' = if isActive: Lift.speed else 0 end;
@@ -155,7 +155,7 @@ automaton HeightSensor:
 end
 
 group DebugRect:
-const Rectangle rect = (161,47.6,17,41);
+const Rectangle rect = (156.84251,47.6,17,41);
 alg real x = rect[x];
 alg real y = rect[y];
 alg real width = rect[width];

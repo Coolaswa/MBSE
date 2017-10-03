@@ -43,7 +43,7 @@
      inkscape:cx="253.05913"
      inkscape:cy="430.51983"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g1731"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1003"
@@ -850,14 +850,16 @@
          style="stroke-width:0.21975574"
          transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">init</tspan></text>
     <g
-       id="g1652">
+       id="g1731"
+       transform="translate(55.910603,21.204387)">
       <rect
-         y="0"
-         x="0"
-         height="26.860588"
-         width="28.063299"
+         transform="rotate(75)"
+         y="0.46781474"
+         x="-3.6154459"
+         height="30"
+         width="30"
          id="box"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.0856204;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
        id="g1001-7-7"
@@ -902,7 +904,7 @@
        id="debugRect"
        width="18.441597"
        height="17.639788"
-       x="63.075607"
-       y="17.833214" />
+       x="138.86749"
+       y="7.9579997" />
   </g>
 </svg>
