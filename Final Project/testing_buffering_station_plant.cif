@@ -11,6 +11,8 @@ alg bool a_pusher = PusherContr.Extending;
 event e_startClicked, stopClicked, resetClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
+event spawn_clicked;
+event void spawn_new_block;
 
 startBttn: Button(e_startClicked);
 start_svg: Button_svg(e_startClicked, "start", "yellow", "grey",  startBttn.state);
@@ -34,11 +36,19 @@ svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.
 
 svg_s_height: Button_svg(dummyEvent, "s_height", "yellow", "grey", HeightSensor.isActive);
 
+b_spawn: Button(spawn_clicked);
+svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
+
 event void e_pusher_activated;
 type Point = tuple(real x, y);
 type Rectangle = tuple(real x, y, width, height);
 
 box1: Box(35, true);
+svg_box1 : Box_svg("box1", box1.x, box1.y, box1.opacity);
+box2: Box(35, true);
+svg_box2 : Box_svg("box2", box2.x, box2.y, box2.opacity);
+box3: Box(35, true);
+svg_box3 : Box_svg("box3", box3.x, box3.y, box3.opacity);
 
 automaton dummy:
 	location:
@@ -49,7 +59,7 @@ end
 automaton BoxUpdater:
 	alg list[3] Rectangle data;
 	location:
-		equation data = [(box1.x,box1.y, 28,28), (1,1,1,1), (2,2,2,2)];
+		equation data = [(box1.x,box1.y, 28,28), (box2.x,box2.y,28,28), (box3.x,box3.y,28,28)];
 		initial;
 end
 
@@ -81,13 +91,22 @@ end
 automaton def Box(alg int h; alg bool isCap):
 	alg int height = h;
 	alg bool isCapacitive = isCap;
-	cont x = 152.06, y=137.36;
-	location InLift:
+	disc real opacityDer = 0;
+	cont opacity der opacityDer;
+	cont x = -200, y=-200;
+	location Inactive:
+		equation x' = 0, y' = 0;
 		initial;
+		edge spawn_new_block? do (x,y) := (152.06, 137.36),opacityDer:=1  goto Spawn;
+	location Spawn:
+		equation x' = 0, y' = 0;
+		edge when opacity > 1 do opacityDer := 0 goto InLift;
+	location InLift:
 		equation x' = 0, y' = Lift.speed;
 		edge e_pusher_activated? when LiftSensorUp.isActive goto OnAirslide;
 	location OnAirslide:
 		equation x' = -20, y' = 0;
+		edge when x < 0 goto Inactive;
 end
 
 automaton def Button(event Clicked):
@@ -150,8 +169,16 @@ automaton HeightSensor:
 	alg bool isActive = RectRectColl((156.84251,47.6,17,41), BoxUpdater.data);
 	cont y;
 	location:
-		equation y' = if isActive: Lift.speed else 0 end;
+		equation y' = if isActive: Lift.speed elif y < 0: 10 else 0 end;
 		initial;
+end
+
+automaton Factory:
+	location Waiting:
+		initial;
+		edge spawn_clicked goto SpawnBlock;
+	location SpawnBlock:
+		edge spawn_new_block! goto Waiting;
 end
 
 group DebugRect:

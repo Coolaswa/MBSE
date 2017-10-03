@@ -7,11 +7,14 @@ group def Button_svg(event action; alg string idfier, onColor, offColor; alg boo
 	svgout id idfier attr "fill" value if state: onColor
 									   else offColor end;
 end
+group def Box_svg(alg string idfier; alg real x, y, opacity):
+	svgout id idfier attr "transform" value fmt("translate(%f, %f)", x, y);
+	svgout id idfier attr "opacity" value opacity;
+end
 
 svgout id "platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
 
 svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);
-svgout id "box" attr "transform" value fmt("translate(%f, %f)", box1.x, box1.y);
 svgout id "time"   text value round(time);
 svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightSensor.y);
 

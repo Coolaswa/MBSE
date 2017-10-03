@@ -19,8 +19,8 @@ cif3sim(
     //merged_file,
     "--stateviz=1",
     //"--plotviz-filter=*",
-    "--speed=1",
-   // "--env-events=*",
-    "-i svg",
+    "--speed=3",
+    "--env-events=e_startClicked,stopClicked,resetClicked,lift_up_clicked,lift_down_clicked,pusher_clicked,spawn_clicked",
+    "-i gui",
     "--auto-choose=tau",
 );
