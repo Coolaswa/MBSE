@@ -53,8 +53,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="945.08705"
-     inkscape:cy="266.48934"
+     inkscape:cx="634.33012"
+     inkscape:cy="306.89545"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -189,7 +189,7 @@
     <g
        id="Stuff">
       <g
-         transform="translate(1032.9972,142.489)"
+         transform="translate(1032.9972,50.489)"
          id="Height stop">
         <g
            id="a_height_head">
@@ -497,7 +497,7 @@
              y="0" />
           <circle
              style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="sensorLiftUp-44-0"
+             id="s_capacitive"
              cx="4.5"
              cy="4.5"
              r="3" />
@@ -1002,7 +1002,7 @@
          style="stroke-width:0.26458332">10</tspan></text>
     <g
        id="Slider"
-       transform="translate(982.05085,299.07829)">
+       transform="translate(974.97978,298.89044)">
       <rect
          y="0"
          x="0"
@@ -1032,7 +1032,7 @@
          height="30"
          width="30"
          id="ProductGraphics-6"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
        id="Product2"

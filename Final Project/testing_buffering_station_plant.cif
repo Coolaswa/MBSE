@@ -35,13 +35,13 @@ svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.
 svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.isActive);
 
 svg_s_height: Button_svg(dummyEvent, "s_height", "yellow", "grey", HeightSensor.isActive);
-
+svg_s_capacitive: Button_svg(dummyEvent, "s_capacitive", "yellow", "grey", CapacitiveSensor.isActive);
 b_spawn: Button(spawn_clicked);
 svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 
 event void e_pusher_activated;
 type Point = tuple(real x, y);
-type Rectangle = tuple(real x, y, width, height);
+type Rectangle = tuple(real x, y, width, height; bool isCap);
 
 box1: Box(35, true);
 svg_box1 : Box_svg("Product1", box1.x, box1.y, box1.opacity);
@@ -59,11 +59,11 @@ end
 automaton BoxUpdater:
 	alg list[3] Rectangle data;
 	location:
-		equation data = [(box1.x,box1.y, 28,28), (box2.x,box2.y,28,28), (box3.x,box3.y,28,28)];
+		equation data = [(box1.x,box1.y, 28,28, true), (box2.x,box2.y,28,28, false), (box3.x,box3.y,28,28, false)];
 		initial;
 end
 
-func bool RectRectColl(Rectangle rect; list[3] Rectangle boxes):
+func int RectRectColl(Rectangle rect; list[3] Rectangle boxes):
 	int i = 0;
 	int length = size(boxes);
 	while i < length:
@@ -71,12 +71,12 @@ func bool RectRectColl(Rectangle rect; list[3] Rectangle boxes):
 			PointInRect(boxes[i], (rect[x]+rect[width], rect[y])) or				// top right
 			PointInRect(boxes[i], (rect[x], rect[y] + rect[height])) or				// bot left
 			PointInRect(boxes[i], (rect[x] + rect[width], rect[y]+rect[height]))):	// bot right
-			return true;
+			return i;
 		end
 		i := i + 1;
 	end
 
-	return false;
+	return -1;
 end
 
 func bool PointInRect(Rectangle rect; Point p):
@@ -108,7 +108,7 @@ automaton def Box(alg int h; alg bool isCap):
 		edge e_pusher_activated? when LiftSensorUp.isActive do rotation := 15 goto OnAirslide;
 	location OnAirslide:
 		equation x' = -20*cos(slideAngle), y' = 20*sin(slideAngle);
-		edge when x < 200 goto Inactive;
+		edge when x < 200 goto OnBuffer;
 	location OnBuffer:
 		equation x' = -20, y' = 0;
 		edge when x < 0 goto Inactive;
@@ -171,11 +171,16 @@ group PusherSensor:
 end
 
 automaton HeightSensor:
-	alg bool isActive = RectRectColl((156.84251,47.6,17,41), BoxUpdater.data);
+	alg bool isActive = RectRectColl((156.84251,47.6,17,41,false), BoxUpdater.data) != -1;
 	cont y;
 	location:
 		equation y' = if isActive: Lift.speed elif y < 0: 10 else 0 end;
 		initial;
+end
+
+group CapacitiveSensor:
+	alg int boxI = RectRectColl((156.84251,47.6,17,41, false), BoxUpdater.data);
+	alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][isCap];
 end
 
 automaton Factory:
@@ -184,12 +189,4 @@ automaton Factory:
 		edge spawn_clicked goto SpawnBlock;
 	location SpawnBlock:
 		edge spawn_new_block! goto Waiting;
-end
-
-group DebugRect:
-const Rectangle rect = (156.84251,47.6,17,41);
-alg real x = rect[x];
-alg real y = rect[y];
-alg real width = rect[width];
-alg real height = rect[height];
 end
