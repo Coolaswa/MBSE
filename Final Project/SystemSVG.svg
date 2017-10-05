@@ -10,9 +10,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="700mm"
-   height="300mm"
-   viewBox="0 0 700 300"
+   width="1500"
+   height="600"
+   viewBox="0 0 1500 600"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
@@ -37,7 +37,7 @@
        id="filter7411"
        x="-0.11736121"
        width="1.2347224"
-       y="-0.32750688"
+       y="-0.32750687"
        height="1.6550138">
       <feGaussianBlur
          inkscape:collect="always"
@@ -52,19 +52,20 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="1247.1961"
-     inkscape:cy="432.16719"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="945.08705"
+     inkscape:cy="266.48934"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1001"
+     inkscape:window-height="1003"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
      objecttolerance="7"
-     guidetolerance="7" />
+     guidetolerance="7"
+     units="px" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -73,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -82,36 +83,60 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="Height stop"
-       transform="translate(361.34524,11.125)">
-      <g
-         id="a_height_head">
-        <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.993976;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect1389-7"
-           width="17.736874"
-           height="4.4867277"
-           x="156.84251"
-           y="84.718102" />
-        <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.34342241;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect4530-4"
-           width="8.8684368"
-           height="37.842014"
-           x="161.63203"
-           y="47.574253" />
-      </g>
+       id="Conveyor-7"
+       transform="translate(938.23475,475.59998)">
       <rect
-         y="37.602741"
-         x="154.43004"
-         height="26.920366"
-         width="22.171093"
-         id="rect4528-0"
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         ry="10"
+         height="20"
+         width="200"
+         id="rect4526-9"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
+      <g
+         id="Roller-4"
+         transform="translate(10,10)">
+        <g
+           transform="rotate(10)"
+           id="Wheel-5">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421-57"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457-4" />
+        </g>
+      </g>
+      <g
+         id="Roller-0-3"
+         transform="translate(190,10)">
+        <g
+           transform="rotate(-10)"
+           id="Wheel-8-3">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421-5-3"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457-6-7" />
+        </g>
+      </g>
     </g>
     <g
        id="Conveyor"
-       transform="translate(108.51143,172.12158)">
+       transform="translate(766.02132,301.46528)">
       <rect
          ry="10"
          height="20"
@@ -162,10 +187,37 @@
       </g>
     </g>
     <g
-       id="Vertical platform"
-       transform="translate(209.39881,90.714286)">
+       id="Stuff">
       <g
-         transform="translate(350,-50)"
+         transform="translate(1032.9972,142.489)"
+         id="Height stop">
+        <g
+           id="a_height_head">
+          <rect
+             y="84.718102"
+             x="156.84251"
+             height="4.4867277"
+             width="17.736874"
+             id="rect1389-7"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.993976;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <rect
+             y="47.574253"
+             x="161.63203"
+             height="37.842014"
+             width="8.8684368"
+             id="rect4530-4"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.34342241;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <rect
+           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect4528-0"
+           width="22.171093"
+           height="26.920366"
+           x="154.43004"
+           y="37.602741" />
+      </g>
+      <g
+         transform="matrix(1.801077,0,0,1.801077,1238.5603,87.09593)"
          id="Vertical rails">
         <rect
            y="0"
@@ -176,25 +228,25 @@
            height="250" />
       </g>
       <g
-         id="platform"
-         transform="translate(150)">
+         id="Platform">
         <rect
-           y="164.39369"
-           x="149.01302"
-           height="12.950989"
-           width="68.198883"
+           y="473.23547"
+           x="1146.7288"
+           height="23.325727"
+           width="122.83144"
            id="rect1497"
-           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.01322961;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         <rect
-           ry="0.66145831"
-           y="140.66335"
-           x="164.14828"
-           height="1.3229166"
-           width="21.578024"
+           ry="1.1913373"
+           y="430.4953"
+           x="1173.9886"
+           height="2.3826747"
+           width="38.863682"
            id="rect2291"
-           style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:2.18113708;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         <g
-           id="a_pusher">
+           id="a_pusher"
+           transform="matrix(1.801077,0,0,1.801077,878.34489,177.14978)">
           <rect
              style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.73686588;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect1389"
@@ -211,24 +263,24 @@
              y="149.22746" />
         </g>
         <rect
-           y="139.07587"
-           x="189.24149"
-           height="26.268814"
-           width="27.952608"
+           y="427.63614"
+           x="1219.1833"
+           height="47.312157"
+           width="50.344799"
            id="rect4528"
-           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.82589245;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         <rect
-           y="139.07587"
-           x="184.13882"
-           height="4.724709"
-           width="5.1026688"
+           y="427.63614"
+           x="1209.993"
+           height="8.5095644"
+           width="9.190299"
            id="rect2286"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
     </g>
     <g
        id="Control panel"
-       transform="translate(209.39881,90.714286)">
+       transform="matrix(1.5569098,0,0,1.5569098,-268.23272,438.69779)">
       <rect
          y="-53.827381"
          x="411.99405"
@@ -357,7 +409,7 @@
     </g>
     <g
        id="Sensor indicators"
-       transform="translate(133.22397,22.304249)">
+       transform="matrix(3.0713282,0,0,3.0713282,466.283,31.613363)">
       <rect
          style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:2.17715502;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect2263-3"
@@ -704,7 +756,7 @@
     </g>
     <g
        id="Actuator indicators"
-       transform="translate(198.4375,88.824405)">
+       transform="matrix(2.4059092,0,0,2.4059092,283.13403,-237.98515)">
       <rect
          y="117.09697"
          x="431.89249"
@@ -761,7 +813,7 @@
            y="134.29761" />
         <circle
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="b_pusher"
+           id="b_spawn"
            cx="450.41321"
            cy="139.02225"
            inkscape:transform-center-x="-0.40090429"
@@ -878,7 +930,7 @@
            inkscape:transform-center-x="-0.40090429"
            cy="157.00822"
            cx="472.47025"
-           id="sensorLiftUp-8-0"
+           id="b_pusher"
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
       <g
@@ -940,17 +992,17 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="362.82703"
-       y="108.47478"
+       x="1034.479"
+       y="239.83878"
        id="time"><tspan
          sodipodi:role="line"
          id="tspan1572"
-         x="362.82703"
-         y="108.47478"
+         x="1034.479"
+         y="239.83878"
          style="stroke-width:0.26458332">10</tspan></text>
     <g
        id="Slider"
-       transform="translate(310.39881,167.71429)">
+       transform="translate(982.05085,299.07829)">
       <rect
          y="0"
          x="0"
@@ -972,71 +1024,37 @@
       </g>
     </g>
     <g
-       id="Product"
-       transform="translate(384.33359,115.99497)">
-      <g
-         transform="rotate(-15)"
-         id="Product rotation">
-        <rect
-           style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="box-9"
-           width="30"
-           height="30"
-           y="0"
-           x="0" />
-      </g>
+       id="Product1"
+       transform="translate(292.40411,268.82237)">
+      <rect
+         x="0"
+         y="0"
+         height="30"
+         width="30"
+         id="ProductGraphics-6"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
-       id="Conveyor-7"
-       transform="translate(304.96852,257.36286)">
+       id="Product2"
+       transform="translate(291.07623,318.31973)">
       <rect
-         ry="10"
-         height="20"
-         width="200"
-         id="rect4526-9"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          x="0"
-         y="0" />
-      <g
-         id="Roller-4"
-         transform="translate(10,10)">
-        <g
-           transform="rotate(10)"
-           id="Wheel-5">
-          <circle
-             cy="0"
-             cx="0"
-             id="path1421-57"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             r="8" />
-          <rect
-             y="-2.5"
-             x="-2.5"
-             height="5"
-             width="5"
-             id="rect7457-4" />
-        </g>
-      </g>
-      <g
-         id="Roller-0-3"
-         transform="translate(190,10)">
-        <g
-           transform="rotate(-10)"
-           id="Wheel-8-3">
-          <circle
-             cy="0"
-             cx="0"
-             id="path1421-5-3"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             r="8" />
-          <rect
-             y="-2.5"
-             x="-2.5"
-             height="5"
-             width="5"
-             id="rect7457-6-7" />
-        </g>
-      </g>
+         y="0"
+         height="30"
+         width="30"
+         id="ProductGraphics-6-9"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="Product3"
+       transform="translate(383.0001,230.43645)">
+      <rect
+         x="0"
+         y="0"
+         height="30"
+         width="30"
+         id="ProductGraphics-6-98"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

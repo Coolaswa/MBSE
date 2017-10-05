@@ -44,11 +44,11 @@ type Point = tuple(real x, y);
 type Rectangle = tuple(real x, y, width, height);
 
 box1: Box(35, true);
-svg_box1 : Box_svg("box1", box1.x, box1.y, box1.opacity);
+svg_box1 : Box_svg("Product1", box1.x, box1.y, box1.opacity);
 box2: Box(35, true);
-svg_box2 : Box_svg("box2", box2.x, box2.y, box2.opacity);
+svg_box2 : Box_svg("Product2", box2.x, box2.y, box2.opacity);
 box3: Box(35, true);
-svg_box3 : Box_svg("box3", box3.x, box3.y, box3.opacity);
+svg_box3 : Box_svg("Product3", box3.x, box3.y, box3.opacity);
 
 automaton dummy:
 	location:
@@ -90,21 +90,26 @@ end
 
 automaton def Box(alg int h; alg bool isCap):
 	alg int height = h;
+	alg real slideAngle = (15)*3.141592654/180;
 	alg bool isCapacitive = isCap;
 	disc real opacityDer = 0;
+	disc int rotation = 0;
 	cont opacity der opacityDer;
 	cont x = -200, y=-200;
 	location Inactive:
 		equation x' = 0, y' = 0;
 		initial;
-		edge spawn_new_block? do (x,y) := (152.06, 137.36),opacityDer:=1  goto Spawn;
+		edge spawn_new_block? do (x,y) := (1179, 440),opacityDer:=1  goto Spawn;
 	location Spawn:
 		equation x' = 0, y' = 0;
 		edge when opacity > 1 do opacityDer := 0 goto InLift;
 	location InLift:
 		equation x' = 0, y' = Lift.speed;
-		edge e_pusher_activated? when LiftSensorUp.isActive goto OnAirslide;
+		edge e_pusher_activated? when LiftSensorUp.isActive do rotation := 15 goto OnAirslide;
 	location OnAirslide:
+		equation x' = -20*cos(slideAngle), y' = 20*sin(slideAngle);
+		edge when x < 200 goto Inactive;
+	location OnBuffer:
 		equation x' = -20, y' = 0;
 		edge when x < 0 goto Inactive;
 end

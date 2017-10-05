@@ -21,6 +21,6 @@ cif3sim(
     //"--plotviz-filter=*",
     "--speed=3",
     "--env-events=e_startClicked,stopClicked,resetClicked,lift_up_clicked,lift_down_clicked,pusher_clicked,spawn_clicked",
-    "-i gui",
+    "-i svg",
     "--auto-choose=tau",
 );

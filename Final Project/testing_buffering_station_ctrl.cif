@@ -81,14 +81,14 @@ alg bool a_bufferingready = counter.count = 23; // 23*/
 automaton LiftContr:
 	location Up:
 		edge when b_lift_up.Released goto Stop;
-		edge when b_lift_down.Pressed goto Down;
+		edge when b_lift_down.Pressed and b_lift_up.Released goto Down;
 	location Stop:
 		initial;
 		edge when b_lift_up.Pressed goto Up;
 		edge when b_lift_down.Pressed goto Down;
 	location Down:
-		edge when b_lift_up.Pressed goto Up;
-		edge when not b_lift_down.Pressed goto Stop;
+		edge when b_lift_up.Pressed and b_lift_down.Released  goto Up;
+		edge when b_lift_down.Released goto Stop;
 end
 
 automaton PusherContr:
