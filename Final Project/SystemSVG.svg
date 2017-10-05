@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="866.01964"
-     inkscape:cy="981.43754"
+     inkscape:zoom="0.35"
+     inkscape:cx="1247.1961"
+     inkscape:cy="1003.5958"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -73,7 +73,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -110,56 +110,56 @@
          style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
-       id="Conveyer1"
-       transform="matrix(1.1321034,0,0,0.98812951,148.23899,70.511134)">
+       id="Conveyer"
+       transform="translate(108.51143,172.12158)">
       <rect
-         ry="8.8415432"
-         y="104.03722"
-         x="28.298782"
-         height="17.946911"
-         width="113.70881"
+         ry="10"
+         height="20"
+         width="200"
          id="rect4526"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.69412899;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <ellipse
-         ry="8.0761099"
-         rx="7.9815931"
-         cy="113.18145"
-         cx="38.198162"
-         id="path1421"
-         style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <ellipse
-         ry="8.0761099"
-         rx="7.9815931"
-         cy="113.12352"
-         cx="132.42027"
-         id="path1421-0"
-         style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-    <g
-       id="Conveyer2"
-       transform="matrix(1.1321034,0,0,0.98812951,341.21929,93.178665)">
-      <rect
-         ry="8.8415432"
-         y="166.79039"
-         x="29.551815"
-         height="17.946911"
-         width="113.70881"
-         id="rect4526-1"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.69412899;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <ellipse
-         ry="8.0761099"
-         rx="7.9815931"
-         cy="175.93471"
-         cx="39.451191"
-         id="path1421-9"
-         style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <ellipse
-         ry="8.0761099"
-         rx="7.9815931"
-         cy="175.87679"
-         cx="133.67323"
-         id="path1421-0-1"
-         style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
+      <g
+         id="Roller"
+         transform="translate(10,10)">
+        <g
+           transform="rotate(10)"
+           id="Wheel">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457" />
+        </g>
+      </g>
+      <g
+         id="Roller-0"
+         transform="translate(190,10)">
+        <g
+           transform="rotate(-10)"
+           id="Wheel-8">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421-5"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457-6" />
+        </g>
+      </g>
     </g>
     <g
        id="Vertical platform"
@@ -177,7 +177,7 @@
       </g>
       <g
          id="platform"
-         transform="translate(150,-140)">
+         transform="translate(150)">
         <rect
            y="164.39369"
            x="149.01302"
@@ -357,377 +357,348 @@
     </g>
     <g
        id="Sensor indicators"
-       transform="translate(209.39881,90.714286)">
+       transform="translate(133.22397,22.304249)">
       <rect
          style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:2.17715502;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect2263-3"
-         width="49.959068"
-         height="69.400612"
-         x="93.995178"
-         y="-76.526939" />
-      <g
-         id="g232">
-        <g
-           id="g1001-0-4-1-6"
-           transform="matrix(0.68985138,0,0,1,20.332279,-203.12957)">
-          <text
-             id="text991-2-4-7-2"
-             y="190.99527"
-             x="154.91385"
-             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
-               transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
-               style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
-               id="tspan989-3-6-6-1"
-               sodipodi:role="line">reflective</tspan></text>
-        </g>
-        <rect
-           y="-24.716604"
-           x="127.66272"
-           height="9.4494104"
-           width="8.6934347"
-           id="rect2286-8-1-5"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <circle
-           r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-19.991903"
-           cx="132.00958"
-           id="sensorLiftUp-3-7"
-           style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      </g>
+         width="50"
+         height="70"
+         x="0"
+         y="0" />
       <rect
          style="opacity:1;fill:#e1e1e1;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect1214"
          width="35.529762"
          height="0.75595713"
-         x="101.59991"
-         y="-62.142853" />
+         x="7.4835467"
+         y="13.363477" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         id="text972"
+         x="4.0090427"
+         y="10.423512"><tspan
+           sodipodi:role="line"
+           id="tspan970"
+           x="4.0090427"
+           y="10.423512"
+           style="stroke-width:0.26458332">Sensors</tspan></text>
       <g
-         id="g228">
+         id="g232"
+         transform="translate(35.5,51)">
         <g
-           id="g1001-0-4-1-8"
-           transform="matrix(0.68985138,0,0,1,7.1352392,-202.87842)">
+           id="g1001-0-4-1-6"
+           transform="translate(-2.5,12)">
           <text
-             id="text991-2-4-7-4"
-             y="190.99527"
-             x="154.91385"
+             id="text991-2-4-7-2"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
              xml:space="preserve"><tspan
                transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
+               y="0"
+               x="0"
+               id="tspan989-3-6-6-1"
+               sodipodi:role="line">reflective</tspan></text>
+        </g>
+        <g
+           id="g188">
+          <rect
+             y="0"
+             x="0"
+             height="9"
+             width="9"
+             id="rect2286-8-1-5"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <circle
+             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="sensorLiftUp-3-7"
+             cx="4.5"
+             cy="4.5"
+             r="3" />
+        </g>
+      </g>
+      <g
+         id="g228"
+         transform="translate(20.5,51)">
+        <g
+           id="g1001-0-4-1-8"
+           transform="translate(-3.5,12)">
+          <text
+             id="text991-2-4-7-4"
+             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
+               style="stroke-width:0.26458332"
+               y="0"
+               x="0"
                id="tspan989-3-6-6-0"
                sodipodi:role="line">capacitive</tspan></text>
         </g>
-        <rect
-           y="-24.716604"
-           x="114.43359"
-           height="9.4494104"
-           width="8.6934347"
-           id="rect2286-8-5-3"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <circle
-           r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-19.991903"
-           cx="118.78027"
-           id="sensorLiftUp-44-0"
-           style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <g
+           id="g192">
+          <rect
+             height="9"
+             width="9"
+             id="rect2286-8-5-3"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <circle
+             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="sensorLiftUp-44-0"
+             cx="4.5"
+             cy="4.5"
+             r="3" />
+        </g>
       </g>
       <g
-         id="g224">
+         id="g224"
+         transform="translate(5.5,51)">
         <g
            id="g1001-0-4-1"
-           transform="matrix(0.68985138,0,0,1,-4.8595608,-203.11346)">
+           transform="translate(-0.5,12)">
           <text
              id="text991-2-4-7"
-             y="190.99527"
-             x="154.91385"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
              xml:space="preserve"><tspan
                transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
+               y="0"
+               x="0"
                id="tspan989-3-6-6"
                sodipodi:role="line">optical</tspan></text>
         </g>
         <rect
-           y="-24.460089"
-           x="100.88931"
-           height="9.4494104"
-           width="8.6934347"
+           height="9"
+           width="9"
            id="rect2286-8-9-8"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
         <circle
            r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-19.735388"
-           cx="105.23593"
+           cy="4.5"
+           cx="4.5"
            id="sensorLiftUp-0-6"
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
       <g
-         id="g220">
-        <g
-           id="g1001-0"
-           transform="matrix(0.68985138,0,0,1,7.2203892,-218.91479)">
-          <text
-             id="text991-2"
-             y="190.99527"
-             x="154.91385"
-             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
-               transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
-               style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
-               id="tspan989-3"
-               sodipodi:role="line">elevator</tspan></text>
-          <text
-             id="text995-3"
-             y="193.4239"
-             x="158.22894"
-             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
-               style="stroke-width:0.26458332"
-               y="193.4239"
-               x="158.22894"
-               id="tspan993-6"
-               sodipodi:role="line">down</tspan></text>
-        </g>
+         id="g220"
+         transform="translate(20.5,34)">
+        <text
+           id="text991-2"
+           style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"
+           transform="translate(-1.75,12)"><tspan
+             transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
+             style="stroke-width:0.26458332"
+             y="0"
+             x="0"
+             id="tspan989-3"
+             sodipodi:role="line">elevator</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           id="text995-3"
+           transform="translate(0.25,15)"><tspan
+             sodipodi:role="line"
+             id="tspan993-6"
+             x="0"
+             y="0"
+             style="stroke-width:0.26458332">down</tspan></text>
         <rect
-           y="-40.056843"
-           x="114.26212"
-           height="9.4494104"
-           width="8.6934347"
+           height="9"
+           width="9"
            id="rect2286-8-7-8"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
         <circle
            r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-35.332142"
-           cx="118.41983"
+           cy="4.5"
+           cx="4.5"
            id="s_lift_down"
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-         x="97.033745"
-         y="-64.04213"
-         id="text972"><tspan
-           sodipodi:role="line"
-           id="tspan970"
-           x="97.033745"
-           y="-64.04213"
-           style="stroke-width:0.26458332">Sensors</tspan></text>
       <g
-         id="g216">
+         id="g216"
+         transform="translate(35.5,34)">
         <g
-           id="g1001-0-4"
-           transform="matrix(0.68985138,0,0,1,21.914849,-218.63573)">
+           id="g1001-0-4">
           <text
              id="text991-2-4"
-             y="190.99527"
-             x="154.91385"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
+             xml:space="preserve"
+             transform="translate(-0.8,12)"><tspan
                transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
+               y="0"
+               x="0"
                id="tspan989-3-6"
                sodipodi:role="line">pusher</tspan></text>
         </g>
         <rect
-           y="-39.822712"
-           x="127.55429"
-           height="9.4494104"
-           width="8.6934347"
+           height="9"
+           width="9"
            id="rect2286-8-31"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
         <circle
            r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-35.098011"
-           cx="131.90115"
+           cy="4.5"
+           cx="4.5"
            id="s_pusher"
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
       <g
-         id="g212">
+         id="g212"
+         transform="translate(5.5,34)">
         <g
-           id="g1001"
-           transform="matrix(0.68985139,0,0,1,-5.5780308,-218.99942)">
+           id="g1001">
           <text
              id="text991"
-             y="190.99527"
-             x="154.91385"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
+             xml:space="preserve"
+             transform="translate(-1.5,12)"><tspan
                transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
                id="tspan989"
-               sodipodi:role="line">elevator</tspan></text>
+               sodipodi:role="line"
+               x="0"
+               y="0">elevator</tspan></text>
           <text
              id="text995"
-             y="193.4239"
-             x="158.22894"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
+             xml:space="preserve"
+             transform="translate(2.5,15)"><tspan
                style="stroke-width:0.26458332"
-               y="193.4239"
-               x="158.22894"
+               y="0"
+               x="0"
                id="tspan993"
                sodipodi:role="line">up</tspan></text>
         </g>
         <rect
-           y="-40.351871"
-           x="101.09613"
-           height="9.4494104"
-           width="8.6934347"
+           height="9"
+           width="9"
            id="rect2286-8-3"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
         <circle
            r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-35.627171"
-           cx="105.44284"
+           cy="4.5"
+           cx="4.5"
            id="s_lift_up"
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       </g>
       <g
-         id="g208">
+         id="g208"
+         transform="translate(35.5,17)">
         <g
-           id="g1001-3-1"
-           transform="matrix(0.68985138,0,0,1,20.084109,-235.90094)">
+           id="g1001-3-1">
           <text
              id="text991-0-5"
-             y="190.99527"
-             x="154.91385"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
+             xml:space="preserve"
+             transform="translate(-2.5,12)"><tspan
                transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                style="stroke-width:0.26458332"
-               y="190.99527"
-               x="154.91385"
+               y="0"
+               x="0"
                id="tspan989-39-3"
                sodipodi:role="line">buffering</tspan></text>
           <text
              id="text995-2-5"
-             y="193.5"
-             x="155.22894"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
+             xml:space="preserve"
+             transform="translate(0.5,15)"><tspan
                style="stroke-width:0.26458332"
-               y="193.5"
-               x="155.22894"
+               y="0"
+               x="0"
                id="tspan993-7-0"
                sodipodi:role="line">busy</tspan></text>
         </g>
         <rect
            style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="rect2286-8-9"
-           width="8.6934347"
-           height="9.4494104"
-           x="127.23862"
-           y="-57.557621" />
+           width="9"
+           height="9"
+           x="0"
+           y="0" />
         <circle
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="sensorLiftUp-0"
-           cx="131.58545"
-           cy="-52.83292"
-           inkscape:transform-center-x="-0.40090429"
-           inkscape:transform-center-y="-2.80633"
+           cx="4.5"
+           cy="4.5"
            r="3" />
       </g>
       <g
-         id="g204">
+         id="g204"
+         transform="translate(20.5,17)">
         <g
-           transform="matrix(0.68985138,0,0,1,7.8933492,-236.17045)"
            id="g1001-3">
           <text
              xml:space="preserve"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             x="154.91385"
-             y="190.99527"
-             id="text991-0"><tspan
+             id="text991-0"
+             transform="translate(-1.5,12)"><tspan
                sodipodi:role="line"
                id="tspan989-39"
-               x="154.91385"
-               y="190.99527"
+               x="0"
+               y="0"
                style="stroke-width:0.26458332"
                transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">product</tspan></text>
           <text
              xml:space="preserve"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             x="155.22894"
-             y="193.5"
-             id="text995-2"><tspan
+             id="text995-2"
+             transform="translate(-0.25,15)"><tspan
                sodipodi:role="line"
                id="tspan993-7"
-               x="155.22894"
-               y="193.5"
+               x="0"
+               y="0"
                style="stroke-width:0.26458332">height</tspan></text>
         </g>
         <rect
-           y="-57.80875"
-           x="114.68213"
-           height="9.4494104"
-           width="8.6934347"
+           height="9"
+           width="9"
            id="rect2286-8-7"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
         <circle
            r="3"
-           inkscape:transform-center-y="-2.80633"
-           inkscape:transform-center-x="-0.40090429"
-           cy="-53.084049"
-           cx="118.83984"
+           cx="4.5"
            id="s_height"
-           style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           cy="4.5" />
       </g>
       <g
-         id="g341">
+         id="g341"
+         transform="translate(5.5,17)">
         <text
            xml:space="preserve"
-           style="font-style:normal;font-weight:normal;font-size:2.49171877px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.21975574"
-           x="124.74081"
-           y="-37.399406"
+           style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
            id="text991-0-59"
-           transform="scale(0.83057292,1.2039882)"><tspan
+           transform="translate(2,12)"><tspan
              sodipodi:role="line"
              id="tspan989-39-1"
-             x="124.74081"
-             y="-37.399406"
              style="stroke-width:0.21975574"
-             transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">init</tspan></text>
+             x="0"
+             y="0">init</tspan></text>
         <rect
            style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="rect2286-8-7-9"
-           width="8.6934347"
-           height="9.4494104"
-           x="101.41125"
-           y="-57.661884" />
+           width="9"
+           height="9"
+           y="0"
+           x="0" />
         <circle
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="sensorLiftUp-4-9"
-           cx="105.56888"
-           cy="-52.937183"
-           inkscape:transform-center-x="-0.40090429"
-           inkscape:transform-center-y="-2.80633"
+           cx="4.5"
+           cy="4.5"
            r="3" />
       </g>
     </g>
@@ -1013,6 +984,58 @@
            height="30"
            y="0"
            x="0" />
+      </g>
+    </g>
+    <g
+       id="Conveyer-7"
+       transform="translate(304.96852,257.36286)">
+      <rect
+         ry="10"
+         height="20"
+         width="200"
+         id="rect4526-9"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
+      <g
+         id="Roller-4"
+         transform="translate(10,10)">
+        <g
+           transform="rotate(10)"
+           id="Wheel-5">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421-57"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457-4" />
+        </g>
+      </g>
+      <g
+         id="Roller-0-3"
+         transform="translate(190,10)">
+        <g
+           transform="rotate(-10)"
+           id="Wheel-8-3">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421-5-3"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457-6-7" />
+        </g>
       </g>
     </g>
   </g>
