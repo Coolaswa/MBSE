@@ -53,8 +53,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="634.33012"
-     inkscape:cy="306.89545"
+     inkscape:cx="891.51839"
+     inkscape:cy="403.92539"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -136,7 +136,7 @@
     </g>
     <g
        id="Conveyor"
-       transform="translate(766.02132,301.46528)">
+       transform="translate(753.54359,296.99928)">
       <rect
          ry="10"
          height="20"
@@ -187,96 +187,42 @@
       </g>
     </g>
     <g
-       id="Stuff">
+       id="height_sensor">
       <g
-         transform="translate(1032.9972,50.489)"
-         id="Height stop">
-        <g
-           id="a_height_head">
-          <rect
-             y="84.718102"
-             x="156.84251"
-             height="4.4867277"
-             width="17.736874"
-             id="rect1389-7"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.993976;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-          <rect
-             y="47.574253"
-             x="161.63203"
-             height="37.842014"
-             width="8.8684368"
-             id="rect4530-4"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.34342241;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
+         id="a_height_head">
         <rect
-           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect4528-0"
-           width="22.171093"
-           height="26.920366"
-           x="154.43004"
-           y="37.602741" />
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.92217016;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect1389-7"
+           width="26.626215"
+           height="6.4190168"
+           x="1163.7747"
+           y="204.99565" />
+        <rect
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.43428373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect4530-4"
+           width="13.313107"
+           height="54.139351"
+           x="1170.9646"
+           y="151.85513" />
       </g>
-      <g
-         transform="matrix(1.801077,0,0,1.801077,1238.5603,87.09593)"
-         id="Vertical rails">
-        <rect
-           y="0"
-           x="0"
-           style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.72058535;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rails"
-           width="1.5"
-           height="250" />
-      </g>
-      <g
-         id="Platform">
-        <rect
-           y="473.23547"
-           x="1146.7288"
-           height="23.325727"
-           width="122.83144"
-           id="rect1497"
-           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <rect
-           ry="1.1913373"
-           y="430.4953"
-           x="1173.9886"
-           height="2.3826747"
-           width="38.863682"
-           id="rect2291"
-           style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <g
-           id="a_pusher"
-           transform="matrix(1.801077,0,0,1.801077,878.34489,177.14978)">
-          <rect
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:1.73686588;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect1389"
-             width="4.7322621"
-             height="16.047403"
-             x="180.12811"
-             y="145.52335" />
-          <rect
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.45108676;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect4530"
-             width="48.353355"
-             height="8.8517723"
-             x="180.12811"
-             y="149.22746" />
-        </g>
-        <rect
-           y="427.63614"
-           x="1219.1833"
-           height="47.312157"
-           width="50.344799"
-           id="rect4528"
-           style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <rect
-           y="427.63614"
-           x="1209.993"
-           height="8.5095644"
-           width="9.190299"
-           id="rect2286"
-           style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      </g>
+      <rect
+         y="137.58922"
+         x="1160.1531"
+         height="38.514103"
+         width="33.282772"
+         id="rect4528-0"
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.92202401;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="Vertical rails"
+       transform="matrix(1.801077,0,0,1.801077,1238.5603,87.09593)">
+      <rect
+         height="250"
+         width="1.5"
+         id="rails"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.72058535;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
     </g>
     <g
        id="Control panel"
@@ -992,17 +938,17 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="1034.479"
-       y="239.83878"
+       x="846.59064"
+       y="55.991013"
        id="time"><tspan
          sodipodi:role="line"
          id="tspan1572"
-         x="1034.479"
-         y="239.83878"
+         x="846.59064"
+         y="55.991013"
          style="stroke-width:0.26458332">10</tspan></text>
     <g
        id="Slider"
-       transform="translate(974.97978,298.89044)">
+       transform="translate(947.8293,295.35642)">
       <rect
          y="0"
          x="0"
@@ -1029,8 +975,8 @@
       <rect
          x="0"
          y="0"
-         height="30"
-         width="30"
+         height="50"
+         width="50"
          id="ProductGraphics-6"
          style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
@@ -1040,21 +986,77 @@
       <rect
          x="0"
          y="0"
-         height="30"
-         width="30"
+         height="50"
+         width="50"
          id="ProductGraphics-6-9"
          style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
+       id="Platform">
+      <rect
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1497"
+         width="122.83144"
+         height="23.325727"
+         x="1146.7288"
+         y="473.23547" />
+      <rect
+         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2291"
+         width="38.863682"
+         height="2.3826747"
+         x="1173.9886"
+         y="430.4953"
+         ry="1.1913373" />
+      <g
+         id="a_pusher">
+        <rect
+           y="439.14569"
+           x="1196.7826"
+           height="24.486172"
+           width="8.0239935"
+           id="rect1389"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <rect
+           y="445.9733"
+           x="1196.7826"
+           height="11.536604"
+           width="85.559074"
+           id="rect4530"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <rect
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect4528"
+         width="50.344799"
+         height="47.312157"
+         x="1219.1833"
+         y="427.63614" />
+      <rect
+         style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2286"
+         width="9.190299"
+         height="8.5095644"
+         x="1209.993"
+         y="427.63614" />
+    </g>
+    <g
        id="Product3"
-       transform="translate(383.0001,230.43645)">
+       transform="translate(1146.7288,423.23547)">
       <rect
          x="0"
          y="0"
-         height="30"
-         width="30"
+         height="50"
+         width="50"
          id="ProductGraphics-6-98"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:6.30694103;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
+    <rect
+       style="opacity:1;fill:#f9ee2e;fill-opacity:0.49028081;stroke:none;stroke-width:10.00791359;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="CollisionRect"
+       width="33.847229"
+       height="35.65147"
+       x="1160.1531"
+       y="176.10332" />
   </g>
 </svg>

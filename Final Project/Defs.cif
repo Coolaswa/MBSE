@@ -1,0 +1,40 @@
+type Rectangle = tuple(real x, y, width, height);
+type BoxData = tuple(Rectangle bounds; bool isCap);
+type Point = tuple(real x, y);
+
+func int RectRectColl(Rectangle rect; list[3] Rectangle boxes):
+	int i = 0;
+	int length = size(boxes);
+	while i < length:
+		if (rect[x] < boxes[i][x] + boxes[i][width] and
+			rect[x] + rect[width] > boxes[i][x] and
+			rect[y] < boxes[i][y] + boxes[i][height] and
+			rect[height] + rect[y] > boxes[i][y]):
+			return i;
+		end
+		i := i + 1;
+	end
+
+	return -1;
+end
+
+func bool PointInRect(Rectangle rect; Point p):
+	if (rect[x] <= p[x] and rect[y] <= p[y] and
+		rect[x]+rect[width] >= p[x] and rect[y]+rect[height] >= p[y]):
+		return true;
+	end
+	return false;
+end
+
+
+automaton def Button(event Clicked):
+	alg bool state;
+
+	location Released:
+		initial;
+		equation state = false;
+		edge Clicked goto Pressed;
+	location Pressed:
+		equation state = true;
+		edge Clicked goto Released;
+end

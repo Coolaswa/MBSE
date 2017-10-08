@@ -7,8 +7,8 @@ group def Button_svg(event action; alg string idfier, onColor, offColor; alg boo
 	svgout id idfier attr "fill" value if state: onColor
 									   else offColor end;
 end
-group def Box_svg(alg string idfier; alg real x, y, opacity):
-	svgout id idfier attr "transform" value fmt("translate(%f, %f)", x, y);
+group def Box_svg(alg string idfier; alg real x, y, rotation, opacity):
+	svgout id idfier attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rotation);
 	svgout id idfier attr "opacity" value opacity;
 end
 
