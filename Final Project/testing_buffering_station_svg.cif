@@ -17,4 +17,6 @@ svgout id "Platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
 svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);
 svgout id "time"   text value round(time);
 svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightSensor.y);
+svgout id "Wheel" attr "transform" value fmt("rotate(%d)", round(conv1.wheelRotation) mod 360);
+
 
