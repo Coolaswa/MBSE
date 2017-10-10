@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="1531.3117"
-     inkscape:cy="378.27227"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="1146.8195"
+     inkscape:cy="346.13371"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -82,27 +82,6 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <g
-       id="Blocker"
-       transform="translate(413.15239,102.02541)">
-      <g
-         id="g417">
-        <rect
-           height="80"
-           width="30"
-           id="rect376"
-           style="fill:#000080"
-           y="0"
-           x="0" />
-        <rect
-           x="0"
-           y="0"
-           height="30"
-           width="80"
-           id="rect381"
-           style="fill:#000080" />
-      </g>
-    </g>
     <g
        id="Conveyor-7"
        transform="translate(938.23475,475.59998)">
@@ -880,7 +859,7 @@
     </g>
     <g
        id="Product1"
-       transform="translate(485.34325,166.79696)">
+       transform="translate(610.60217,246.59901)">
       <rect
          x="0"
          y="0"
@@ -1562,9 +1541,31 @@
         <circle
            r="3"
            cx="4.5"
-           id="circle722"
+           id="b_testingready"
            style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            cy="4.5" />
+      </g>
+    </g>
+    <g
+       id="Blocker"
+       transform="translate(608.11183,134.35029)">
+      <g
+         id="g417"
+         transform="rotate(10,80,30)">
+        <rect
+           height="80"
+           width="30"
+           id="rect376"
+           style="fill:#000080"
+           y="0"
+           x="0" />
+        <rect
+           x="0"
+           y="0"
+           height="30"
+           width="80"
+           id="rect381"
+           style="fill:#000080" />
       </g>
     </g>
   </g>
