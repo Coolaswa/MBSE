@@ -77,24 +77,61 @@ alg bool a_Bout7          = counter.count = 20; // 20
 alg bool a_separator      = counter.count = 21; // 21
 alg bool a_conveyer       = counter.count = 22; // 22
 alg bool a_bufferingready = counter.count = 23; // 23*/
+ctrl: AutoControl();
 
-automaton LiftContr:
-	location Up:
-		edge when b_lift_up.Released goto Stop;
-		edge when b_lift_down.Pressed and b_lift_up.Released goto Down;
-	location Stop:
-		initial;
-		edge when b_lift_up.Pressed goto Up;
-		edge when b_lift_down.Pressed goto Down;
-	location Down:
-		edge when b_lift_up.Pressed and b_lift_down.Released  goto Up;
-		edge when b_lift_down.Released goto Stop;
+enum LiftState = UP, STOP, DOWN;
+group def ManualControl():
+	automaton Lift:
+		alg LiftState state;
+		location Up:
+			equation state = UP;
+			edge when b_lift_up.Released goto Stop;
+			edge when b_lift_down.Pressed and b_lift_up.Released goto Down;
+		location Stop:
+			initial;
+			equation state = STOP;
+			edge when b_lift_up.Pressed goto Up;
+			edge when b_lift_down.Pressed goto Down;
+		location Down:
+			equation state = DOWN;
+			edge when b_lift_up.Pressed and b_lift_down.Released  goto Up;
+			edge when b_lift_down.Released goto Stop;
+	end
+
+	automaton Pusher:
+		location Extending:
+			edge when b_pusher.Released goto Retracting;
+		location Retracting:
+			initial;
+			edge when b_pusher.Pressed goto Extending;
+	end
 end
 
-automaton PusherContr:
-	location Extending:
-		edge when b_pusher.Released goto Retracting;
-	location Retracting:
-		initial;
-		edge when b_pusher.Pressed goto Extending;
+group def AutoControl():
+
+	automaton Lift:
+		alg LiftState state;
+		location Waiting:
+			initial;
+			equation state = STOP;
+			edge spawn_new_block goto GoingUp;
+		location GoingUp:
+			equation state = UP;
+			edge PusherContr.extent when s_elevator_up goto PushingBlock;
+		location PushingBlock:
+			equation state = STOP;
+			edge PusherContr.retract goto GoingDown;
+		location GoingDown:
+			equation state = DOWN;
+			edge when s_elevator_down goto Waiting;
+	end
+
+	automaton PusherContr:
+		event extent, retract;
+		location Extending:
+			edge retract when s_pusher goto Retracting;
+		location Retracting:
+			initial;
+			edge extent goto Extending;
+	end
 end

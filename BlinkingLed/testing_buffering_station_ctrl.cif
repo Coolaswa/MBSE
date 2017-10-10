@@ -1,5 +1,8 @@
 // Controller to test hardware mapping, for all sensors and actuators.
 import "testing_buffering_station_plant.cif";
+
+alg bool a_TledQ1 = led1.On;
+alg bool a_TledQ2 = led2.On;
 // INPUTS
 
 // TESTING:

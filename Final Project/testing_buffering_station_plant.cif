@@ -4,12 +4,15 @@ import "SVGConstants.cif";
 
 alg bool s_Tstartbutton = startBttn.state;
 alg bool s_Tstopbutton = startBttn.state;
+
 //alg bool s_Tautoswitch;
 alg bool s_Tresetbutton = startBttn.state;
-alg bool a_elevator_up = LiftContr.Up;
-alg bool a_elevator_down = LiftContr.Down;
-alg bool a_pusher = PusherContr.Extending;
-
+alg bool a_elevator_up = (ctrl.Lift.state = UP);
+alg bool a_elevator_down = (ctrl.Lift.state = DOWN);
+alg bool a_pusher = ctrl.PusherContr.Extending;
+alg bool s_pusher = PusherSensor.isActive;
+alg bool s_elevator_up = LiftSensorUp.isActive;
+alg bool s_elevator_down = LiftSensorDown.isActive;
 event e_startClicked, stopClicked, resetClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
@@ -50,6 +53,8 @@ svg_box2 : Box_svg("Product2", box2.x, box2.y, box2.rotation, box2.opacity);
 box3: Box(35, true);
 svg_box3 : Box_svg("Product3", box3.x, box3.y, box3.rotation, box3.opacity);
 
+conv1: Conveyor();
+
 automaton dummy:
 	location:
 		initial;
@@ -71,37 +76,63 @@ automaton BoxUpdater:
 		initial;
 end
 
+const real boxSpeed = 60;
 automaton def Box(alg int h; alg bool isCap):
 	alg int height = h;
 	alg real slideAngle = (15)*3.141592654/180;
 	alg bool isCapacitive = isCap;
 	disc real opacityDer = 0;
-	disc real rotation = 0;
+	disc real rotDer = 0;
+
+	cont rotation = 0 der rotDer;
 	cont opacity der opacityDer;
 	cont x = -200, y=-200;
 	location Inactive:
 		equation x' = 0, y' = 0;
 		initial;
-		edge spawn_new_block? do (x,y) := Const.Box.StartPos,opacityDer:=1  goto Spawn;
+		edge spawn_new_block? do (x,y) := Const.Box.StartPos,opacity:=1  goto Spawn;
 	location Spawn:
 		equation x' = 0, y' = 0;
-		edge when opacity > 1 do opacityDer := 0 goto InLift;
+		edge when opacity > 0.995 do opacityDer := 0 goto InLift;
 	location InLift:
 		equation x' = 0, y' = Lift.speed;
-		edge e_pusher_activated? when LiftSensorUp.isActive do rotation := -15 goto OnAirslide;
+		edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
+	location LiftAirTransit:
+		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+		edge when rotation < -15 do rotDer := 0 goto OnAirslide;
 	location OnAirslide:
-		equation x' = -20*cos(slideAngle), y' = 20*sin(slideAngle);
-		edge when x < Const.Box.EndSlideX do rotation := 0 goto OnBuffer;
+		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+		edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+	location SlideBufferTransit:
+		equation x' = -boxSpeed, y' = 0;
+		edge when rotation > 0 do rotDer := 0 goto OnBuffer;
 	location OnBuffer:
-		equation x' = -20, y' = 0;
+		equation x' = -boxSpeed, y' = 0;
 		edge when x < 0 goto Inactive;
 end
 
+automaton def Conveyor():
+	event turnOn, turnOff;
+	event toggle;
+	cont wheelRotation der wheelSpeed;
+	alg real wheelSpeed;
+	location On:
+		initial;
+		equation wheelSpeed = 50/20/3.1415;
+		edge turnOff, toggle goto Off;
+		edge turnOn;
+	location Off:
+		equation wheelSpeed = 0;
+		edge turnOn, toggle goto On;
+		edge turnOff;
+end
+
 automaton Lift:
+	const real maxSpeed = 80;
 	alg real speed;
 	cont y der speed;
 	location Up:
-		equation speed = -10;
+		equation speed = -maxSpeed;
 		edge when not a_elevator_up goto Stop;
 		edge when a_elevator_down goto Down;
 		edge when LiftSensorUp.isActive goto Stop;
@@ -111,7 +142,7 @@ automaton Lift:
 		edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
 		edge when a_elevator_down and not LiftSensorDown.isActive  goto Down;
 	location Down:
-		equation speed = 10;
+		equation speed = maxSpeed;
 		edge when not a_elevator_down goto Stop;
 		edge when a_elevator_up goto Up;
 		edge when LiftSensorDown.isActive goto Stop;
