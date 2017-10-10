@@ -98,13 +98,17 @@ group def ManualControl():
 			edge when b_lift_down.Released goto Stop;
 	end
 
-	automaton Pusher:
+	automaton PusherContr:
 		location Extending:
 			edge when b_pusher.Released goto Retracting;
 		location Retracting:
 			initial;
+			edge when CountFive.Five goto Lockdown;		//Pusher will not push when the buffer is full
 			edge when b_pusher.Pressed goto Extending;
+		location Lockdown:
+			edge when CountFive.Four goto Retracting;
 	end
+
 end
 
 group def AutoControl():
@@ -130,8 +134,39 @@ group def AutoControl():
 		event extent, retract;
 		location Extending:
 			edge retract when s_pusher goto Retracting;
+			edge when CountFive.Five goto Lockdown;
 		location Retracting:
 			initial;
 			edge extent goto Extending;
+			edge when CountFive.Five goto Lockdown;
+		location Lockdown:								//Pusher will not push when the buffer is full
+			edge when CountFive.Four goto Retracting;
 	end
 end
+
+
+	automaton SeparatorContr:
+		location EmptyLeft:
+			initial;
+			edge when AtSepSensor.isActive goto FullLeft;
+		location FullLeft:
+			edge when ProcessingBusySensor.Off goto EmptyRight; //to be replaced by s_processingbusy
+		location EmptyRight:
+			edge when ExitSensor.isActive goto EmptyLeft;
+	end
+
+
+	automaton ConveyerContr:
+		location Empty: 	//To save energy, it is useful to not have the conveyer active when there are no products on it.
+			initial;
+			edge when CountFive.One goto NotMoving;
+		location Moving:
+			edge when SeparatorContr.FullLeft goto NotMoving;
+			edge when CountFive.Zero goto Empty;
+		location NotMoving:
+			edge when SeparatorContr.EmptyRight goto Moving;
+			edge when SeparatorContr.EmptyLeft goto Moving;
+	end
+
+
+

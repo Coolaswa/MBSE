@@ -13,6 +13,9 @@ alg bool a_pusher = ctrl.PusherContr.Extending;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
+alg bool a_conveyer = ConveyerContr.Moving;
+alg bool a_separator = SeparatorContr.FullLeft;
+
 event e_startClicked, stopClicked, resetClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
@@ -195,3 +198,88 @@ automaton Factory:
 	location SpawnBlock:
 		edge spawn_new_block! goto Waiting;
 end
+
+//Buffering station
+
+//separator functions:
+
+//a_separator = on -> Receive one new product ----- always receive a new product after releasing one
+//a_separator = off ->  Release the current product ----- If processing is not busy
+//a_conveyer = on -> Conveyer belt  ----- after releasing a product
+//a_conveyer = off -> Conveyer belt ----- Always off unless ^
+
+//s_processingbusy = on -> Busy
+//s_processingbusy = off -> Ready
+//s_atseparator = on -> Product just before separator
+
+//Max of 5 products functions:
+
+//s_product = on -> product at entry point ----- Use this to count up to 5, if 5 then stop testing station pusher or lift
+//s_atexit = on -> Product leaving buffering station
+
+
+//sensors still have to be fixed to work with multiple boxes and add the right x value
+
+group AtSepSensor:
+	alg bool isActive = box1.x = 300; // Location sensor = ???,
+end
+
+group EntrySensor:
+	alg bool isActive = box1.x = 600; // Location sensor = ???
+end
+
+group ExitSensor:
+	alg bool isActive = box1.x = 200; // Location sensor = ???
+end
+
+automaton ProcessingBusySensor: // timed activation every 15 seconds, eventually use s_processingbusy
+	cont t der 1;
+	location Off:
+		edge when t > 15 do t := 0 goto On;
+	location On:
+	initial;
+		edge when t < 15 goto Off;
+end
+
+
+automaton Belt:			// add fancy part with svg belt turning
+	alg real speed;
+	cont x der speed;
+	location Moving:
+		equation speed = -20;
+		edge when not a_conveyer goto Standstill;
+	location Standstill:
+		initial;
+		equation speed = 0;
+		edge when a_conveyer goto Moving;
+end
+
+automaton Separator:	//Separator needs to turn/rotate when going from left to right, to be added
+	location Left:
+		edge when not a_separator goto Right;
+	location Right:
+		initial;
+		edge when a_separator goto Left;
+end
+
+automaton CountFive:	//when CountFive = 5, stops the pusher; see control
+	location Zero:
+		initial;
+		edge when EntrySensor.isActive goto One;
+	location One:
+		edge when ExitSensor.isActive goto Zero;
+		edge when EntrySensor.isActive goto Two;
+	location Two:
+		edge when ExitSensor.isActive goto One;
+		edge when EntrySensor.isActive goto Three;
+	location Three:
+		edge when ExitSensor.isActive goto Two;
+		edge when EntrySensor.isActive goto Four;
+	location Four:
+		edge when ExitSensor.isActive goto Three;
+		edge when EntrySensor.isActive goto Five;
+	location Five:
+		edge when ExitSensor.isActive goto Four;
+end
+
+
