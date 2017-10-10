@@ -7,21 +7,12 @@ alg bool s_Tstopbutton = startBttn.state;
 
 //alg bool s_Tautoswitch;
 alg bool s_Tresetbutton = startBttn.state;
-<<<<<<< HEAD
-alg bool a_elevator_up = LiftContr.Up;
-alg bool a_elevator_down = LiftContr.Down;
-alg bool a_pusher = PusherContr.Extending;
-alg bool a_conveyer = ConveyerContr.Moving;
-alg bool a_separator = SeparatorContr.FullLeft;
-
-=======
 alg bool a_elevator_up = (ctrl.Lift.state = UP);
 alg bool a_elevator_down = (ctrl.Lift.state = DOWN);
 alg bool a_pusher = ctrl.PusherContr.Extending;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
->>>>>>> 75b07a33da74905be7564157df752ade2e75617f
 event e_startClicked, stopClicked, resetClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
@@ -99,33 +90,24 @@ automaton def Box(alg int h; alg bool isCap):
 	location Inactive:
 		equation x' = 0, y' = 0;
 		initial;
-		edge spawn_new_block? do (x,y) := Const.Box.StartPos,opacityDer:=1  goto Spawn;
 		edge spawn_new_block? do (x,y) := Const.Box.StartPos,opacity:=1  goto Spawn;
 	location Spawn:
 		equation x' = 0, y' = 0;
-		edge when opacity > 1 do opacityDer := 0 goto InLift;
 		edge when opacity > 0.995 do opacityDer := 0 goto InLift;
 	location InLift:
 		equation x' = 0, y' = Lift.speed;
-		edge e_pusher_activated? when LiftSensorUp.isActive do rotation := -15 goto OnAirslide;
 		edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
 	location LiftAirTransit:
 		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
 		edge when rotation < -15 do rotDer := 0 goto OnAirslide;
 	location OnAirslide:
-		equation x' = -20*cos(slideAngle), y' = 20*sin(slideAngle);
-		edge when x < Const.Box.EndSlideX do rotation := 0 goto OnBuffer;
 		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
 		edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
 	location SlideBufferTransit:
 		equation x' = -boxSpeed, y' = 0;
 		edge when rotation > 0 do rotDer := 0 goto OnBuffer;
 	location OnBuffer:
-<<<<<<< HEAD
-		equation x' = Belt.speed, y' = 0;
-=======
 		equation x' = -boxSpeed, y' = 0;
->>>>>>> 75b07a33da74905be7564157df752ade2e75617f
 		edge when x < 0 goto Inactive;
 end
 
@@ -150,7 +132,6 @@ automaton Lift:
 	alg real speed;
 	cont y der speed;
 	location Up:
-		equation speed = -10;
 		equation speed = -maxSpeed;
 		edge when not a_elevator_up goto Stop;
 		edge when a_elevator_down goto Down;
@@ -161,7 +142,6 @@ automaton Lift:
 		edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
 		edge when a_elevator_down and not LiftSensorDown.isActive  goto Down;
 	location Down:
-		equation speed = 10;
 		equation speed = maxSpeed;
 		edge when not a_elevator_down goto Stop;
 		edge when a_elevator_up goto Up;
@@ -214,91 +194,4 @@ automaton Factory:
 		edge spawn_clicked goto SpawnBlock;
 	location SpawnBlock:
 		edge spawn_new_block! goto Waiting;
-end
-
-//Buffering station
-
-//separator functions:
-
-//a_separator = on -> Receive one new product ----- always receive a new product after releasing one
-//a_separator = off ->  Release the current product ----- If processing is not busy
-//a_conveyer = on -> Conveyer belt  ----- after releasing a product
-//a_conveyer = off -> Conveyer belt ----- Always off unless ^
-
-//s_processingbusy = on -> Busy
-//s_processingbusy = off -> Ready
-//s_atseparator = on -> Product just before separator
-
-//Max of 5 products functions:
-
-//s_product = on -> product at entry point ----- Use this to count up to 5, if 5 then stop testing station pusher or lift
-//s_atexit = on -> Product leaving buffering station
-
-
-//sensors still have to be fixed to work with multiple boxes and add the right x value
-
-group AtSepSensor:
-	alg bool isActive = box1.x = 300; // Location sensor = ???,end
-
-group EntrySensor:
-	alg bool isActive = box1.x = 600; // Location sensor = ???
-end
-
-group ExitSensor:
-	alg bool isActive = box1.x = 200; // Location sensor = ???
-end
-
-automaton ProcessingBusySensor: // timed activation every 15 seconds, eventually use s_processingbusy
-	cont t der 1;
-	location Off:
-		edge when t > 15 do t := 0 goto On;
-	location On:
-	initial;
-		edge when t < 15 goto Off;
-end
-
-
-automaton Belt:			// add fancy part with svg belt turning
-	alg real speed;
-	cont x der speed;
-	location Moving:
-		equation speed = -20;
-		edge when not a_conveyer goto Standstill;
-	location Standstill:
-		initial;
-		equation speed = 0;
-		edge when a_conveyer goto Moving;
-end
-
-automaton Separator:	//Separator needs to turn/rotate when going from left to right, to be added
-	location Left:
-		edge when not a_separator goto Right;
-	location Right:
-		initial;
-		edge when a_separator goto Left;
-end
-
-automaton CountFive:	//when CountFive = 5, stops the pusher; see control
-	location Zero:
-		initial;
-		edge when EntrySensor.isActive goto One;
-	location One:
-		edge when ExitSensor.isActive goto Zero;
-		edge when EntrySensor.isActive goto Two;
-	location Two:
-		edge when ExitSensor.isActive goto One;
-		edge when EntrySensor.isActive goto Three;
-	location Three:
-		edge when ExitSensor.isActive goto Two;
-		edge when EntrySensor.isActive goto Four;
-	location Four:
-		edge when ExitSensor.isActive goto Three;
-		edge when EntrySensor.isActive goto Five;
-	location Five:
-		edge when ExitSensor.isActive goto Four;
-end
-
-
-
-
 end
