@@ -114,13 +114,13 @@ end
 automaton def Conveyor():
 	event turnOn, turnOff;
 	event toggle;
-	cont wheelRotation der wheelSpeed;
+	cont wheelRotation der -boxSpeed;
 	alg real wheelSpeed;
 	location On:
 		initial;
 		equation wheelSpeed = 50/20/3.1415;
-		edge turnOff, toggle goto Off;
-		edge turnOn;
+		//edge turnOff, toggle goto Off;
+		//edge turnOn;
 	location Off:
 		equation wheelSpeed = 0;
 		edge turnOn, toggle goto On;
