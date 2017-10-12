@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="290.73665"
-     inkscape:cy="333.43717"
+     inkscape:zoom="0.7"
+     inkscape:cx="673.84615"
+     inkscape:cy="498.58459"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -177,7 +177,7 @@
          id="Roller"
          transform="translate(10,10)">
         <g
-           id="Wheel"
+           id="Conv1_Wheel"
            transform="rotate(10)">
           <circle
              cy="0"
@@ -211,7 +211,7 @@
          id="Roller-0"
          transform="translate(390,10)">
         <g
-           id="Wheel-4"
+           id="Conv1_Wheel2"
            transform="rotate(10)">
           <circle
              cy="0"
@@ -848,7 +848,7 @@
     </g>
     <g
        id="Product3"
-       transform="translate(1146.7288,423.23547)">
+       transform="translate(938.15737,423.23547)">
       <rect
          x="0"
          y="0"
@@ -866,7 +866,8 @@
          height="50"
          width="50"
          id="ProductGraphics1"
-         style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(1,0,0,2,0,-50)" />
     </g>
     <g
        id="Product2"
