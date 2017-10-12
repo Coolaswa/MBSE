@@ -20,7 +20,7 @@ cif3sim(
     "--stateviz=1",
     //"--plotviz-filter=*",
     "--speed=1",
-    "--env-events=conv1.*,e_startClicked,stopClicked,resetClicked,lift_up_clicked,lift_down_clicked,pusher_clicked,spawn_clicked",
+    "--env-events=svg,conv1.*,e_startClicked,stopClicked,resetClicked,lift_up_clicked,lift_down_clicked,pusher_clicked,spawn_clicked",
     "-i svg",
     "--auto-choose=ctrl.*,tau,extend,retract",
 );

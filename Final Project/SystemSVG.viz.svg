@@ -8,7 +8,7 @@
       <feGaussianBlur id="feGaussianBlur7413" inkscape:collect="always" stdDeviation="9.6999794"/>
     </filter>
   </defs>
-  <sodipodi:namedview objecttolerance="1" bordercolor="#666666" inkscape:window-height="1001" inkscape:zoom="0.98994949" id="base" inkscape:current-layer="layer1" inkscape:window-y="-9" inkscape:cy="346.13371" inkscape:window-x="-9" inkscape:cx="1146.8195" showgrid="false" guidetolerance="1" inkscape:pageopacity="0.0" inkscape:document-units="mm" units="px" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-maximized="1" borderopacity="1.0" pagecolor="#ffffff"/>
+  <sodipodi:namedview objecttolerance="1" bordercolor="#666666" inkscape:window-height="1003" inkscape:zoom="2.8" id="base" inkscape:current-layer="layer1" inkscape:window-y="-9" inkscape:cy="333.43717" inkscape:window-x="-9" inkscape:cx="1304.3478" showgrid="false" guidetolerance="1" inkscape:pageopacity="0.0" inkscape:document-units="mm" units="px" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-maximized="1" borderopacity="1.0" pagecolor="#ffffff"/>
   <metadata id="metadata5">
     <rdf:RDF>
       <cc:Work rdf:about="">
@@ -41,7 +41,7 @@
     <g id="Conveyor" transform="translate(547.47247,300.02974)">
       <rect x="0" y="0" width="400" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="10" height="20" id="rect4526"/>
       <g id="Roller" transform="translate(10,10)">
-        <g id="Wheel" transform="rotate(5)">
+        <g id="Wheel" transform="rotate(-249)">
           <circle r="8" id="path1421" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="0" cy="0"/>
           <rect width="5" x="-2.5" id="rect7457" height="5" y="-2.5"/>
           <rect x="-6" y="-0.75" width="12" style="fill:#000000" id="rect422" height="1.5"/>
@@ -58,7 +58,7 @@
       </g>
     </g>
     <g id="height_sensor">
-      <g id="a_height_head" transform="translate(0, 0.000005)">
+      <g id="a_height_head" transform="translate(0, -29.000005)">
         <rect x="1163.7747" y="204.99565" width="26.626215" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.92217016;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect1389-7" height="6.4190168"/>
         <rect x="1170.9646" y="151.85513" width="13.313107" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.43428373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect4530-4" height="54.139351"/>
       </g>
@@ -124,7 +124,7 @@
         <text xml:space="preserve" id="text991-2" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-1.75,12)"><tspan x="0" y="0" transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)" sodipodi:role="line" style="stroke-width:0.26458332" id="tspan989-3">elevator</tspan></text>
         <text xml:space="preserve" id="text995-3" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(0.25,15)"><tspan x="0" y="0" id="tspan993-6" style="stroke-width:0.26458332" sodipodi:role="line">down</tspan></text>
         <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="9" id="rect2286-8-7-8"/>
-        <circle id="s_lift_down" r="3" style="opacity: 1;&#10;fill: yellow;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+        <circle id="s_lift_down" r="3" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
       </g>
       <g id="g216" transform="translate(35.5,34)">
         <g id="g1001-0-4">
@@ -139,7 +139,7 @@
           <text xml:space="preserve" id="text995" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(2.5,15)"><tspan x="0" id="tspan993" y="0" sodipodi:role="line" style="stroke-width:0.26458332">up</tspan></text>
         </g>
         <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="9" id="rect2286-8-3"/>
-        <circle id="s_lift_up" r="3" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+        <circle id="s_lift_up" r="3" style="opacity: 1;&#10;fill: yellow;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
       </g>
       <g id="g208" transform="translate(35.5,17)">
         <g id="g1001-3-1">
@@ -155,7 +155,7 @@
           <text xml:space="preserve" id="text995-2" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-0.25,15)"><tspan x="0" y="0" id="tspan993-7" style="stroke-width:0.26458332" sodipodi:role="line">height</tspan></text>
         </g>
         <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="9" id="rect2286-8-7"/>
-        <circle id="s_height" r="3" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+        <circle id="s_height" r="3" style="opacity: 1;&#10;fill: yellow;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
       </g>
       <g id="g341" transform="translate(5.5,17)">
         <text xml:space="preserve" id="text991-0-59" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(2,12)"><tspan x="0" y="0" id="tspan989-39-1" style="stroke-width:0.21975574" sodipodi:role="line">init</tspan></text>
@@ -163,30 +163,30 @@
         <circle r="3" id="sensorLiftUp-4-9" style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="4.5" cy="4.5"/>
       </g>
     </g>
-    <text x="846.59064" xml:space="preserve" id="time" y="55.991013" style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="846.59064" y="55.991013" id="tspan1572" style="stroke-width:0.26458332" sodipodi:role="line">26</tspan></text>
+    <text x="846.59064" xml:space="preserve" id="time" y="55.991013" style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="846.59064" y="55.991013" id="tspan1572" style="stroke-width:0.26458332" sodipodi:role="line">46</tspan></text>
     <g id="Slider" transform="translate(947.8293,295.35642)">
       <rect x="0" y="0" transform="rotate(-105)" width="10" style="opacity:0.83300003;fill:#aaccff;fill-opacity:1;stroke-width:0.26458332;filter:url(#filter7411)" height="200" id="Air"/>
       <g id="g7416">
         <rect x="0" y="0" transform="rotate(-15)" width="200" style="fill:#c8beb7;stroke-width:0.26458332" height="15" id="slider"/>
       </g>
     </g>
-    <g id="Platform" transform="translate(0, 0.000000)">
+    <g id="Platform" transform="translate(0, -240.000000)">
       <rect x="1146.7288" y="473.23547" width="122.83144" style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect1497" height="23.325727"/>
       <rect x="1173.9886" y="430.4953" width="38.863682" style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.1913373" id="rect2291" height="2.3826747"/>
-      <g id="a_pusher" transform="translate(0.000002, 0)">
+      <g id="a_pusher" transform="translate(-3.999990, 0)">
         <rect x="1196.7826" y="439.14569" width="8.0239935" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="24.486172" id="rect1389"/>
         <rect x="1196.7826" y="445.9733" width="85.559074" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="11.536604" id="rect4530"/>
       </g>
       <rect x="1219.1833" y="427.63614" width="50.344799" style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect4528" height="47.312157"/>
       <rect x="1209.993" y="427.63614" width="9.190299" style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect2286" height="8.5095644"/>
     </g>
-    <g id="Product3" style="opacity: 0;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+    <g id="Product3" style="opacity: 1;&#10;fill: yellow;&#10;" transform="translate(678.557412, 248.000000) rotate(0.000000)">
       <rect x="0" y="0" width="50" style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:6.30694103;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="50" id="ProductGraphics-6-98"/>
     </g>
-    <g id="Product1" style="opacity: 1;&#10;" transform="translate(-0.000000, 248.000000) rotate(0.000000)">
+    <g id="Product1" style="opacity: 0;&#10;fill: yellow;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
       <rect x="0" y="0" width="50" style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="50" id="ProductGraphics-6"/>
     </g>
-    <g id="Product2" style="opacity: 0;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+    <g id="Product2" style="opacity: 1;&#10;fill: yellow;&#10;" transform="translate(1135.408894, 186.105828) rotate(-5.999998)">
       <rect x="0" y="0" width="50" style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="50" id="ProductGraphics-6-9"/>
     </g>
     <g id="g714" transform="matrix(2.4059092,0,0,2.4059092,514.5626,-241.55658)">
@@ -256,9 +256,9 @@
         </g>
         <g id="height_knob">
           <g id="g1234" transform="translate(4,2)">
-            <rect x="0" y="0" transform="rotate(90,0.5,2.5)" width="1" style="fill:#483737;paint-order:fill markers stroke" ry="0.53571427" height="2.5" id="height_pole"/>
+            <rect x="0" y="0" transform="rotate(0,0.5,2.5)" width="1" style="fill:#483737;paint-order:fill markers stroke" ry="0.53571427" height="2.5" id="height_pole"/>
           </g>
-          <rect x="0.5" y="3.25" width="8" style="fill:#c8b7b7;paint-order:fill markers stroke" ry="1.25" height="2.5" id="height_bar"/>
+          <rect x="0.5" y="0" transform="translate(0, 0.500000)" width="8" style="fill:#c8b7b7;paint-order:fill markers stroke" ry="1.25" height="2.5" id="height_bar"/>
         </g>
       </g>
       <g id="g228-4" transform="translate(20.5,51)">
@@ -271,7 +271,7 @@
           <rect x="0" y="7.5" width="9" style="fill:#940606" id="rect1540" height="1.5"/>
           <rect x="3" y="1.75" width="3" style="fill:#4d4d4d" ry="1.4732143" id="rect1543" height="5.5"/>
         </g>
-        <g id="colour_knob" transform="rotate(180,4.5,4.5)">
+        <g id="colour_knob" transform="">
           <rect x="4" y="2" width="1" style="fill:#483737;paint-order:fill markers stroke" ry="0.53571427" id="rect1548" height="2.5"/>
           <rect x="0.5" y="0.25" width="8" style="fill:#c8b7b7;paint-order:fill markers stroke" ry="1.25" height="2.5" id="rect1546"/>
         </g>
@@ -281,7 +281,7 @@
           <text xml:space="preserve" id="text991-2-4-7-3" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="0" y="0" transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)" sodipodi:role="line" style="stroke-width:0.26458332" id="tspan989-3-6-6-6">spawn</tspan></text>
         </g>
         <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="9" id="rect2286-8-9-8-3"/>
-        <circle id="b_spawn" r="3" style="opacity: 1;&#10;fill: yellow;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+        <circle id="b_spawn" r="3" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 3;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
       </g>
       <g id="g220-0" transform="translate(20.5,34)">
         <text xml:space="preserve" id="text991-2-9" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-1.75,12)"><tspan x="0" y="0" transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)" sodipodi:role="line" style="stroke-width:0.26458332" id="tspan989-3-8">elevator</tspan></text>

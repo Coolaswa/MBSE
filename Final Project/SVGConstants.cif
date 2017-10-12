@@ -6,8 +6,10 @@ group Const:
 		//This needs to be updated manually in test_buffering_station_plant :(
 		alg int Size = 50;
 		const Point StartPos = (1147, 423);
+		const Rectangle StartBounds = (StartPos[x], StartPos[y], 50, 50);
 		const int EndLiftX = 1122;
 		const int BufferY = 248;
+		const int EndRejectX = 938;
 	end
 	group Lift:
 		const int MaxHeight = 240;
@@ -17,6 +19,6 @@ group Const:
 		const Rectangle CapSensorBounds = (1147,422,50,50);
 	end
 	group Buttons:
-		const list real ButtonHeightHeights = [0.5, 3.25, 6.25];
+
 	end
 end

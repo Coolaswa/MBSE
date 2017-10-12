@@ -109,6 +109,15 @@ group def ManualControl():
 			edge when CountFive.Four goto Retracting;
 	end
 
+    automaton Factory:
+        alg string boxColor = if b_color.Released: "black" else "red" end;
+        alg bool isThick = svg_b_height.state = 0;
+        location Waiting:
+            initial;
+            edge spawn_clicked goto SpawnBlock;
+        location SpawnBlock:
+            edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick) goto Waiting;
+    end
 end
 
 group def AutoControl():
@@ -118,14 +127,28 @@ group def AutoControl():
 		location Waiting:
 			initial;
 			equation state = STOP;
-			edge spawn_new_block goto GoingUp;
+			edge spawn_new_block goto VerifyBlock1;
+		location VerifyBlock1:
+		    equation state = STOP;
+		    edge PusherContr.extent when s_capacitive goto PushingBlockAtBot;
+		    edge when not s_capacitive goto GoingUp;
+		location PushingBlockAtBot:
+		    equation state = STOP;
+		    edge PusherContr.retract goto Waiting;
 		location GoingUp:
 			equation state = UP;
-			edge PusherContr.extent when s_elevator_up goto PushingBlock;
-		location PushingBlock:
+			edge when s_elevator_up goto VerifyBlock2;
+		location VerifyBlock2:
+		    equation state = STOP;
+		    edge when s_productheight goto GoingDownReject;
+		    edge PusherContr.extent when not s_productheight goto PushingBlockAtTop;
+		location GoingDownReject:
+		    equation state = DOWN;
+		    edge PusherContr.extent when s_elevator_down goto PushingBlockAtBot;
+		location PushingBlockAtTop:
 			equation state = STOP;
-			edge PusherContr.retract goto GoingDown;
-		location GoingDown:
+			edge PusherContr.retract goto GoingDownEmpty;
+		location GoingDownEmpty:
 			equation state = DOWN;
 			edge when s_elevator_down goto Waiting;
 	end
@@ -142,6 +165,21 @@ group def AutoControl():
 		location Lockdown:								//Pusher will not push when the buffer is full
 			edge when CountFive.Four goto Retracting;
 	end
+
+	automaton Factory:
+        disc dist bool d1 = bernoulli(0.2);
+        disc dist bool d2 = bernoulli(0.5);
+        disc dist real d3 = normal(10,5);
+        alg string boxColor = if isBlack: "black" else "red" end;
+        disc bool isThick;
+        disc bool isBlack;
+        cont timer der -1;
+        location Waiting:
+            initial;
+            edge when timer < 0 do (isThick, d1) := sample d1, (isBlack, d2) := sample d2 goto SpawnBlock;
+        location SpawnBlock:
+            edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick) do (timer, d3) := sample d3 goto Waiting;
+    end
 end
 
 

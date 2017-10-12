@@ -15,12 +15,16 @@ alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
 alg bool a_conveyer = ConveyerContr.Moving;
 alg bool a_separator = SeparatorContr.FullLeft;
+alg bool s_capacitive = CapacitiveSensor.isActive;
+alg bool s_productheight = HeightSensor.isActive;
 
-event e_startClicked, stopClicked, resetClicked, dummyEvent;
+event e_startClicked, stopClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
 event spawn_clicked;
-event void spawn_new_block;
+event BoxData spawn_new_block;
+event colorClicked;
+event heightClicked;
 
 startBttn: Button(e_startClicked);
 start_svg: Button_svg(e_startClicked, "start", "yellow", "grey",  startBttn.state);
@@ -42,21 +46,30 @@ b_pusher: Button(pusher_clicked);
 svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.state);
 svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.isActive);
 
+b_color: Button(colorClicked);
+svg_b_color: Switch_svg(colorClicked, b_color.state);
+
+b_height: Button(heightClicked);
+svg_b_height: Switch2_svg(heightClicked);
+
 svg_s_height: Button_svg(dummyEvent, "s_height", "yellow", "grey", HeightSensor.isActive);
 svg_s_capacitive: Button_svg(dummyEvent, "s_capacitive", "yellow", "grey", CapacitiveSensor.isActive);
 b_spawn: Button(spawn_clicked);
 svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 
+
+
 event void e_pusher_activated;
 
-box1: Box(35, true);
-svg_box1 : Box_svg("Product1", box1.x, box1.y, box1.rotation, box1.opacity);
-box2: Box(35, true);
-svg_box2 : Box_svg("Product2", box2.x, box2.y, box2.rotation, box2.opacity);
-box3: Box(35, true);
-svg_box3 : Box_svg("Product3", box3.x, box3.y, box3.rotation, box3.opacity);
+box1: Box();
+svg_box1 : Box_svg(1, box1.color, box1.x, box1.y, box1.rotation, box1.opacity, box1.isThick);
+box2: Box();
+svg_box2 : Box_svg(2, box2.color, box2.x, box2.y, box2.rotation, box2.opacity, box2.isThick);
+box3: Box();
+svg_box3 : Box_svg(3, box3.color, box3.x, box3.y, box3.rotation, box3.opacity, box3.isThick);
 
 conv1: Conveyor();
+conv1_svg: Conveyer_svg(1, conv1.wheelRotation);
 
 automaton dummy:
 	location:
@@ -69,9 +82,9 @@ automaton BoxUpdater:
 	alg list[3] Rectangle rects;
 	location:
 		equation data = [
-		 ((box1.x,box1.y,50,50), true),
-		 ((box2.x,box2.y,50,50), false),
-		 ((box3.x,box3.y,50,50), false)];
+		 ((box1.x,box1.y,50,50), box1.color, box1.isThick),
+		 ((box2.x,box2.y,50,50), box2.color, box2.isThick),
+		 ((box3.x,box3.y,50,50), box3.color, box3.isThick)];
 		 equation rects = [
 		 (box1.x,box1.y,50,50),
 		 (box2.x,box2.y,50,50),
@@ -80,10 +93,10 @@ automaton BoxUpdater:
 end
 
 const real boxSpeed = 60;
-automaton def Box(alg int h; alg bool isCap):
-	alg int height = h;
+automaton def Box():
+	disc string color = "pink";
 	alg real slideAngle = (15)*3.141592654/180;
-	alg bool isCapacitive = isCap;
+	disc bool isThick = false;
 	disc real opacityDer = 0;
 	disc real rotDer = 0;
 
@@ -93,13 +106,20 @@ automaton def Box(alg int h; alg bool isCap):
 	location Inactive:
 		equation x' = 0, y' = 0;
 		initial;
-		edge spawn_new_block? do (x,y) := Const.Box.StartPos,opacity:=1  goto Spawn;
+		edge spawn_new_block?
+		     do (x,y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), opacity:=1 goto Spawn;
 	location Spawn:
 		equation x' = 0, y' = 0;
 		edge when opacity > 0.995 do opacityDer := 0 goto InLift;
 	location InLift:
 		equation x' = 0, y' = Lift.speed;
 		edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
+		edge e_pusher_activated? when LiftSensorDown.isActive goto RejectBufferTransit;
+	location RejectBufferTransit:
+	    equation x' = -boxSpeed, y' = 0;
+	    edge when x < Const.Box.EndRejectX goto OnRejectBuffer;
+	location OnRejectBuffer:
+	    equation x' = 0, y' = 0;
 	location LiftAirTransit:
 		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
 		edge when rotation < -15 do rotDer := 0 goto OnAirslide;
@@ -122,8 +142,8 @@ automaton def Conveyor():
 	location On:
 		initial;
 		equation wheelSpeed = 50/20/3.1415;
-		//edge turnOff, toggle goto Off;
-		//edge turnOn;
+		edge turnOff, toggle goto Off;
+		edge turnOn;
 	location Off:
 		equation wheelSpeed = 0;
 		edge turnOn, toggle goto On;
@@ -155,7 +175,7 @@ automaton Pusher:
 	alg real speed;
 	cont x der speed;
 	location Extending:
-		equation speed = if not PusherSensor.isActive: -20 else 0 end;
+		equation speed = if not PusherSensor.isActive: -60 else 0 end;
 		edge when not a_pusher goto Retracting;
 	location Retracting:
 		initial;
@@ -176,10 +196,11 @@ group PusherSensor:
 end
 
 automaton HeightSensor:
-	alg bool isActive = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.rects) != -1;
+    alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.rects);
+	alg bool isActive =  (boxI != -1) and BoxUpdater.data[boxI][thick];
 	cont y;
 	location:
-		equation y' = if isActive: Lift.speed elif y < 0: 10 else 0 end;
+		equation y' = if boxI != -1: Lift.speed elif y < 0: 10 else 0 end;
 		initial;
 end
 
@@ -188,16 +209,10 @@ group CapacitiveSensor:
 	 							Const.Sensors.CapSensorBounds[y] + Lift.y,
 	  							Const.Sensors.CapSensorBounds[width],
 	   							Const.Sensors.CapSensorBounds[height]), BoxUpdater.rects);
-	alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][isCap];
+	alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] = "black");
 end
 
-automaton Factory:
-	location Waiting:
-		initial;
-		edge spawn_clicked goto SpawnBlock;
-	location SpawnBlock:
-		edge spawn_new_block! goto Waiting;
-end
+
 
 //Buffering station
 

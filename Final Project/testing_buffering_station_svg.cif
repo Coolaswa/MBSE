@@ -7,9 +7,35 @@ group def Button_svg(event action; alg string idfier, onColor, offColor; alg boo
 	svgout id idfier attr "fill" value if state: onColor
 									   else offColor end;
 end
-group def Box_svg(alg string idfier; alg real x, y, rotation, opacity):
-	svgout id idfier attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rotation);
-	svgout id idfier attr "opacity" value opacity;
+group def Box_svg(alg int idfier; alg string color; alg real x, y, rotation, opacity; alg bool isThick):
+	svgout id "Product" + <string>idfier attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rotation);
+	svgout id "Product" + <string>idfier attr "opacity" value opacity;
+    svgout id "ProductGraphics" + <string>idfier attr "fill" value color;
+
+    alg real heightScale = if isThick: 1.2 else 1 end;
+    svgout id "ProductGraphics" + <string>idfier attr "transform"
+        value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1) * 50);
+end
+
+group def Switch_svg(event action; alg bool state):
+    svgin id "b_colour" event action;
+    svgout id "colour_knob" attr "transform" value if state: "rotate(180,4.5,4.5)" else "" end;
+end
+
+automaton def Switch2_svg(event action):
+    const list real SwitchHeightHeights = [0.5, 3.25, 6.25];
+    disc int state = 0;
+    svgin id "b_height" event action;
+    svgout id "height_bar" attr "transform" value fmt("translate(0, %f)", SwitchHeightHeights[state]);
+    svgout id "height_pole" attr "transform" value fmt("rotate(%d,0.5,2.5)", 90 * state);
+    location:
+        initial;
+        edge action do state := (state+1) mod 3;
+end
+
+group def Conveyer_svg(alg int idfier; alg real wheelRotation):
+    svgout id fmt("Conv%d_Wheel", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360);
+    svgout id fmt("Conv%d_Wheel2", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360);
 end
 
 svgout id "Platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
@@ -17,6 +43,6 @@ svgout id "Platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
 svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);
 svgout id "time"   text value round(time);
 svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightSensor.y);
-svgout id "Wheel" attr "transform" value fmt("rotate(%d)", round(conv1.wheelRotation) mod 360);
+
 
 
