@@ -120,6 +120,19 @@ group def ManualControl():
     end
 end
 
+automaton UseCase:
+    location Case1:
+        initial;
+        edge when b_lift_up.Pressed goto Case2;
+        edge when b_lift_up.Pressed goto Case3;
+    location Case2:
+        edge when b_lift_up.Pressed goto Case1;
+        edge when b_lift_up.Pressed goto Case3;
+    location Case3:
+        edge when b_lift_up.Pressed goto Case1;
+        edge when b_lift_up.Pressed goto Case2;
+end
+
 group def AutoControl():
 
 	automaton Lift:
@@ -167,8 +180,16 @@ group def AutoControl():
 	end
 
 	automaton Factory:
-        disc dist bool d1 = bernoulli(0.2);
-        disc dist bool d2 = bernoulli(0.5);
+        disc dist bool d1 =
+                    if UseCase.Case1: bernoulli(0)
+                    //elif UseCase.Case2: bernoulli(0.3)
+                //    elif UseCase.Case3: bernoulli(0.05)
+                    else bernoulli(0) end;
+        disc dist bool d2 =
+                    if UseCase.Case1: bernoulli(0)
+                  //  elif UseCase.Case2: bernoulli(0.5)
+                //    elif UseCase.Case3: bernoulli(0.05)
+                    else bernoulli(0) end;
         disc dist real d3 = normal(10,5);
         alg string boxColor = if isBlack: "black" else "red" end;
         disc bool isThick;
