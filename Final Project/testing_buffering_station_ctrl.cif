@@ -7,8 +7,8 @@ automaton Coordinator:
     location ManualMode:
         equation liftState = ManualControl.Lift.state;
         equation pusherExtending = ManualControl.PusherContr.Extending;
-        initial;
     location AutoMode:
+        initial;
         equation liftState = AutoControl.Lift.state;
         equation pusherExtending = AutoControl.PusherContr.Extending;
 end
@@ -53,19 +53,27 @@ group ManualControl:
             edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick,0) goto Waiting;
     end
 end
-
+event b_case1Pressed, b_case2Pressed, b_case3Pressed;
+b_case1: Button(b_case1Pressed);
+b_case1_svg: Button_svg(b_case1Pressed, "b_case1", "yellow", "grey", b_case1.state);
+b_case2: Button(b_case2Pressed);
+b_case2_svg: Button_svg(b_case2Pressed, "b_case2", "yellow", "grey", b_case2.state);
+b_case3: Button(b_case3Pressed);
+b_case3_svg: Button_svg(b_case3Pressed, "b_case3", "yellow", "grey", b_case3.state);
 automaton UseCase:
-    disc int c = 1;
     location Case1:
         initial;
-        edge when false do c := 2 goto Case2 ;
-        //edge when b_lift_up.Pressed goto Case3;
+        edge b_case1Pressed;
+        edge b_case2Pressed goto Case2;
+        edge b_case3Pressed goto Case3;
     location Case2:
-        edge when b_lift_up.Pressed goto Case1;
-        edge when b_lift_up.Pressed goto Case3;
+        edge b_case1Pressed goto Case1;
+        edge b_case2Pressed;
+        edge b_case3Pressed goto Case3;
     location Case3:
-        edge when b_lift_up.Pressed goto Case1;
-        edge when b_lift_up.Pressed goto Case2;
+        edge b_case1Pressed goto Case1;
+        edge b_case2Pressed goto Case2;
+        edge b_case3Pressed;
 end
 
 group AutoControl:
@@ -116,26 +124,28 @@ group AutoControl:
 	end
 
 	automaton Factory:
-        disc dist bool d1 =
-                    if UseCase.c = 1: bernoulli(0)
-                    elif UseCase.c = 2: bernoulli(0.3)
-                    elif UseCase.c = 3: bernoulli(0.05)
-                    else bernoulli(0) end;
-        disc dist bool d2 =
-                    if UseCase.c = 1: bernoulli(0)
-                    elif UseCase.c = 2: bernoulli(0.5)
-                    elif UseCase.c = 3: bernoulli(0.05)
-                    else bernoulli(0) end;
-        disc dist real d3 = normal(10,5);
+	    alg real distr1 = 0.1;
+        disc dist bool thickDistrC1 = bernoulli(0);
+        disc dist bool thickDistrC2 = bernoulli(0.5);
+        disc dist bool thickDistrC3 = bernoulli(0.05);
+        disc dist bool blackDistrC1 = bernoulli(0);
+        disc dist bool blackDistrC2 = bernoulli(0.5);
+        disc dist bool blackDistrC3 = bernoulli(0.05);
+        disc dist real timeDistr = normal(10,5);
         alg string boxColor = if isBlack: "black" else "red" end;
         disc bool isThick;
         disc bool isBlack;
         cont timer der -1;
         location Waiting:
             initial;
-        //    edge when timer < 0 do (isThick, d1) := sample d1, (isBlack, d2) := sample d2 goto SpawnBlock;
-        location SpawnBlock;
-      //      edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick) do (timer, d3) := sample d3 goto Waiting;
+            edge when timer < 0 and Coordinator.AutoMode and UseCase.Case1
+                do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto SpawnBlock;
+            edge when timer < 0 and Coordinator.AutoMode and UseCase.Case2
+                do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto SpawnBlock;
+            edge when timer < 0 and Coordinator.AutoMode and UseCase.Case3
+                do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto SpawnBlock;
+        location SpawnBlock:
+            edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick,0) do (timer, timeDistr) := sample timeDistr goto Waiting;
     end
 end
 

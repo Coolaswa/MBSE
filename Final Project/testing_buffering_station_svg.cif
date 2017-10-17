@@ -7,13 +7,13 @@ group def Create_Boxes_svg(alg list[10] BoxData data):
     svg_box1: Create_Box_svg(1, data[0]);
     svg_box2: Create_Box_svg(2, data[1]);
     svg_box3: Create_Box_svg(3, data[2]);
-    svg_box4: Create_Box_svg(4, data[2]);
-    svg_box5: Create_Box_svg(5, data[2]);
-    svg_box6: Create_Box_svg(6, data[2]);
-    svg_box7: Create_Box_svg(7, data[2]);
-    svg_box8: Create_Box_svg(8, data[2]);
-    svg_box9: Create_Box_svg(9, data[2]);
-    svg_box10: Create_Box_svg(10, data[2]);
+    svg_box4: Create_Box_svg(4, data[3]);
+    svg_box5: Create_Box_svg(5, data[4]);
+    svg_box6: Create_Box_svg(6, data[5]);
+    svg_box7: Create_Box_svg(7, data[6]);
+    svg_box8: Create_Box_svg(8, data[7]);
+    svg_box9: Create_Box_svg(9, data[8]);
+    svg_box10: Create_Box_svg(10, data[9]);
 end
 
 group def Create_Box_svg(alg int idfier; alg BoxData data):
@@ -21,7 +21,7 @@ group def Create_Box_svg(alg int idfier; alg BoxData data):
      svgcopy id "Product1" post "_" + <string>idfier;
      svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]);
      svgout id name attr "opacity" value 1;
-     svgout id name attr "fill" value data[color];
+     svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color];
 
      alg real heightScale = if data[thick]: 1.2 else 1 end;
      svgout id "ProductGraphics1_" + <string>idfier attr "transform"
@@ -60,6 +60,8 @@ svgout id "Platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
 svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);
 svgout id "time"   text value round(time);
 svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightSensor.y);
+svgout id "Rotator" attr "transform" value fmt("rotate(%f)", Arm.armRot);
+svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,60)", 180-Arm.armRot);
 
 
 
