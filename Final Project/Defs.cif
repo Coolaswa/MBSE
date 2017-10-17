@@ -1,8 +1,8 @@
 type Rectangle = tuple(real x, y, width, height);
-type BoxData = tuple(Rectangle bounds; string color; bool thick);
+type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 type Point = tuple(real x, y);
 
-func int RectRectColl(Rectangle rect; list[3] Rectangle boxes):
+func int RectRectColl(Rectangle rect; list[10] Rectangle boxes):
 	int i = 0;
 	int length = size(boxes);
 	while i < length:

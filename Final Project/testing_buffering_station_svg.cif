@@ -2,19 +2,36 @@ import "testing_buffering_station_ctrl.cif";
 import "testing_buffering_station_plant.cif";
 svgfile "SystemSVG.svg";
 
+test: Create_Boxes_svg(BoxUpdater.data);
+group def Create_Boxes_svg(alg list[10] BoxData data):
+    svg_box1: Create_Box_svg(1, data[0]);
+    svg_box2: Create_Box_svg(2, data[1]);
+    svg_box3: Create_Box_svg(3, data[2]);
+    svg_box4: Create_Box_svg(4, data[2]);
+    svg_box5: Create_Box_svg(5, data[2]);
+    svg_box6: Create_Box_svg(6, data[2]);
+    svg_box7: Create_Box_svg(7, data[2]);
+    svg_box8: Create_Box_svg(8, data[2]);
+    svg_box9: Create_Box_svg(9, data[2]);
+    svg_box10: Create_Box_svg(10, data[2]);
+end
+
+group def Create_Box_svg(alg int idfier; alg BoxData data):
+     alg string name = "Product1_" + <string>idfier;
+     svgcopy id "Product1" post "_" + <string>idfier;
+     svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]);
+     svgout id name attr "opacity" value 1;
+     svgout id name attr "fill" value data[color];
+
+     alg real heightScale = if data[thick]: 1.2 else 1 end;
+     svgout id "ProductGraphics1_" + <string>idfier attr "transform"
+         value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1) * 50);
+end
+
 group def Button_svg(event action; alg string idfier, onColor, offColor; alg bool state):
 	svgin id idfier event action;
 	svgout id idfier attr "fill" value if state: onColor
 									   else offColor end;
-end
-group def Box_svg(alg int idfier; alg string color; alg real x, y, rotation, opacity; alg bool isThick):
-	svgout id "Product" + <string>idfier attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rotation);
-	svgout id "Product" + <string>idfier attr "opacity" value opacity;
-    svgout id "ProductGraphics" + <string>idfier attr "fill" value color;
-
-    alg real heightScale = if isThick: 1.2 else 1 end;
-    svgout id "ProductGraphics" + <string>idfier attr "transform"
-        value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1) * 50);
 end
 
 group def Switch_svg(event action; alg bool state):
