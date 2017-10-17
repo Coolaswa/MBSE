@@ -7,9 +7,9 @@ alg bool s_Tstopbutton = startBttn.state;
 
 //alg bool s_Tautoswitch;
 alg bool s_Tresetbutton = startBttn.state;
-alg bool a_elevator_up = (ctrl.Lift.state = UP);
-alg bool a_elevator_down = (ctrl.Lift.state = DOWN);
-alg bool a_pusher = ctrl.PusherContr.Extending;
+alg bool a_elevator_up = (Coordinator.liftState = UP);
+alg bool a_elevator_down = (Coordinator.liftState = DOWN);
+alg bool a_pusher = Coordinator.pusherExtending;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
@@ -18,6 +18,7 @@ alg bool a_separator = SeparatorContr.FullLeft;
 alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
 
+
 event e_startClicked, stopClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
@@ -25,6 +26,7 @@ event spawn_clicked;
 event BoxData spawn_new_block;
 event colorClicked;
 event heightClicked;
+event productRejected;
 
 startBttn: Button(e_startClicked);
 start_svg: Button_svg(e_startClicked, "start", "yellow", "grey",  startBttn.state);
@@ -94,15 +96,20 @@ end
 
 const real boxSpeed = 60;
 automaton def Box():
+    monitor productRejected;
+
 	disc string color = "pink";
 	alg real slideAngle = (15)*3.141592654/180;
 	disc bool isThick = false;
 	disc real opacityDer = 0;
 	disc real rotDer = 0;
+	disc int productRejectPosX = 800;
 
 	cont rotation = 0 der rotDer;
 	cont opacity der opacityDer;
 	cont x = -200, y=-200;
+	cont accelTimer = 1 der 1;
+	alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
 	location Inactive:
 		equation x' = 0, y' = 0;
 		initial;
@@ -120,11 +127,12 @@ automaton def Box():
 	    edge when x < Const.Box.EndRejectX goto OnRejectBuffer;
 	location OnRejectBuffer:
 	    equation x' = 0, y' = 0;
+	    edge productRejected do productRejectPosX := productRejectPosX + Const.Box.Size goto RejectBufferTransit;
 	location LiftAirTransit:
 		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
-		edge when rotation < -15 do rotDer := 0 goto OnAirslide;
+		edge when rotation < -15 do rotDer := 0, accelTimer := 0 goto OnAirslide;
 	location OnAirslide:
-		equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+		equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
 		edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
 	location SlideBufferTransit:
 		equation x' = -boxSpeed, y' = 0;
@@ -137,13 +145,13 @@ end
 automaton def Conveyor():
 	event turnOn, turnOff;
 	event toggle;
-	cont wheelRotation der -boxSpeed;
+	cont wheelRotation der -wheelSpeed;
 	alg real wheelSpeed;
 	location On:
 		initial;
-		equation wheelSpeed = 50/20/3.1415;
-		edge turnOff, toggle goto Off;
-		edge turnOn;
+		equation wheelSpeed = 60/20/3.1415*360;
+	//	edge turnOff, toggle goto Off;
+	//	edge turnOn;
 	location Off:
 		equation wheelSpeed = 0;
 		edge turnOn, toggle goto On;
@@ -180,7 +188,10 @@ automaton Pusher:
 	location Retracting:
 		initial;
 		equation speed = if x < 0: 20 else 0 end;
-		edge e_pusher_activated! when a_pusher goto Extending;
+		edge e_pusher_activated! when a_pusher goto PreExtend;
+    location PreExtend:
+        equation speed = 0;
+        edge productRejected goto Extending;
 end
 
 group LiftSensorUp:
@@ -213,6 +224,10 @@ group CapacitiveSensor:
 end
 
 
+automaton RejectBuffer:
+    location:
+        initial;
+end
 
 //Buffering station
 
@@ -296,5 +311,4 @@ automaton CountFive:	//when CountFive = 5, stops the pusher; see control
 	location Five:
 		edge when ExitSensor.isActive goto Four;
 end
-
 

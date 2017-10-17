@@ -77,10 +77,19 @@ alg bool a_Bout7          = counter.count = 20; // 20
 alg bool a_separator      = counter.count = 21; // 21
 alg bool a_conveyer       = counter.count = 22; // 22
 alg bool a_bufferingready = counter.count = 23; // 23*/
-ctrl: AutoControl();
+
+automaton Coordinator:
+    alg LiftState liftState;
+    alg bool pusherExtending;
+        equation liftState = ManualControl.Lift.state;
+        equation pusherExtending = ManualControl.PusherContr.Extending;
+        initial;
+        equation liftState = AutoControl.Lift.state;
+        equation pusherExtending = AutoControl.PusherContr.Extending;
+end
 
 enum LiftState = UP, STOP, DOWN;
-group def ManualControl():
+group ManualControl:
 	automaton Lift:
 		alg LiftState state;
 		location Up:
@@ -121,10 +130,11 @@ group def ManualControl():
 end
 
 automaton UseCase:
+    disc int c = 1;
     location Case1:
         initial;
-        edge when b_lift_up.Pressed goto Case2;
-        edge when b_lift_up.Pressed goto Case3;
+        edge when false do c := 2 goto Case2 ;
+        //edge when b_lift_up.Pressed goto Case3;
     location Case2:
         edge when b_lift_up.Pressed goto Case1;
         edge when b_lift_up.Pressed goto Case3;
@@ -133,7 +143,6 @@ automaton UseCase:
         edge when b_lift_up.Pressed goto Case2;
 end
 
-group def AutoControl():
 
 	automaton Lift:
 		alg LiftState state;
@@ -181,14 +190,8 @@ group def AutoControl():
 
 	automaton Factory:
         disc dist bool d1 =
-                    if UseCase.Case1: bernoulli(0)
-                    //elif UseCase.Case2: bernoulli(0.3)
-                //    elif UseCase.Case3: bernoulli(0.05)
                     else bernoulli(0) end;
         disc dist bool d2 =
-                    if UseCase.Case1: bernoulli(0)
-                  //  elif UseCase.Case2: bernoulli(0.5)
-                //    elif UseCase.Case3: bernoulli(0.05)
                     else bernoulli(0) end;
         disc dist real d3 = normal(10,5);
         alg string boxColor = if isBlack: "black" else "red" end;
