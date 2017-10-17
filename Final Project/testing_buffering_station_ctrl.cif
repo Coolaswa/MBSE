@@ -81,9 +81,11 @@ alg bool a_bufferingready = counter.count = 23; // 23*/
 automaton Coordinator:
     alg LiftState liftState;
     alg bool pusherExtending;
+    location ManualMode:
         equation liftState = ManualControl.Lift.state;
         equation pusherExtending = ManualControl.PusherContr.Extending;
         initial;
+    location AutoMode:
         equation liftState = AutoControl.Lift.state;
         equation pusherExtending = AutoControl.PusherContr.Extending;
 end
@@ -143,6 +145,8 @@ automaton UseCase:
         edge when b_lift_up.Pressed goto Case2;
 end
 
+group AutoControl:
+    //alg bool isActive = false;
 
 	automaton Lift:
 		alg LiftState state;
@@ -190,8 +194,14 @@ end
 
 	automaton Factory:
         disc dist bool d1 =
+                    if UseCase.c = 1: bernoulli(0)
+                    elif UseCase.c = 2: bernoulli(0.3)
+                    elif UseCase.c = 3: bernoulli(0.05)
                     else bernoulli(0) end;
         disc dist bool d2 =
+                    if UseCase.c = 1: bernoulli(0)
+                    elif UseCase.c = 2: bernoulli(0.5)
+                    elif UseCase.c = 3: bernoulli(0.05)
                     else bernoulli(0) end;
         disc dist real d3 = normal(10,5);
         alg string boxColor = if isBlack: "black" else "red" end;
