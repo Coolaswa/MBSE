@@ -52,14 +52,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="1280.7236"
-     inkscape:cy="437.22785"
+     inkscape:zoom="0.7"
+     inkscape:cx="936.63563"
+     inkscape:cy="378.26877"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1001"
+     inkscape:window-height="1003"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -74,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -144,7 +144,7 @@
     </g>
     <g
        id="Product1"
-       transform="translate(364.88788,143.74187)">
+       transform="translate(1543.4593,55.170441)">
       <rect
          x="0"
          y="0"
@@ -156,7 +156,7 @@
     </g>
     <g
        id="Product3"
-       transform="translate(1145.2387,421.21517)">
+       transform="translate(1651.6575,2.5365971)">
       <rect
          x="0"
          y="0"
@@ -167,7 +167,7 @@
     </g>
     <g
        id="Product2"
-       transform="translate(555.70752,156.06409)">
+       transform="translate(1594.279,7.4926609)">
       <rect
          x="0"
          y="0"
