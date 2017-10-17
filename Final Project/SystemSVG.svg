@@ -10,9 +10,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="1500"
+   width="1700"
    height="600"
-   viewBox="0 0 1500 600"
+   viewBox="0 0 1700 600"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="193.09254"
-     inkscape:cy="411.5923"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="1280.7236"
+     inkscape:cy="437.22785"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -74,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -83,84 +83,109 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="Conveyor-7"
+       id="Vertical rails"
+       transform="matrix(1.801077,0,0,1.801077,1238.5603,87.09593)">
+      <rect
+         height="250"
+         width="1.5"
+         id="rails"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.72058535;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
+    </g>
+    <g
+       id="Platform">
+      <rect
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1497"
+         width="122.83144"
+         height="23.325727"
+         x="1146.7288"
+         y="473.23547" />
+      <rect
+         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2291"
+         width="38.863682"
+         height="2.3826747"
+         x="1173.9886"
+         y="430.4953"
+         ry="1.1913373" />
+      <g
+         id="a_pusher">
+        <rect
+           y="439.14569"
+           x="1196.7826"
+           height="24.486172"
+           width="8.0239935"
+           id="rect1389"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <rect
+           y="445.9733"
+           x="1196.7826"
+           height="11.536604"
+           width="85.559074"
+           id="rect4530"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <rect
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect4528"
+         width="50.344799"
+         height="47.312157"
+         x="1219.1833"
+         y="427.63614" />
+      <rect
+         style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2286"
+         width="9.190299"
+         height="8.5095644"
+         x="1209.993"
+         y="427.63614" />
+    </g>
+    <g
+       id="Product1"
+       transform="translate(364.88788,143.74187)">
+      <rect
+         x="0"
+         y="0"
+         height="50"
+         width="50"
+         id="ProductGraphics1"
+         style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(1,0,0,2,0,-50)" />
+    </g>
+    <g
+       id="Product3"
+       transform="translate(1145.2387,421.21517)">
+      <rect
+         x="0"
+         y="0"
+         height="50"
+         width="50"
+         id="ProductGraphics3"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:6.30694103;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="Product2"
+       transform="translate(555.70752,156.06409)">
+      <rect
+         x="0"
+         y="0"
+         height="50"
+         width="50"
+         id="ProductGraphics2"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="Disposed"
        transform="translate(938.23475,475.59998)">
       <rect
-         ry="10"
          height="20"
          width="200"
          id="rect4526-9"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          x="0"
          y="0" />
-      <g
-         id="Roller-4"
-         transform="translate(10,10)">
-        <g
-           id="Wheel-41"
-           transform="rotate(10)">
-          <circle
-             cy="0"
-             cx="0"
-             id="path1421-7"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             r="8" />
-          <rect
-             y="-2.5"
-             x="-2.5"
-             height="5"
-             width="5"
-             id="rect7457-9" />
-          <rect
-             style="fill:#000000"
-             id="rect422-8"
-             width="12"
-             height="1.5"
-             x="-6"
-             y="-0.75" />
-          <rect
-             style="fill:#000000"
-             id="rect420-6"
-             width="1.5"
-             height="12"
-             y="-6"
-             x="-0.75" />
-        </g>
-      </g>
-      <g
-         id="Roller-0-3"
-         transform="translate(190,10)">
-        <g
-           id="Wheel-5"
-           transform="rotate(10)">
-          <circle
-             cy="0"
-             cx="0"
-             id="path1421-23"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             r="8" />
-          <rect
-             y="-2.5"
-             x="-2.5"
-             height="5"
-             width="5"
-             id="rect7457-8" />
-          <rect
-             style="fill:#000000"
-             id="rect422-3"
-             width="12"
-             height="1.5"
-             x="-6"
-             y="-0.75" />
-          <rect
-             style="fill:#000000"
-             id="rect420-0"
-             width="1.5"
-             height="12"
-             y="-6"
-             x="-0.75" />
-        </g>
-      </g>
     </g>
     <g
        id="height_sensor">
@@ -195,17 +220,6 @@
          height="35.65147"
          x="1160.1531"
          y="176.10332" />
-    </g>
-    <g
-       id="Vertical rails"
-       transform="matrix(1.801077,0,0,1.801077,1238.5603,87.09593)">
-      <rect
-         height="250"
-         width="1.5"
-         id="rails"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.72058535;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="0"
-         y="0" />
     </g>
     <g
        id="Control panel"
@@ -957,87 +971,168 @@
       </g>
     </g>
     <g
-       id="Platform">
+       id="Conveyor"
+       transform="translate(547.47247,300.02974)">
       <rect
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect1497"
-         width="122.83144"
-         height="23.325727"
-         x="1146.7288"
-         y="473.23547" />
-      <rect
-         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect2291"
-         width="38.863682"
-         height="2.3826747"
-         x="1173.9886"
-         y="430.4953"
-         ry="1.1913373" />
+         ry="10"
+         height="20"
+         width="400"
+         id="rect4526"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
       <g
-         id="a_pusher">
-        <rect
-           y="439.14569"
-           x="1196.7826"
-           height="24.486172"
-           width="8.0239935"
-           id="rect1389"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <rect
-           y="445.9733"
-           x="1196.7826"
-           height="11.536604"
-           width="85.559074"
-           id="rect4530"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         id="Roller"
+         transform="translate(10,10)">
+        <g
+           id="Conv1_Wheel"
+           transform="rotate(10)">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457" />
+          <rect
+             style="fill:#000000"
+             id="rect422"
+             width="12"
+             height="1.5"
+             x="-6"
+             y="-0.75" />
+          <rect
+             style="fill:#000000"
+             id="rect420"
+             width="1.5"
+             height="12"
+             y="-6"
+             x="-0.75" />
+        </g>
       </g>
-      <rect
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect4528"
-         width="50.344799"
-         height="47.312157"
-         x="1219.1833"
-         y="427.63614" />
-      <rect
-         style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect2286"
-         width="9.190299"
-         height="8.5095644"
-         x="1209.993"
-         y="427.63614" />
-    </g>
-    <g
-       id="Product3"
-       transform="translate(938.15737,423.23547)">
-      <rect
-         x="0"
-         y="0"
-         height="50"
-         width="50"
-         id="ProductGraphics3"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:6.30694103;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-    <g
-       id="Product1"
-       transform="translate(364.88788,143.74187)">
-      <rect
-         x="0"
-         y="0"
-         height="50"
-         width="50"
-         id="ProductGraphics1"
-         style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         transform="matrix(1,0,0,2,0,-50)" />
-    </g>
-    <g
-       id="Product2"
-       transform="translate(555.70752,156.06409)">
-      <rect
-         x="0"
-         y="0"
-         height="50"
-         width="50"
-         id="ProductGraphics2"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <g
+         id="Roller-0"
+         transform="translate(390,10)">
+        <g
+           id="Conv1_Wheel2"
+           transform="rotate(10)">
+          <circle
+             cy="0"
+             cx="0"
+             id="path1421-2"
+             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             r="8" />
+          <rect
+             y="-2.5"
+             x="-2.5"
+             height="5"
+             width="5"
+             id="rect7457-6" />
+          <rect
+             style="fill:#000000"
+             id="rect422-4"
+             width="12"
+             height="1.5"
+             x="-6"
+             y="-0.75" />
+          <rect
+             style="fill:#000000"
+             id="rect420-4"
+             width="1.5"
+             height="12"
+             y="-6"
+             x="-0.75" />
+        </g>
+      </g>
+      <g
+         id="Sensors"
+         transform="translate(-548,-300)">
+        <g
+           id="BS01"
+           transform="translate(910,265)">
+          <rect
+             y="0"
+             x="0"
+             style="fill:#666666;paint-order:fill markers stroke"
+             id="rect284-2"
+             width="9"
+             height="50"
+             ry="5" />
+          <circle
+             r="1"
+             cy="5"
+             cx="4.5"
+             id="i_BS01"
+             style="fill:#ff0000;paint-order:fill markers stroke" />
+        </g>
+        <g
+           id="BS02"
+           transform="translate(670,265)">
+          <rect
+             y="0"
+             x="0"
+             style="fill:#666666;paint-order:fill markers stroke"
+             id="rect284-7"
+             width="9"
+             height="50"
+             ry="5" />
+          <circle
+             r="1"
+             cy="5"
+             cx="4.5"
+             id="i_BS02"
+             style="fill:#ff0000;paint-order:fill markers stroke" />
+        </g>
+        <g
+           id="g301"
+           style="fill:#6c6753">
+          <rect
+             style="fill:#ac9393;paint-order:fill markers stroke"
+             id="rect303"
+             width="69.700523"
+             height="11.111673"
+             x="590.93921"
+             y="267.65982"
+             ry="4.5456843" />
+          <rect
+             y="268.80933"
+             x="599.29797"
+             height="50.143578"
+             width="24.543135"
+             id="rect282"
+             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke" />
+        </g>
+        <g
+           transform="translate(570,265)"
+           id="BS03">
+          <rect
+             y="0"
+             x="0"
+             style="fill:#666666;paint-order:fill markers stroke"
+             id="rect284"
+             width="9"
+             height="50"
+             ry="5" />
+          <circle
+             r="1"
+             cy="5"
+             cx="4.5"
+             id="i_BS03"
+             style="fill:#ff0000;paint-order:fill markers stroke" />
+        </g>
+        <rect
+           style="fill:#c8beb7;paint-order:fill markers stroke"
+           id="rect295"
+           width="370"
+           height="30"
+           x="562.14288"
+           y="302.85715" />
+      </g>
     </g>
     <g
        id="Actuator indicator">
@@ -1603,167 +1698,52 @@
       </g>
     </g>
     <g
-       id="Conveyor"
-       transform="translate(547.47247,300.02974)">
-      <rect
-         ry="10"
-         height="20"
-         width="400"
-         id="rect4526"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="0"
-         y="0" />
+       id="Arm"
+       transform="translate(1490.9852,416.18284)">
       <g
-         id="Roller"
-         transform="translate(10,10)">
-        <g
-           id="Conv1_Wheel"
-           transform="rotate(10)">
-          <circle
-             cy="0"
-             cx="0"
-             id="path1421"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             r="8" />
-          <rect
-             y="-2.5"
-             x="-2.5"
-             height="5"
-             width="5"
-             id="rect7457" />
-          <rect
-             style="fill:#000000"
-             id="rect422"
-             width="12"
-             height="1.5"
-             x="-6"
-             y="-0.75" />
-          <rect
-             style="fill:#000000"
-             id="rect420"
-             width="1.5"
-             height="12"
-             y="-6"
-             x="-0.75" />
-        </g>
-      </g>
-      <g
-         id="Roller-0"
-         transform="translate(390,10)">
-        <g
-           id="Conv1_Wheel2"
-           transform="rotate(10)">
-          <circle
-             cy="0"
-             cx="0"
-             id="path1421-2"
-             style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             r="8" />
-          <rect
-             y="-2.5"
-             x="-2.5"
-             height="5"
-             width="5"
-             id="rect7457-6" />
-          <rect
-             style="fill:#000000"
-             id="rect422-4"
-             width="12"
-             height="1.5"
-             x="-6"
-             y="-0.75" />
-          <rect
-             style="fill:#000000"
-             id="rect420-4"
-             width="1.5"
-             height="12"
-             y="-6"
-             x="-0.75" />
-        </g>
-      </g>
-      <g
-         id="Sensors"
-         transform="translate(-548,-300)">
-        <g
-           id="BS01"
-           transform="translate(910,265)">
-          <rect
-             y="0"
-             x="0"
-             style="fill:#666666;paint-order:fill markers stroke"
-             id="rect284-2"
-             width="9"
-             height="50"
-             ry="5" />
-          <circle
-             r="1"
-             cy="5"
-             cx="4.5"
-             id="i_BS01"
-             style="fill:#ff0000;paint-order:fill markers stroke" />
-        </g>
-        <g
-           id="BS02"
-           transform="translate(670,265)">
-          <rect
-             y="0"
-             x="0"
-             style="fill:#666666;paint-order:fill markers stroke"
-             id="rect284-7"
-             width="9"
-             height="50"
-             ry="5" />
-          <circle
-             r="1"
-             cy="5"
-             cx="4.5"
-             id="i_BS02"
-             style="fill:#ff0000;paint-order:fill markers stroke" />
-        </g>
-        <g
-           id="g301"
-           style="fill:#6c6753">
-          <rect
-             style="fill:#ac9393;paint-order:fill markers stroke"
-             id="rect303"
-             width="69.700523"
-             height="11.111673"
-             x="590.93921"
-             y="267.65982"
-             ry="4.5456843" />
-          <rect
-             y="268.80933"
-             x="599.29797"
-             height="50.143578"
-             width="24.543135"
-             id="rect282"
-             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke" />
-        </g>
-        <g
-           transform="translate(570,265)"
-           id="BS03">
-          <rect
-             y="0"
-             x="0"
-             style="fill:#666666;paint-order:fill markers stroke"
-             id="rect284"
-             width="9"
-             height="50"
-             ry="5" />
-          <circle
-             r="1"
-             cy="5"
-             cx="4.5"
-             id="i_BS03"
-             style="fill:#ff0000;paint-order:fill markers stroke" />
-        </g>
+         id="Rotator"
+         transform="rotate(100)">
         <rect
-           style="fill:#c8beb7;paint-order:fill markers stroke"
-           id="rect295"
-           width="370"
+           style="fill:#b3b3b3;paint-order:fill markers stroke"
+           id="rect4341"
+           width="25"
+           height="300"
+           y="30"
+           x="-12.5" />
+        <rect
+           y="0"
+           x="-25"
            height="30"
-           x="562.14288"
-           y="302.85715" />
+           width="50"
+           id="rect4331"
+           style="fill:#333333;paint-order:fill markers stroke" />
+        <circle
+           cy="0"
+           style="fill:#333333;paint-order:fill markers stroke"
+           id="path4326"
+           r="25"
+           cx="0" />
+        <g
+           id="g1234556"
+           transform="translate(-6.25,265)">
+          <g
+             id="Holder"
+             transform="rotate(80,6.25,60)">
+            <rect
+               style="fill:#0066ff;paint-order:fill markers stroke"
+               id="rect4347"
+               width="12.5"
+               height="60"
+               y="0"
+               x="0" />
+          </g>
+        </g>
+        <circle
+           style="fill:#333333;paint-order:fill markers stroke"
+           id="path4344"
+           cx="0"
+           cy="325"
+           r="20" />
       </g>
     </g>
   </g>
