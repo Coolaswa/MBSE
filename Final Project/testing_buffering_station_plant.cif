@@ -6,7 +6,6 @@ alg bool s_Tstartbutton = startBttn.state;
 alg bool s_Tstopbutton = startBttn.state;
 
 //alg bool s_Tautoswitch;
-alg bool s_Tresetbutton = startBttn.state;
 alg bool a_elevator_up = (Coordinator.liftState = UP);
 alg bool a_elevator_down = (Coordinator.liftState = DOWN);
 alg bool a_pusher = Coordinator.pusherExtending;
@@ -16,7 +15,10 @@ alg bool s_elevator_down = LiftSensorDown.isActive;
 alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Buffering or ConveyerContr.Delay;
 alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc;
 alg bool s_capacitive = CapacitiveSensor.isActive;
+alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
+alg bool s_bufferingbusy = Coordinator.busy;
+alg bool s_Tresetbutton = resetBttn.Pressed;
 
 event e_startClicked, resetClicked, stopClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
@@ -395,7 +397,7 @@ automaton Arm:
     disc real armSpeed = 0;
     location Waiting:
         initial;
-        edge spawn_new_block do armSpeed := -25 goto Placing;
+        edge spawn_new_block when not s_bufferingbusy do armSpeed := -25 goto Placing;
     location Returning:
         edge when armRot > 180 do armSpeed := 0 goto Waiting;
     location Placing:

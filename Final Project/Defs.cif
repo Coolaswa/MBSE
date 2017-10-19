@@ -9,7 +9,7 @@ func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
     real y;
     while i < length:
         height := boxes[i][bounds][height]*(if boxes[i][thick]: 1.2 else 1.0 end);
-        y := boxes[i][bounds][y] - 0.2*boxes[i][bounds][height];
+        y := boxes[i][bounds][y] - 0.2*boxes[i][bounds][height]*(if boxes[i][thick]: 1.0 else 0.0 end);
         if (rect[x] < boxes[i][bounds][x] + boxes[i][bounds][width] and
             rect[x] + rect[width] > boxes[i][bounds][x] and
             rect[y] < y + height and
