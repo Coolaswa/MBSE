@@ -52,14 +52,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="790.6587"
-     inkscape:cy="376.75451"
+     inkscape:zoom="7.9195959"
+     inkscape:cx="64.908378"
+     inkscape:cy="535.5068"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1003"
+     inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -222,137 +222,186 @@
          y="176.10332" />
     </g>
     <g
-       id="Control panel"
-       transform="matrix(1.5569098,0,0,1.5569098,5.5186206,142.72309)">
+       id="Control panel">
       <rect
-         y="-53.827381"
-         x="411.99405"
-         height="96.761909"
-         width="68.035706"
+         height="100"
+         width="70"
          id="rect2263"
-         style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
       <g
-         id="g194">
+         id="startbutton"
+         transform="translate(10,10)">
         <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:#008000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="start"
            width="20"
            height="20"
-           x="419.55359"
-           y="-48.157738"
-           ry="5.2916665" />
+           ry="5.5"
+           x="0"
+           y="0" />
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819"
-           y="-21.941753"
-           x="425.32529"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
-           xml:space="preserve"><tspan
+           xml:space="preserve"
+           x="4"
+           y="25"><tspan
              style="stroke-width:0.23602927"
-             y="-21.941753"
-             x="425.32529"
+             y="0"
+             x="4"
              id="tspan817"
              sodipodi:role="line">Start</tspan></text>
       </g>
       <g
-         id="g199">
+         id="stopbutton"
+         transform="translate(40,10)">
         <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="stop"
            width="20"
            height="20"
-           x="449.08987"
-           y="-48.028446"
-           ry="5.2916665" />
+           ry="5.5"
+           x="0"
+           y="0" />
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819-8"
-           y="-21.888374"
-           x="455.26407"
+           y="25"
+           x="4"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="-21.888374"
-             x="455.26407"
+             y="25"
+             x="4.5"
              id="tspan817-0"
              sodipodi:role="line">Stop</tspan></text>
       </g>
       <g
-         transform="translate(189.19345,-31.9801)"
-         id="g2168-1">
+         id="resetbutton"
+         transform="translate(10,40)">
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819-1"
-           y="40.434059"
-           x="235.22153"
+           y="25"
+           x="3.25"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="40.434059"
-             x="235.22153"
+             y="25"
+             x="3.5"
              id="tspan817-07"
              sodipodi:role="line">Reset</tspan></text>
         <rect
-           ry="5.2916665"
-           y="14.58631"
-           x="230.56548"
+           ry="5.5"
            height="20"
            width="20"
            id="b_reset"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
       </g>
       <g
-         id="g2256"
-         transform="translate(188.9881,-62.744048)">
+         transform="translate(40,40)"
+         id="automanswitch">
         <text
-           transform="scale(0.99413114,1.0059035)"
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           x="-2"
+           y="25"
+           id="text320"><tspan
+             sodipodi:role="line"
+             id="tspan318"
+             style="stroke-width:0.23602927"
+             x="-2"
+             y="25">Auto/Man</tspan></text>
+        <rect
+           x="0"
+           y="0"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect322"
+           width="20"
+           height="20"
+           ry="5.5" />
+        <circle
+           style="fill:#cccccc;paint-order:fill markers stroke"
+           id="path326"
+           cx="10"
+           cy="10"
+           r="8" />
+        <circle
+           style="opacity:1;fill:none;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path329"
+           cx="10"
+           cy="10"
+           r="7" />
+        <g
+           id="key"
+           transform="rotate(30,10,10)">
+          <rect
+             style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+             id="rect1140"
+             width="4"
+             height="6"
+             x="8"
+             y="7" />
+          <rect
+             y="2.5"
+             x="8.5"
+             height="15"
+             width="3"
+             id="rect1137"
+             style="opacity:1;fill:#4d4d4d" />
+        </g>
+      </g>
+      <g
+         id="q1button"
+         transform="translate(10,70)">
+        <text
            id="text819-1-3"
-           y="101.08297"
-           x="238.62183"
+           y="25"
+           x="6.5"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="101.08297"
-             x="238.62183"
+             y="25"
+             x="6"
              id="tspan817-07-6"
              sodipodi:role="line">Q1</tspan></text>
         <rect
-           ry="5.2916665"
-           y="75.593262"
-           x="230.77083"
+           ry="5.5"
            height="20"
            width="20"
-           id="rect2120-2-8"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           id="s_q1"
+           style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
       </g>
       <g
-         id="g2261"
-         transform="translate(188.9881,-62.744048)">
+         id="q2button"
+         transform="translate(40,70)">
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819-1-3-6"
-           y="101.23328"
-           x="269.03842"
+           y="25"
+           x="6.5"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
              y="101.23328"
-             x="269.03842"
+             x="6.5"
              id="tspan817-07-6-0"
              sodipodi:role="line">Q2</tspan></text>
         <rect
-           ry="5.2916665"
-           y="75.744453"
-           x="261.00894"
+           ry="5.5"
            height="20"
            width="20"
-           id="rect2120-2-8-1"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           id="s_q2"
+           style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
       </g>
     </g>
     <g
        id="Sensor indicators"
-       transform="translate(179.80716,-1.5152251)">
+       transform="translate(114.65232,139.40105)">
       <g
          id="g528"
          transform="scale(3)">
@@ -1135,7 +1184,8 @@
       </g>
     </g>
     <g
-       id="Actuator indicator">
+       id="Actuator indicator"
+       transform="translate(357.594,281.83256)">
       <g
          id="g388"
          transform="scale(3)">
