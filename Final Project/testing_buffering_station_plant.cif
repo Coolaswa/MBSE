@@ -130,6 +130,7 @@ automaton def Box():
 	cont x = -200, y=-200;
 	cont accelTimer = 1 der 1;
 	alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+	alg real boxSpeedInArm = (2*3.1415*320/360*Arm.armSpeed);
 	location Inactive:
 		equation x' = 0, y' = 0;
 		initial;
@@ -137,7 +138,10 @@ automaton def Box():
 		     do (x,y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity:=1 goto Spawn;
 	location Spawn:
 		equation x' = 0, y' = 0;
-		edge when opacity > 0.995 do opacityDer := 0 goto InLift;
+		edge when opacity > 0.995 do opacityDer := 0 goto InArm;
+	location InArm:
+	    equation x' = -boxSpeedInArm * cos(Arm.armRot/180*3.1415), y' = -boxSpeedInArm * sin(Arm.armRot/180*3.1415);
+	    edge when Arm.armRot < 96.5 do (x,y) := Const.Box.LiftPos goto InLift;
 	location InLift:
 		equation x' = 0, y' = Lift.speed;
 		edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
@@ -253,6 +257,10 @@ group CapacitiveSensor:
 	alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] = "black");
 end
 
+group ReflexiveSensor:
+    alg bool isActive = Arm.armRot < 130;
+end
+
 //Buffering station
 
 //separator functions:
@@ -337,15 +345,14 @@ automaton CountFive:	//when CountFive = 5, stops the pusher; see control
 end
 
 automaton Arm:
-    event placeProduct;
     cont armRot = 180 der armSpeed;
     disc real armSpeed = 0;
     location Waiting:
         initial;
-        edge tau do armSpeed := -120 goto Placing;
+        edge spawn_new_block do armSpeed := -25 goto Placing;
     location Returning:
         edge when armRot > 180 do armSpeed := 0 goto Waiting;
     location Placing:
-        edge when armRot < 96 do armSpeed := 120 goto Returning;
+        edge when armRot < 96 do armSpeed := 25 goto Returning;
 end
 

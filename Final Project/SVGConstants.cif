@@ -5,7 +5,8 @@ group Const:
 	group Box:
 		//This needs to be updated manually in test_buffering_station_plant :(
 		alg int Size = 50;
-		const Point StartPos = (1147, 423);
+		const Point StartPos = (1466, 152);
+		const Point LiftPos = (1147, 423);
 		const Rectangle StartBounds = (StartPos[x], StartPos[y], 50, 50);
 		const int EndLiftX = 1122;
 		const int BufferY = 248;

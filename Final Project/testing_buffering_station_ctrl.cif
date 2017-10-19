@@ -5,10 +5,11 @@ automaton Coordinator:
     alg LiftState liftState;
     alg bool pusherExtending;
     location ManualMode:
+        initial;
         equation liftState = ManualControl.Lift.state;
         equation pusherExtending = ManualControl.PusherContr.Extending;
     location AutoMode:
-        initial;
+       // initial;
         equation liftState = AutoControl.Lift.state;
         equation pusherExtending = AutoControl.PusherContr.Extending;
 end
