@@ -150,28 +150,44 @@ group AutoControl:
     end
 end
 
-
 	automaton SeparatorContr:
-		location EmptyLeft:
+		location Empty: //Left
 			initial;
-			edge when AtSepSensor.isActive goto FullLeft;
-		location FullLeft:
-			edge when ProcessingBusySensor.Off goto EmptyRight; //to be replaced by s_processingbusy
-		location EmptyRight:
-			edge when ExitSensor.isActive goto EmptyLeft;
+			edge when AtSepSensor.isActive goto Incoming;
+		location Incoming: //Left
+			edge when not AtSepSensor.isActive goto FullNoInc;
+
+		location FullNoInc: //Left
+			edge when ProcessingBusySensor.Off goto Open; 		//to be replaced by s_processingbusy
+			edge when AtSepSensor.isActive goto FullInc;
+		location Open: //Right
+			edge when ExitSensor.isActive goto Empty;
+
+		location FullInc: //Left + Stop conveyer
+			edge when ProcessingBusySensor.Off goto OpenInc;
+		location OpenInc: //Right
+			edge when not AtSepSensor.isActive goto FullNoInc;
+
 	end
 
 
 	automaton ConveyerContr:
+		cont t der 1;
 		location Empty: 	//To save energy, it is useful to not have the conveyer active when there are no products on it.
 			initial;
-			edge when CountFive.One goto NotMoving;
+			edge when CountFive.OneActiveEntry goto Moving;
 		location Moving:
-			edge when SeparatorContr.FullLeft goto NotMoving;
 			edge when CountFive.Zero goto Empty;
+			edge when SeparatorContr.FullInc goto NotMoving;
+			edge when EntrySensor.isActive goto Buffering;
+		location Buffering:
+			edge when not EntrySensor.isActive do t := 0 goto Delay;
+		location Delay:
+			edge when t > 0.5 goto NotMoving;
 		location NotMoving:
-			edge when SeparatorContr.EmptyRight goto Moving;
-			edge when SeparatorContr.EmptyLeft goto Moving;
+			edge when EntrySensor.isActive and not SeparatorContr.FullInc goto Moving;
+			edge when SeparatorContr.Open goto Moving;
+			edge when SeparatorContr.OpenInc goto Moving;
 	end
 
 

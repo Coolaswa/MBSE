@@ -13,8 +13,8 @@ alg bool a_pusher = Coordinator.pusherExtending;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
-alg bool a_conveyer = ConveyerContr.Moving;
-alg bool a_separator = SeparatorContr.FullLeft;
+alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Buffering or ConveyerContr.Delay;
+alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc;
 alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
 
@@ -164,10 +164,26 @@ automaton def Box():
 		edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
 	location SlideBufferTransit:
 		equation x' = -boxSpeed, y' = 0;
-		edge when rotation > 0 do rotDer := 0 goto OnBuffer;
-	location OnBuffer:
-		equation x' = -boxSpeed, y' = 0;
-		edge when x < 0 goto Inactive;
+		edge when rotation > 0 do rotDer := 0 goto OnBuffer1;
+	location OnBuffer1:											//Buffer before sep
+		equation x' = Belt.speed, y' = 0;
+		edge when x < 620 goto OnBuffer2;
+	location OnBuffer2:											//Buffer at right side sep
+		equation x' = Belt.speed, y' = 0;
+		edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+		edge when x < 600 goto OnBuffer3;
+	location OnBuffer3: 										//Buffer at left side sep
+		equation x' = Belt.speed, y' = 0;
+		edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+		edge when x < 485 goto Inactive;
+
+	location SeparatorLeftBlock:
+		equation x' = 0, y' = 0;
+		edge when Separator.Right goto OnBuffer3;
+
+	location SeparatorRightBlock:
+		equation x' = 0, y' = 0;
+		edge when Separator.Left goto OnBuffer2;
 end
 
 automaton RejectBuffer:
@@ -180,19 +196,18 @@ automaton RejectBuffer:
 end
 
 automaton def Conveyor():
-	event turnOn, turnOff;
-	event toggle;
-	cont wheelRotation der -wheelSpeed;
+	//event turnOn, turnOff;
+	//event toggle;
+	cont wheelRotation der 3*Belt.speed;
 	alg real wheelSpeed;
 	location On:
-		initial;
-		equation wheelSpeed = 60/20/3.1415*360;
-	//	edge turnOff, toggle goto Off;
-	//	edge turnOn;
+
+		equation wheelSpeed = Belt.speed;
+		edge when Belt.Standstill goto Off;
 	location Off:
+		initial;
 		equation wheelSpeed = 0;
-		edge turnOn, toggle goto On;
-		edge turnOff;
+		edge when Belt.Moving goto On;
 end
 
 automaton Lift:
@@ -267,8 +282,8 @@ end
 
 //a_separator = on -> Receive one new product ----- always receive a new product after releasing one
 //a_separator = off ->  Release the current product ----- If processing is not busy
-//a_conveyer = on -> Conveyer belt  ----- after releasing a product
-//a_conveyer = off -> Conveyer belt ----- Always off unless ^
+//a_conveyer = on -> Conveyer belt  -----
+//a_conveyer = off -> Conveyer belt -----
 
 //s_processingbusy = on -> Busy
 //s_processingbusy = off -> Ready
@@ -283,24 +298,30 @@ end
 //sensors still have to be fixed to work with multiple boxes and add the right x value
 
 group AtSepSensor:
-	alg bool isActive = box1.x = 300; // Location sensor = ???,
+	alg bool isActive = (635 <= box1.x and box1.x <= 665) or
+						(635 <= box2.x and box2.x <= 665) or
+						(635 <= box3.x and box3.x <= 665);
 end
 
 group EntrySensor:
-	alg bool isActive = box1.x = 600; // Location sensor = ???
+	alg bool isActive = (860 <= box1.x and box1.x <= 910) or
+						(860 <= box2.x and box2.x <= 910) or
+						(860 <= box3.x and box3.x <= 910);
 end
 
 group ExitSensor:
-	alg bool isActive = box1.x = 200; // Location sensor = ???
+	alg bool isActive = (525 <= box1.x and box1.x <= 565) or
+						(525 <= box2.x and box2.x <= 565) or
+						(525 <= box3.x and box3.x <= 565);
 end
 
 automaton ProcessingBusySensor: // timed activation every 15 seconds, eventually use s_processingbusy
 	cont t der 1;
-	location Off:
-		edge when t > 15 do t := 0 goto On;
 	location On:
 	initial;
-		edge when t < 15 goto Off;
+		edge when t > 15 do t := 0 goto Off;
+	location Off:
+		edge when t < 15 goto On;
 end
 
 
@@ -308,7 +329,7 @@ automaton Belt:			// add fancy part with svg belt turning
 	alg real speed;
 	cont x der speed;
 	location Moving:
-		equation speed = -20;
+		equation speed = -40;
 		edge when not a_conveyer goto Standstill;
 	location Standstill:
 		initial;
@@ -317,31 +338,55 @@ automaton Belt:			// add fancy part with svg belt turning
 end
 
 automaton Separator:	//Separator needs to turn/rotate when going from left to right, to be added
-	location Left:
-		edge when not a_separator goto Right;
 	location Right:
+		edge when not a_separator goto Left;
+	location Left:
 		initial;
-		edge when a_separator goto Left;
+		edge when a_separator goto Right;
 end
 
-automaton CountFive:	//when CountFive = 5, stops the pusher; see control
-	location Zero:
+
+automaton CountFive:			//Keeps track of how many products are on the belt.
+	location Zero: 				//when CountFive = 5, stops the pusher; see control
 		initial;
-		edge when EntrySensor.isActive goto One;
+		edge when EntrySensor.isActive goto OneActiveEntry;
+	location ZeroActiveExit:
+		edge when not ExitSensor.isActive goto Zero;
+
+	location OneActiveEntry:
+		edge when not EntrySensor.isActive goto One;
 	location One:
-		edge when ExitSensor.isActive goto Zero;
-		edge when EntrySensor.isActive goto Two;
+		edge when ExitSensor.isActive goto ZeroActiveExit;
+		edge when EntrySensor.isActive goto TwoActiveEntry;
+	location OneActiveExit:
+		edge when not ExitSensor.isActive goto One;
+
+	location TwoActiveEntry:
+		edge when not EntrySensor.isActive goto Two;
 	location Two:
-		edge when ExitSensor.isActive goto One;
-		edge when EntrySensor.isActive goto Three;
+		edge when ExitSensor.isActive goto OneActiveExit;
+		edge when EntrySensor.isActive goto ThreeActiveEntry;
+	location TwoActiveExit:
+		edge when not ExitSensor.isActive goto Two;
+
+	location ThreeActiveEntry:
+		edge when not EntrySensor.isActive goto Three;
 	location Three:
-		edge when ExitSensor.isActive goto Two;
-		edge when EntrySensor.isActive goto Four;
+		edge when ExitSensor.isActive goto TwoActiveExit;
+		edge when EntrySensor.isActive goto FourActiveEntry;
+	location ThreeActiveExit:
+		edge when not ExitSensor.isActive goto Three;
+
+	location FourActiveEntry:
+		edge when not EntrySensor.isActive goto Four;
 	location Four:
-		edge when ExitSensor.isActive goto Three;
+		edge when ExitSensor.isActive goto ThreeActiveExit;
 		edge when EntrySensor.isActive goto Five;
+	location FourActiveExit:
+		edge when not ExitSensor.isActive goto Four;
+
 	location Five:
-		edge when ExitSensor.isActive goto Four;
+		edge when ExitSensor.isActive goto FourActiveExit;
 end
 
 automaton Arm:
