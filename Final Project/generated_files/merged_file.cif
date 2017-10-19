@@ -1,0 +1,1378 @@
+alg bool a_elevator_up = Coordinator.liftUp;
+alg bool a_elevator_down = Coordinator.liftDown;
+alg bool a_pusher = Coordinator.pusherExtending;
+alg bool a_testingready = Coordinator.ready;
+alg bool s_TautoSwitch = true;
+alg bool a_elevator_up_auto = AutoControl.Lift.state = UP;
+alg bool a_elevator_down_auto = AutoControl.Lift.state = DOWN;
+alg bool a_testingready_auto = AutoControl.Lift.Waiting;
+alg bool a_pusher_auto = AutoControl.PusherContr.Extending;
+alg bool a_elevator_up_manual = ManualControl.Lift.state = UP;
+alg bool a_elevator_down_manual = ManualControl.Lift.state = DOWN;
+alg bool a_testingready_manual = true;
+alg bool a_pusher_manual = ManualControl.PusherContr.Extending;
+alg bool s_reflective = ReflexiveSensor.isActive;
+alg bool s_capacitive = CapacitiveSensor.isActive;
+alg bool s_elevator_up = LiftSensorUp.isActive;
+alg bool s_productheight = HeightSensor.isActive;
+alg bool s_elevator_down = LiftSensorDown.isActive;
+alg bool s_Tresetbutton = resetBttn.Pressed;
+alg bool s_pusher = PusherSensor.isActive;
+alg bool s_bufferingbusy = false;
+alg bool a_airslide_auto = AutoControl.Airslide.Active;
+enum LiftState = UP, STOP, DOWN;
+alg bool b_lift_upPressed = b_lift_up.Pressed;
+alg bool b_lift_upReleased = b_lift_up.Released;
+alg bool b_lift_downPressed = b_lift_down.Pressed;
+alg bool b_lift_downReleased = b_lift_down.Released;
+alg bool b_pusherReleased = b_pusher.Released;
+alg bool b_pusherPressed = b_pusher.Pressed;
+alg bool inManualMode = not s_TautoSwitch;
+alg bool s_Tstartbutton = startBttn.state;
+alg bool s_Tstopbutton = startBttn.state;
+event e_startClicked;
+event resetClicked;
+event stopClicked;
+event dummyEvent;
+event lift_up_clicked;
+event lift_down_clicked;
+event pusher_clicked;
+event spawn_clicked;
+event BoxData spawn_new_block;
+event colorClicked;
+event heightClicked;
+event productRejected;
+event void e_pusher_activated;
+const real boxSpeed = 60.0;
+event b_case1Pressed;
+event b_case2Pressed;
+event b_case3Pressed;
+type Rectangle = tuple(real x; real y; real width; real height);
+type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
+type Point = tuple(real x; real y);
+func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
+  int i = 0;
+  int length = size(boxes);
+  real height;
+  real y;
+  while i < length:
+    height := boxes[i][bounds][height] * if boxes[i][thick]: 1.2 else 1.0 end;
+    y := boxes[i][bounds][y] - 0.2 * boxes[i][bounds][height] * if boxes[i][thick]: 1.0 else 0.0 end;
+    if rect[x] < boxes[i][bounds][x] + boxes[i][bounds][width] and rect[x] + rect[width] > boxes[i][bounds][x] and rect[y] < y + height and rect[height] + rect[y] > y:
+      return i;
+    end
+    i := i + 1;
+  end
+  return -1;
+end
+func bool PointInRect(Rectangle rect; Point p):
+  if rect[x] <= p[x] and rect[y] <= p[y] and rect[x] + rect[width] >= p[x] and rect[y] + rect[height] >= p[y]:
+    return true;
+  end
+  return false;
+end
+automaton Coordinator:
+  alg bool liftUp;
+  alg bool liftDown;
+  alg bool pusherExtending;
+  alg bool ready;
+  location ManualMode:
+    equation pusherExtending = a_pusher_manual,
+             ready = a_testingready_manual,
+             liftUp = a_elevator_up_manual,
+             liftDown = a_elevator_down_manual;
+    edge when s_TautoSwitch goto AutoMode;
+  location AutoMode:
+    initial;
+    equation liftUp = a_elevator_up_auto,
+             liftDown = a_elevator_down_auto,
+             pusherExtending = a_pusher_auto,
+             ready = a_testingready_auto;
+    edge when not s_TautoSwitch goto ManualMode;
+end
+group AutoControl:
+  automaton Lift:
+    alg LiftState state;
+    event rejProduct;
+    location Waiting:
+      initial;
+      equation state = STOP;
+      edge when s_reflective goto WaitingForArm;
+    location WaitingForArm:
+      equation state = STOP;
+      edge when not s_reflective goto VerifyBlock1;
+    location VerifyBlock1:
+      equation state = STOP;
+      edge PusherContr.extent when s_capacitive and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+      edge when not s_capacitive goto GoingUp;
+    location PushingBlockAtBot:
+      equation state = STOP;
+      edge PusherContr.retract goto ProductFullyRedjected;
+    location ProductFullyRedjected:
+      equation state = STOP;
+      edge rejProduct goto Waiting;
+    location GoingUp:
+      equation state = UP;
+      edge when s_elevator_up goto VerifyBlock2;
+    location VerifyBlock2:
+      equation state = STOP;
+      edge when s_productheight goto GoingDownReject;
+      edge PusherContr.extent when not s_productheight goto PushingBlockAtTop;
+    location GoingDownReject:
+      equation state = DOWN;
+      edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+    location PushingBlockAtTop:
+      equation state = STOP;
+      edge PusherContr.retract goto GoingDownEmpty;
+    location GoingDownEmpty:
+      equation state = DOWN;
+      edge when s_elevator_down goto Waiting;
+  end
+  automaton RejectBufferContr:
+    disc int count;
+    location Waiting:
+      initial;
+      edge Lift.rejProduct do count := count + 1;
+      edge when s_Tresetbutton goto AwaitRelease;
+    location AwaitRelease:
+      edge when not s_Tresetbutton do count := 0 goto Waiting;
+  end
+  automaton PusherContr:
+    event extent;
+    event retract;
+    location Extending:
+      edge retract when s_pusher goto Retracting;
+      edge when s_bufferingbusy goto Lockdown;
+    location Retracting:
+      initial;
+      edge extent goto Extending;
+      edge when s_bufferingbusy goto Lockdown;
+    location Lockdown:
+      edge when not s_bufferingbusy goto Retracting;
+  end
+  automaton Airslide:
+    monitor PusherContr.extent;
+    cont t der 1.0;
+    location Active:
+      initial;
+      edge when t > 5 goto InActive;
+    location InActive:
+      edge PusherContr.extent when s_elevator_up do t := 0.0 goto Active;
+  end
+end
+group ManualControl:
+  automaton Lift:
+    alg LiftState state;
+    location Up:
+      equation state = UP;
+      edge when b_lift_upReleased goto Stop;
+      edge when b_lift_downPressed and b_lift_upReleased goto Down;
+    location Stop:
+      initial;
+      equation state = STOP;
+      edge when b_lift_upPressed goto Up;
+      edge when b_lift_downPressed goto Down;
+    location Down:
+      equation state = DOWN;
+      edge when b_lift_upPressed and b_lift_downReleased goto Up;
+      edge when b_lift_downReleased goto Stop;
+  end
+  automaton PusherContr:
+    location Extending:
+      edge when b_pusherReleased goto Retracting;
+    location Retracting:
+      initial;
+      edge when s_bufferingbusy goto Lockdown;
+      edge when b_pusherPressed goto Extending;
+    location Lockdown:
+      edge when not s_bufferingbusy goto Retracting;
+  end
+end
+automaton startBttn:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge e_startClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge e_startClicked goto Released;
+end
+group start_svg:
+  alg string idfier = "start";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = startBttn.state;
+  svgin id idfier event e_startClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton resetBttn:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge resetClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge resetClicked goto Released;
+end
+group reset_svg:
+  alg string idfier = "b_reset";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = resetBttn.state;
+  svgin id idfier event resetClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton stopBttn:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge stopClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge stopClicked goto Released;
+end
+group stop_svg:
+  alg string idfier = "stop";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = stopBttn.state;
+  svgin id idfier event stopClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_lift_up:
+  alg string idfier = "s_lift_up";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = LiftSensorUp.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_lift_down:
+  alg string idfier = "s_lift_down";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = LiftSensorDown.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_lift_up:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge lift_up_clicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge lift_up_clicked goto Released;
+end
+group svg_a_lift_up:
+  alg string idfier = "a_lift_up";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_lift_up.state;
+  svgin id idfier event lift_up_clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_lift_down:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge lift_down_clicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge lift_down_clicked goto Released;
+end
+group svg_a_lift_down:
+  alg string idfier = "a_lift_down";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_lift_down.state;
+  svgin id idfier event lift_down_clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_pusher:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge pusher_clicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge pusher_clicked goto Released;
+end
+group svg_b_pusher:
+  alg string idfier = "b_pusher";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_pusher.state;
+  svgin id idfier event pusher_clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_pusher:
+  alg string idfier = "s_pusher";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = PusherSensor.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_color:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge colorClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge colorClicked goto Released;
+end
+group svg_b_color:
+  alg bool state = b_color.state;
+  svgin id "b_colour" event colorClicked file "../SystemSVG.svg";
+  svgout id "colour_knob" attr "transform" value if state: "rotate(180,4.5,4.5)" else "" end file "../SystemSVG.svg";
+end
+automaton b_height:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge heightClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge heightClicked goto Released;
+end
+automaton svg_b_height:
+  const list real SwitchHeightHeights = [0.5, 3.25, 6.25];
+  disc int state = 0;
+  svgin id "b_height" event heightClicked file "../SystemSVG.svg";
+  svgout id "height_bar" attr "transform" value fmt("translate(0, %f)", SwitchHeightHeights[state]) file "../SystemSVG.svg";
+  svgout id "height_pole" attr "transform" value fmt("rotate(%d,0.5,2.5)", 90 * state) file "../SystemSVG.svg";
+  location:
+    initial;
+    edge heightClicked do state := (state + 1) mod 3;
+end
+group svg_s_height:
+  alg string idfier = "s_height";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = HeightSensor.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_capacitive:
+  alg string idfier = "s_capacitive";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = CapacitiveSensor.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_spawn:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge spawn_clicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge spawn_clicked goto Released;
+end
+group svg_b_spawn:
+  alg string idfier = "b_spawn";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_spawn.state;
+  svgin id idfier event spawn_clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton box1:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box2:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box3:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box4:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box5:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box6:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box7:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box8:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box9:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton box10:
+  monitor productRejected;
+  disc string color = "pink";
+  alg real slideAngle = 15 * 3.141592654 / 180;
+  disc bool isThick = false;
+  disc real opacityDer = 0.0;
+  disc real rotDer = 0.0;
+  disc int productRejectPosX = 1090;
+  const int[1140..1140] productRejectStartX = 1140;
+  const int[1090..1090] productConstRejectX = 1090;
+  cont rotation = 0.0 der rotDer;
+  cont opacity der opacityDer;
+  cont x = -200.0;
+  cont y = -200.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real boxSpeedInArm = 2 * 3.1415 * 320 / 360 * Arm.armSpeed;
+  location Inactive:
+    initial;
+    equation x' = 0.0,
+             y' = 0.0;
+    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
+  location Spawn:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+  location InArm:
+    equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
+             y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
+    edge when isThick and y > Const.Box.LiftPos[y] + 50.0 * 0.2 do (x, y) := Const.Box.LiftPos goto InLift;
+    edge when not isThick and y > Const.Box.LiftPos[y] do (x, y) := Const.Box.LiftPos goto InLift;
+  location InLift:
+    equation x' = 0.0,
+             y' = Lift.speed;
+    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+  location PreRejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+  location RejectBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when x < productRejectPosX goto OnRejectBuffer;
+  location OnRejectBuffer:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+    edge when resetBttn.Pressed goto AwaitResetRelease;
+  location AwaitResetRelease:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+  location LiftAirTransit:
+    equation x' = -boxSpeed * cos(slideAngle),
+             y' = boxSpeed * sin(slideAngle);
+    edge when rotation < -15 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
+  location OnAirslide:
+    equation x' = -acccelSpeed * cos(slideAngle),
+             y' = acccelSpeed * sin(slideAngle);
+    edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+  location SlideBufferTransit:
+    equation x' = -boxSpeed,
+             y' = 0.0;
+    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+end
+automaton dummy:
+  location:
+    initial;
+    edge dummyEvent when false;
+end
+automaton BoxUpdater:
+  alg list[10] BoxData data;
+  alg list[10] Rectangle rects;
+  location:
+    initial;
+    equation data = [((box1.x, box1.y, 50.0, 50.0), box1.color, box1.isThick, box1.rotation), ((box2.x, box2.y, 50.0, 50.0), box2.color, box2.isThick, box2.rotation), ((box3.x, box3.y, 50.0, 50.0), box3.color, box3.isThick, box3.rotation), ((box4.x, box4.y, 50.0, 50.0), box4.color, box4.isThick, box4.rotation), ((box5.x, box5.y, 50.0, 50.0), box5.color, box5.isThick, box5.rotation), ((box6.x, box6.y, 50.0, 50.0), box6.color, box6.isThick, box6.rotation), ((box7.x, box7.y, 50.0, 50.0), box7.color, box7.isThick, box7.rotation), ((box8.x, box8.y, 50.0, 50.0), box8.color, box8.isThick, box8.rotation), ((box9.x, box9.y, 50.0, 50.0), box9.color, box9.isThick, box9.rotation), ((box10.x, box10.y, 50.0, 50.0), box10.color, box10.isThick, box10.rotation)],
+             rects = [(box1.x, box1.y, 50.0, 50.0), (box2.x, box2.y, 50.0, 50.0), (box3.x, box3.y, 50.0, 50.0), (box4.x, box4.y, 50.0, 50.0), (box5.x, box5.y, 50.0, 50.0), (box6.x, box6.y, 50.0, 50.0), (box7.x, box7.y, 50.0, 50.0), (box8.x, box8.y, 50.0, 50.0), (box9.x, box9.y, 50.0, 50.0), (box10.x, box10.y, 50.0, 50.0)];
+end
+automaton RejectBuffer:
+  event void preRejectEnter;
+  location Await:
+    initial;
+    edge preRejectEnter? goto Send;
+  location Send:
+    edge productRejected goto Await;
+end
+automaton Lift:
+  const real maxSpeed = 80.0;
+  alg real speed;
+  cont y der speed;
+  location Up:
+    equation speed = -maxSpeed;
+    edge when not a_elevator_up goto Stop;
+    edge when a_elevator_down goto Down;
+    edge when LiftSensorUp.isActive goto Stop;
+  location Stop:
+    initial;
+    equation speed = 0.0;
+    edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
+    edge when a_elevator_down and not LiftSensorDown.isActive goto Down;
+  location Down:
+    equation speed = maxSpeed;
+    edge when not a_elevator_down goto Stop;
+    edge when a_elevator_up goto Up;
+    edge when LiftSensorDown.isActive goto Stop;
+end
+automaton Pusher:
+  alg real speed;
+  cont x der speed;
+  location Extending:
+    equation speed = if not PusherSensor.isActive: -60.0 else 0.0 end;
+    edge when not a_pusher goto Retracting;
+  location Retracting:
+    initial;
+    equation speed = if x < 0: 20.0 else 0.0 end;
+    edge e_pusher_activated! when a_pusher goto Extending;
+end
+group LiftSensorUp:
+  alg bool isActive = Lift.y <= -Const.Lift.MaxHeight;
+end
+group LiftSensorDown:
+  alg bool isActive = Lift.y >= 0;
+end
+group PusherSensor:
+  alg bool isActive = Pusher.Extending and Pusher.x < -35;
+end
+automaton HeightSensor:
+  alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
+  alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][thick];
+  cont y;
+  location:
+    initial;
+    equation y' = if boxI != -1: Lift.speed elif y < 0: 10.0 else 0.0 end;
+end
+group CapacitiveSensor:
+  alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][color] = "black";
+end
+group ReflexiveSensor:
+  alg bool isActive = Arm.armRot < 130;
+end
+automaton Arm:
+  cont armRot = 180.0 der armSpeed;
+  disc real armSpeed = 0.0;
+  location Waiting:
+    initial;
+    edge spawn_new_block when a_testingready do armSpeed := -25.0 goto Placing;
+  location Returning:
+    edge when armRot > 180 do armSpeed := 0.0 goto Waiting;
+  location Placing:
+    edge when armRot < 96 do armSpeed := 25.0 goto Returning;
+end
+automaton Factory:
+  disc string boxColor;
+  disc bool isBlack;
+  disc bool isThick;
+  alg string boxColorMan = if b_color.Released: "black" else "red" end;
+  alg string boxColorAuto = if isBlack: "black" else "red" end;
+  alg bool isThickMan = svg_b_height.state = 0;
+  disc dist bool thickDistrC1 = bernoulli(0.0);
+  disc dist bool thickDistrC2 = bernoulli(0.5);
+  disc dist bool thickDistrC3 = bernoulli(0.05);
+  disc dist bool blackDistrC1 = bernoulli(0.0);
+  disc dist bool blackDistrC2 = bernoulli(0.5);
+  disc dist bool blackDistrC3 = bernoulli(0.05);
+  disc dist real timeDistr = normal(10.0, 5.0);
+  cont timer der -1.0;
+  location Waiting:
+    initial;
+    edge spawn_clicked when inManualMode do (boxColor, isThick) := (boxColorMan, isThickMan) goto Inter;
+    edge when not inManualMode and timer < 0 and UseCase.Case1 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
+    edge when not inManualMode and timer < 0 and UseCase.Case2 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
+    edge when not inManualMode and timer < 0 and UseCase.Case3 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
+  location Inter:
+    edge when not inManualMode do boxColor := boxColorAuto goto SpawnBlock;
+    edge when inManualMode goto SpawnBlock;
+  location SpawnBlock:
+    edge spawn_new_block!(Const.Box.StartThickBounds, boxColor, isThick, 0.0) when isThick goto Post;
+    edge spawn_new_block!(Const.Box.StartBounds, boxColor, isThick, 0.0) when not isThick goto Post;
+  location Post:
+    edge do (timer, timeDistr) := sample timeDistr goto Waiting;
+end
+automaton b_case1:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge b_case1Pressed goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge b_case1Pressed goto Released;
+end
+group b_case1_svg:
+  alg string idfier = "b_case1";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_case1.state;
+  svgin id idfier event b_case1Pressed file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_case2:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge b_case2Pressed goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge b_case2Pressed goto Released;
+end
+group b_case2_svg:
+  alg string idfier = "b_case2";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_case2.state;
+  svgin id idfier event b_case2Pressed file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_case3:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge b_case3Pressed goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge b_case3Pressed goto Released;
+end
+group b_case3_svg:
+  alg string idfier = "b_case3";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_case3.state;
+  svgin id idfier event b_case3Pressed file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton UseCase:
+  location Case1:
+    initial;
+    edge b_case1Pressed;
+    edge b_case2Pressed goto Case2;
+    edge b_case3Pressed goto Case3;
+  location Case2:
+    edge b_case1Pressed goto Case1;
+    edge b_case2Pressed;
+    edge b_case3Pressed goto Case3;
+  location Case3:
+    edge b_case1Pressed goto Case1;
+    edge b_case2Pressed goto Case2;
+    edge b_case3Pressed;
+end
+group test:
+  alg list[10] BoxData data = BoxUpdater.data;
+  group svg_box1:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 1;
+    alg BoxData data = .test.data[0];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box2:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 2;
+    alg BoxData data = .test.data[1];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box3:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 3;
+    alg BoxData data = .test.data[2];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box4:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 4;
+    alg BoxData data = .test.data[3];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box5:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 5;
+    alg BoxData data = .test.data[4];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box6:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 6;
+    alg BoxData data = .test.data[5];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box7:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 7;
+    alg BoxData data = .test.data[6];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box8:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 8;
+    alg BoxData data = .test.data[7];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box9:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 9;
+    alg BoxData data = .test.data[8];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+  group svg_box10:
+    alg string name = "Product1_" + <string>idfier;
+    alg real heightScale = if data[thick]: 1.2 else 1.0 end;
+    alg int idfier = 10;
+    alg BoxData data = .test.data[9];
+    svgcopy id "Product1" post "_" + <string>idfier file "../SystemSVG.svg";
+    svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
+    svgout id name attr "opacity" value 1 file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
+    svgout id "ProductGraphics1_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 50) file "../SystemSVG.svg";
+  end
+end
+group Const:
+  group Box:
+    alg int[50..50] Size = 50;
+    const Point StartPos = (1466.0, 152.0);
+    const Point LiftPos = (1147.0, 423.0);
+    const Rectangle StartBounds = (StartPos[x], StartPos[y], 50.0, 50.0);
+    const Rectangle StartThickBounds = (StartPos[x], StartPos[y] + 50.0 * 0.2, 50.0, 50.0);
+    const int[1122..1122] EndLiftX = 1122;
+    const int[248..248] BufferY = 248;
+    const int[938..938] EndRejectX = 938;
+  end
+  group Lift:
+    const int[240..240] MaxHeight = 240;
+  end
+  group Sensors:
+    const Rectangle HeightBounds = (1160.0, 176.0, 34.0, 36.0);
+    const Rectangle CapSensorBounds = (1147.0, 422.0, 50.0, 50.0);
+  end
+  group Buttons:
+  end
+end
+svgout id "Platform" attr "transform" value fmt("translate(0, %f)", Lift.y) file "../SystemSVG.svg";
+svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x) file "../SystemSVG.svg";
+svgout id "time" text value round(time) file "../SystemSVG.svg";
+svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightSensor.y) file "../SystemSVG.svg";
+svgout id "Rotator" attr "transform" value fmt("rotate(%f)", Arm.armRot) file "../SystemSVG.svg";
+svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,60)", 180 - Arm.armRot) file "../SystemSVG.svg";
+svgout id "Air" attr "opacity" value if a_airslide_auto: 1 else 0 end file "../SystemSVG.svg";

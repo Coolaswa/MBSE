@@ -1,0 +1,38 @@
+//import "T_ctrl_auto_BFT.cif";
+
+alg bool a_elevator_up = Coordinator.liftUp;
+alg bool a_elevator_down = Coordinator.liftDown;
+alg bool a_pusher = Coordinator.pusherExtending;
+alg bool a_testingready = Coordinator.ready;
+
+input bool s_TautoSwitch;
+
+input bool a_elevator_up_auto;
+input bool a_elevator_down_auto;
+input bool a_testingready_auto;
+input bool a_pusher_auto;
+
+input bool a_elevator_up_manual;
+input bool a_elevator_down_manual;
+input bool a_testingready_manual;
+input bool a_pusher_manual;
+
+automaton Coordinator:
+    alg bool liftUp, liftDown;
+    alg bool pusherExtending;
+    alg bool ready;
+    location ManualMode:
+        //initial;
+        equation pusherExtending = a_pusher_manual;
+        equation ready = a_testingready_manual;
+        equation liftUp = a_elevator_up_manual;
+        equation liftDown = a_elevator_down_manual;
+        edge when s_TautoSwitch goto AutoMode;
+    location AutoMode:
+        initial;
+        equation liftUp = a_elevator_up_auto;
+        equation liftDown = a_elevator_down_auto;
+        equation pusherExtending = a_pusher_auto;
+        equation ready = a_testingready_auto;
+        edge when not s_TautoSwitch goto ManualMode;
+end

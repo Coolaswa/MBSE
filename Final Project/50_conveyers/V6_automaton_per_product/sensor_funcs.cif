@@ -1,9 +1,0 @@
-func bool xAtSensor(real x, pos1, pos2):
-    return x >= pos1 and x < pos2;
-end
-
-func bool xPositionsAtSensor(real x1, x2, x3; real pos1, pos2 ):
-    return xAtSensor(x1, pos1, pos2) or
-           xAtSensor(x2, pos1, pos2) or
-           xAtSensor(x3, pos1, pos2);
-end

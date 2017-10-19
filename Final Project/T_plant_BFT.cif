@@ -1,0 +1,329 @@
+import "TB_SVG_BFT.cif";
+import "TB_Defs_BFT.cif";
+import "TB_SVGConstants_BFT.cif";
+
+input bool a_elevator_up;
+input bool a_elevator_down;
+input bool a_pusher;
+input bool a_testingready;
+alg bool inManualMode = not s_TautoSwitch;
+
+alg bool s_TautoSwitch = true;
+alg bool s_pusher = PusherSensor.isActive;
+alg bool s_elevator_up = LiftSensorUp.isActive;
+alg bool s_elevator_down = LiftSensorDown.isActive;
+alg bool s_capacitive = CapacitiveSensor.isActive;
+alg bool s_reflective = ReflexiveSensor.isActive;
+alg bool s_productheight = HeightSensor.isActive;
+alg bool s_Tstartbutton = startBttn.state;
+alg bool s_Tstopbutton = startBttn.state;
+alg bool s_Tresetbutton = resetBttn.Pressed;
+alg bool s_bufferingbusy = false;
+alg bool b_lift_upPressed = b_lift_up.Pressed;
+alg bool b_lift_upReleased = b_lift_up.Released;
+alg bool b_lift_downPressed = b_lift_down.Pressed;
+alg bool b_lift_downReleased = b_lift_down.Released;
+alg bool b_pusherReleased = b_pusher.Released;
+alg bool b_pusherPressed = b_pusher.Pressed;
+//alg bool s_Tautoswitch;
+
+event e_startClicked, resetClicked, stopClicked, dummyEvent;
+event lift_up_clicked, lift_down_clicked;
+event pusher_clicked;
+event spawn_clicked;
+event BoxData spawn_new_block;
+event colorClicked;
+event heightClicked;
+event productRejected;
+
+startBttn: Button(e_startClicked);
+start_svg: Button_svg(e_startClicked, "start", "yellow", "grey",  startBttn.state);
+
+resetBttn: Button(resetClicked);
+reset_svg: Button_svg(resetClicked, "b_reset", "yellow", "grey", resetBttn.state);
+
+stopBttn: Button(stopClicked);
+stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  stopBttn.state);
+//resetBttn: Button(resetClicked);
+
+svg_s_lift_up: Button_svg(dummyEvent, "s_lift_up", "yellow", "grey", LiftSensorUp.isActive);
+svg_s_lift_down: Button_svg(dummyEvent, "s_lift_down", "yellow", "grey", LiftSensorDown.isActive);
+
+b_lift_up: Button(lift_up_clicked);
+svg_a_lift_up: Button_svg(lift_up_clicked, "a_lift_up", "yellow", "grey", b_lift_up.state);
+
+b_lift_down: Button(lift_down_clicked);
+svg_a_lift_down: Button_svg(lift_down_clicked, "a_lift_down", "yellow", "grey", b_lift_down.state);
+
+b_pusher: Button(pusher_clicked);
+svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.state);
+svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.isActive);
+
+b_color: Button(colorClicked);
+svg_b_color: Switch_svg(colorClicked, b_color.state);
+
+b_height: Button(heightClicked);
+svg_b_height: Switch2_svg(heightClicked);
+
+svg_s_height: Button_svg(dummyEvent, "s_height", "yellow", "grey", HeightSensor.isActive);
+svg_s_capacitive: Button_svg(dummyEvent, "s_capacitive", "yellow", "grey", CapacitiveSensor.isActive);
+b_spawn: Button(spawn_clicked);
+svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
+
+event void e_pusher_activated;
+
+box1: Box();
+box2: Box();
+box3: Box();
+box4: Box();
+box5: Box();
+box6: Box();
+box7: Box();
+box8: Box();
+box9: Box();
+box10: Box();
+
+automaton dummy:
+    location:
+        initial;
+        edge dummyEvent when false;
+end
+
+automaton BoxUpdater:
+    alg list[10] BoxData data;
+    alg list[10] Rectangle rects;
+    location:
+        equation data = [
+         ((box1.x,box1.y,50,50), box1.color, box1.isThick, box1.rotation),
+         ((box2.x,box2.y,50,50), box2.color, box2.isThick, box2.rotation),
+         ((box3.x,box3.y,50,50), box3.color, box3.isThick, box3.rotation),
+         ((box4.x,box4.y,50,50), box4.color, box4.isThick, box4.rotation),
+         ((box5.x,box5.y,50,50), box5.color, box5.isThick, box5.rotation),
+         ((box6.x,box6.y,50,50), box6.color, box6.isThick, box6.rotation),
+         ((box7.x,box7.y,50,50), box7.color, box7.isThick, box7.rotation),
+         ((box8.x,box8.y,50,50), box8.color, box8.isThick, box8.rotation),
+         ((box9.x,box9.y,50,50), box9.color, box9.isThick, box9.rotation),
+         ((box10.x,box10.y,50,50), box10.color, box10.isThick, box10.rotation)];
+         equation rects = [
+         (box1.x,box1.y,50,50),
+         (box2.x,box2.y,50,50),
+         (box3.x,box3.y,50,50),
+         (box4.x,box4.y,50,50),
+         (box5.x,box5.y,50,50),
+         (box6.x,box6.y,50,50),
+         (box7.x,box7.y,50,50),
+         (box8.x,box8.y,50,50),
+         (box9.x,box9.y,50,50),
+         (box10.x,box10.y,50,50)];
+        initial;
+end
+
+const real boxSpeed = 60;
+
+automaton def Box():
+    monitor productRejected;
+
+    disc string color = "pink";
+    alg real slideAngle = (15)*3.141592654/180;
+    disc bool isThick = false;
+    disc real opacityDer = 0;
+    disc real rotDer = 0;
+    disc int productRejectPosX = 1090;
+    const int productRejectStartX = 1140;
+    const int productConstRejectX = 1090;
+    cont rotation = 0 der rotDer;
+    cont opacity der opacityDer;
+    cont x = -200, y=-200;
+    cont accelTimer = 1 der 1;
+    alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+    alg real boxSpeedInArm = (2*3.1415*320/360*Arm.armSpeed);
+    location Inactive:
+        equation x' = 0, y' = 0;
+        initial;
+        edge spawn_new_block?
+             do (x,y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity:=1 goto Spawn;
+    location Spawn:
+        equation x' = 0, y' = 0;
+        edge when opacity > 0.995 do opacityDer := 0 goto InArm;
+    location InArm:
+        equation x' = -boxSpeedInArm * cos(Arm.armRot/180*3.1415), y' = -boxSpeedInArm * sin(Arm.armRot/180*3.1415);
+        edge when isThick and y > Const.Box.LiftPos[y]+50*0.2 do (x,y) := Const.Box.LiftPos goto InLift;
+        edge when not isThick and y > Const.Box.LiftPos[y] do (x,y) := Const.Box.LiftPos goto InLift;
+    location InLift:
+        equation x' = 0, y' = Lift.speed;
+        edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
+        edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    location PreRejectBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+    location RejectBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge when x < productRejectPosX goto OnRejectBuffer;
+    location OnRejectBuffer:
+        equation x' = 0, y' = 0;
+        edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+        edge when resetBttn.Pressed goto AwaitResetRelease;
+    location AwaitResetRelease:
+        equation x' = 0, y' = 0;
+        edge when resetBttn.Released do (x,y) := (-200,-200) goto Inactive;
+    location LiftAirTransit:
+        equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+        edge when rotation < -15 do rotDer := 0, accelTimer := 0 goto OnAirslide;
+    location OnAirslide:
+        equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
+        edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+    location SlideBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge when rotation > 0 do rotDer := 0 goto Inactive;
+end
+
+automaton RejectBuffer:
+     event void preRejectEnter;
+     location Await:
+        initial;
+        edge preRejectEnter? goto Send;
+     location Send:
+        edge productRejected goto Await;
+end
+
+automaton Lift:
+    const real maxSpeed = 80;
+    alg real speed;
+    cont y der speed;
+    location Up:
+        equation speed = -maxSpeed;
+        edge when not a_elevator_up goto Stop;
+        edge when a_elevator_down goto Down;
+        edge when LiftSensorUp.isActive goto Stop;
+    location Stop:
+        initial;
+        equation speed = 0;
+        edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
+        edge when a_elevator_down and not LiftSensorDown.isActive  goto Down;
+    location Down:
+        equation speed = maxSpeed;
+        edge when not a_elevator_down goto Stop;
+        edge when a_elevator_up goto Up;
+        edge when LiftSensorDown.isActive goto Stop;
+end
+
+automaton Pusher:
+    alg real speed;
+    cont x der speed;
+    location Extending:
+        equation speed = if not PusherSensor.isActive: -60 else 0 end;
+        edge when not a_pusher goto Retracting;
+    location Retracting:
+        initial;
+        equation speed = if x < 0: 20 else 0 end;
+        edge e_pusher_activated! when a_pusher goto Extending;
+end
+
+group LiftSensorUp:
+    alg bool isActive = Lift.y <= -Const.Lift.MaxHeight;
+end
+
+group LiftSensorDown:
+    alg bool isActive = Lift.y >= 0;
+end
+
+group PusherSensor:
+    alg bool isActive = Pusher.Extending and Pusher.x < -35;
+end
+
+automaton HeightSensor:
+    alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
+    alg bool isActive =  (boxI != -1) and BoxUpdater.data[boxI][thick];
+    cont y;
+    location:
+        equation y' = if boxI != -1: Lift.speed elif y < 0: 10 else 0 end;
+        initial;
+end
+
+group CapacitiveSensor:
+    alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x],
+                                Const.Sensors.CapSensorBounds[y] + Lift.y,
+                                Const.Sensors.CapSensorBounds[width],
+                                Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
+    alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] = "black");
+end
+
+group ReflexiveSensor:
+    alg bool isActive = Arm.armRot < 130;
+end
+
+automaton Arm:
+    cont armRot = 180 der armSpeed;
+    disc real armSpeed = 0;
+    location Waiting:
+        initial;
+        edge spawn_new_block when a_testingready do armSpeed := -25 goto Placing;
+    location Returning:
+        edge when armRot > 180 do armSpeed := 0 goto Waiting;
+    location Placing:
+        edge when armRot < 96 do armSpeed := 25 goto Returning;
+end
+
+automaton Factory:
+    disc string boxColor;
+    disc bool isBlack;
+    disc bool isThick;
+
+    alg string boxColorMan = if b_color.Released: "black" else "red" end;
+    alg string boxColorAuto = if isBlack: "black" else "red" end;
+    alg bool isThickMan = svg_b_height.state = 0;
+
+    disc dist bool thickDistrC1 = bernoulli(0);
+    disc dist bool thickDistrC2 = bernoulli(0.5);
+    disc dist bool thickDistrC3 = bernoulli(0.05);
+    disc dist bool blackDistrC1 = bernoulli(0);
+    disc dist bool blackDistrC2 = bernoulli(0.5);
+    disc dist bool blackDistrC3 = bernoulli(0.05);
+    disc dist real timeDistr = normal(10,5);
+
+    cont timer der -1;
+    location Waiting:
+        initial;
+        edge spawn_clicked when inManualMode do (boxColor, isThick) := (boxColorMan, isThickMan) goto Inter;
+        edge when not inManualMode and timer < 0 and UseCase.Case1
+                do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
+        edge when not inManualMode and timer < 0 and UseCase.Case2
+                do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
+        edge when not inManualMode and timer < 0 and UseCase.Case3
+                do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
+    location Inter:
+        edge when not inManualMode do boxColor := boxColorAuto goto SpawnBlock;
+        edge when inManualMode goto SpawnBlock;
+    location SpawnBlock:
+        edge spawn_new_block! (Const.Box.StartThickBounds, boxColor, isThick,0) when isThick goto Post;
+        edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick,0) when not isThick goto Post;
+    location Post:
+        edge do (timer, timeDistr) := sample timeDistr goto Waiting;
+end
+
+event b_case1Pressed, b_case2Pressed, b_case3Pressed;
+b_case1: Button(b_case1Pressed);
+b_case1_svg: Button_svg(b_case1Pressed, "b_case1", "yellow", "grey", b_case1.state);
+b_case2: Button(b_case2Pressed);
+b_case2_svg: Button_svg(b_case2Pressed, "b_case2", "yellow", "grey", b_case2.state);
+b_case3: Button(b_case3Pressed);
+b_case3_svg: Button_svg(b_case3Pressed, "b_case3", "yellow", "grey", b_case3.state);
+automaton UseCase:
+    location Case1:
+        initial;
+        edge b_case1Pressed;
+        edge b_case2Pressed goto Case2;
+        edge b_case3Pressed goto Case3;
+    location Case2:
+        edge b_case1Pressed goto Case1;
+        edge b_case2Pressed;
+        edge b_case3Pressed goto Case3;
+    location Case3:
+        edge b_case1Pressed goto Case1;
+        edge b_case2Pressed goto Case2;
+        edge b_case3Pressed;
+end
+
+
+
+

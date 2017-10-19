@@ -1,0 +1,95 @@
+// Controller to test hardware mapping, for all sensors and actuators.
+//import "testing_buffering_station_plant.cif";
+
+input bool s_reflective;
+input bool s_capacitive;
+input bool s_elevator_up;
+input bool s_productheight;
+input bool s_elevator_down;
+input bool s_Tresetbutton;
+input bool s_pusher;
+input bool s_bufferingbusy;
+alg bool a_elevator_up_auto = AutoControl.Lift.state = UP;
+alg bool a_elevator_down_auto = AutoControl.Lift.state = DOWN;
+alg bool a_testingready_auto = AutoControl.Lift.Waiting;
+alg bool a_pusher_auto = AutoControl.PusherContr.Extending;
+alg bool a_airslide_auto = AutoControl.Airslide.Active;
+
+enum LiftState = UP, STOP, DOWN;
+group AutoControl:
+    automaton Lift:
+        alg LiftState state;
+        event rejProduct;
+        location Waiting:
+            initial;
+            equation state = STOP;
+            edge when s_reflective goto WaitingForArm;
+        location WaitingForArm:
+            equation state = STOP;
+            edge when not s_reflective goto VerifyBlock1;
+        location VerifyBlock1:
+            equation state = STOP;
+            edge PusherContr.extent when s_capacitive and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+            edge when not s_capacitive goto GoingUp;
+        location PushingBlockAtBot:
+            equation state = STOP;
+            edge PusherContr.retract goto ProductFullyRedjected;
+        location ProductFullyRedjected:
+            equation state = STOP;
+            edge rejProduct goto Waiting;
+        location GoingUp:
+            equation state = UP;
+            edge when s_elevator_up goto VerifyBlock2;
+        location VerifyBlock2:
+            equation state = STOP;
+            edge when s_productheight goto GoingDownReject;
+            edge PusherContr.extent when not s_productheight goto PushingBlockAtTop;
+        location GoingDownReject:
+            equation state = DOWN;
+            edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+        location PushingBlockAtTop:
+            equation state = STOP;
+            edge PusherContr.retract goto GoingDownEmpty;
+        location GoingDownEmpty:
+            equation state = DOWN;
+            edge when s_elevator_down goto Waiting;
+    end
+
+    automaton RejectBufferContr:
+        disc int count;
+        location Waiting:
+           initial;
+           edge AutoControl.Lift.rejProduct do count := count + 1;
+           edge when s_Tresetbutton goto AwaitRelease;
+        location AwaitRelease:
+           edge when not s_Tresetbutton do count := 0 goto Waiting;
+    end
+
+    automaton PusherContr:
+        event extent, retract;
+        location Extending:
+            edge retract when s_pusher goto Retracting;
+            edge when s_bufferingbusy goto Lockdown;
+        location Retracting:
+            initial;
+            edge extent goto Extending;
+            edge when s_bufferingbusy goto Lockdown;
+        location Lockdown:                              //Pusher will not push when the buffer is full
+            edge when not s_bufferingbusy goto Retracting;
+    end
+
+    automaton Airslide:
+        monitor PusherContr.extent;
+
+        cont t der 1;
+        location Active:
+            initial;
+            edge when t > 5 goto InActive;
+        location InActive:
+            edge PusherContr.extent when s_elevator_up  do t := 0 goto Active;
+    end
+end
+
+
+
+

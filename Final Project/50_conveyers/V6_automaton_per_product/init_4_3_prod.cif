@@ -1,3 +1,0 @@
-const real xinit1 = 4.0;
-const real xinit2 = 9.0;
-const real xinit3 = -1.0;
