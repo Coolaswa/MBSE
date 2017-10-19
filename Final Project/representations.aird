@@ -7,4 +7,7 @@
   <semanticResources>T_ctrl_linker_BFT.cif</semanticResources>
   <semanticResources>TB_Defs_BFT.cif</semanticResources>
   <semanticResources>generated_files/merged_file.cif</semanticResources>
+  <semanticResources>B_ctrl_BFT.cif</semanticResources>
+  <semanticResources>B_plant_BFT.cif</semanticResources>
+  <semanticResources>TB_box_BFT.cif</semanticResources>
 </viewpoint:DAnalysis>

@@ -1,0 +1,58 @@
+import "T_plant_BFT.cif";
+
+automaton def Box():
+    monitor productRejected;
+
+    disc string color = "pink";
+    alg real slideAngle = (15)*3.141592654/180;
+    disc bool isThick = false;
+    disc real opacityDer = 0;
+    disc real rotDer = 0;
+    disc int productRejectPosX = 1090;
+    const int productRejectStartX = 1140;
+    const int productConstRejectX = 1090;
+    cont rotation = 0 der rotDer;
+    cont opacity der opacityDer;
+    cont x = -200, y=-200;
+    cont accelTimer = 1 der 1;
+    alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+    alg real boxSpeedInArm = (2*3.1415*320/360*Arm.armSpeed);
+    location Inactive:
+        equation x' = 0, y' = 0;
+        initial;
+        edge spawn_new_block?
+             do (x,y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity:=1 goto Spawn;
+    location Spawn:
+        equation x' = 0, y' = 0;
+        edge when opacity > 0.995 do opacityDer := 0 goto InArm;
+    location InArm:
+        equation x' = -boxSpeedInArm * cos(Arm.armRot/180*3.1415), y' = -boxSpeedInArm * sin(Arm.armRot/180*3.1415);
+        edge when isThick and y > Const.Box.LiftPos[y]+50*0.2 do (x,y) := Const.Box.LiftPos goto InLift;
+        edge when not isThick and y > Const.Box.LiftPos[y] do (x,y) := Const.Box.LiftPos goto InLift;
+    location InLift:
+        equation x' = 0, y' = Lift.speed;
+        edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
+        edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    location PreRejectBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
+    location RejectBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge when x < productRejectPosX goto OnRejectBuffer;
+    location OnRejectBuffer:
+        equation x' = 0, y' = 0;
+        edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
+        edge when resetBttn.Pressed goto AwaitResetRelease;
+    location AwaitResetRelease:
+        equation x' = 0, y' = 0;
+        edge when resetBttn.Released do (x,y) := (-200,-200) goto Inactive;
+    location LiftAirTransit:
+        equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+        edge when rotation < -15 do rotDer := 0, accelTimer := 0 goto OnAirslide;
+    location OnAirslide:
+        equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
+        edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+    location SlideBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge when rotation > 0 do rotDer := 0 goto Inactive;
+end
