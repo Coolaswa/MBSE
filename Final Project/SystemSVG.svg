@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9195959"
-     inkscape:cx="64.908378"
-     inkscape:cy="535.5068"
+     inkscape:zoom="1.4"
+     inkscape:cx="220.10931"
+     inkscape:cy="337.13287"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -222,7 +222,8 @@
          y="176.10332" />
     </g>
     <g
-       id="Control panel">
+       id="Control panel"
+       transform="scale(1.5)">
       <rect
          height="100"
          width="70"
@@ -248,7 +249,7 @@
            x="4"
            y="25"><tspan
              style="stroke-width:0.23602927"
-             y="0"
+             y="25"
              x="4"
              id="tspan817"
              sodipodi:role="line">Start</tspan></text>
@@ -272,7 +273,7 @@
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
              y="25"
-             x="4.5"
+             x="4"
              id="tspan817-0"
              sodipodi:role="line">Stop</tspan></text>
       </g>
@@ -287,7 +288,7 @@
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
              y="25"
-             x="3.5"
+             x="3.25"
              id="tspan817-07"
              sodipodi:role="line">Reset</tspan></text>
         <rect
@@ -363,7 +364,7 @@
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
              y="25"
-             x="6"
+             x="6.5"
              id="tspan817-07-6"
              sodipodi:role="line">Q1</tspan></text>
         <rect
@@ -385,7 +386,7 @@
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="101.23328"
+             y="25"
              x="6.5"
              id="tspan817-07-6-0"
              sodipodi:role="line">Q2</tspan></text>
