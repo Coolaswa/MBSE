@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="220.10931"
-     inkscape:cy="337.13287"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="778.57345"
+     inkscape:cy="406.55859"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -223,7 +223,7 @@
     </g>
     <g
        id="Control panel"
-       transform="scale(1.5)">
+       transform="matrix(1.5,0,0,1.5,601.42857,398.57143)">
       <rect
          height="100"
          width="70"
@@ -1022,7 +1022,7 @@
     </g>
     <g
        id="Conveyor"
-       transform="translate(547.47247,300.02974)">
+       transform="translate(547,298)">
       <rect
          ry="10"
          height="20"
@@ -1100,11 +1100,10 @@
         </g>
       </g>
       <g
-         id="Sensors"
-         transform="translate(-548,-300)">
+         id="Sensors">
         <g
            id="BS01"
-           transform="translate(910,265)">
+           transform="translate(370,-40)">
           <rect
              y="0"
              x="0"
@@ -1122,7 +1121,7 @@
         </g>
         <g
            id="BS02"
-           transform="translate(670,265)">
+           transform="translate(120,-40)">
           <rect
              y="0"
              x="0"
@@ -1139,27 +1138,28 @@
              style="fill:#ff0000;paint-order:fill markers stroke" />
         </g>
         <g
-           id="g301"
-           style="fill:#6c6753">
+           id="Separator"
+           style="fill:#6c6753"
+           transform="translate(60,-35)">
           <rect
              style="fill:#ac9393;paint-order:fill markers stroke"
-             id="rect303"
-             width="69.700523"
-             height="11.111673"
-             x="590.93921"
-             y="267.65982"
-             ry="4.5456843" />
+             id="b_separator"
+             width="50"
+             height="10"
+             ry="4.5"
+             x="-25"
+             y="-5" />
           <rect
-             y="268.80933"
-             x="599.29797"
-             height="50.143578"
-             width="24.543135"
+             height="50"
+             width="25"
              id="rect282"
-             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke" />
+             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke"
+             y="0"
+             x="0" />
         </g>
         <g
-           transform="translate(570,265)"
-           id="BS03">
+           id="BS03"
+           transform="translate(20,-40)">
           <rect
              y="0"
              x="0"
@@ -1180,8 +1180,8 @@
            id="rect295"
            width="370"
            height="30"
-           x="562.14288"
-           y="302.85715" />
+           y="3"
+           x="15" />
       </g>
     </g>
     <g
