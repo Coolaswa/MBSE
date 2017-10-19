@@ -404,3 +404,44 @@ automaton Arm:
         edge when armRot < 96 do armSpeed := 25 goto Returning;
 end
 
+automaton Factory:
+    disc string boxColor;
+    disc bool isBlack;
+    disc bool isThick;
+
+    alg string boxColorMan = if b_color.Released: "black" else "red" end;
+    alg string boxColorAuto = if isBlack: "black" else "red" end;
+    alg bool isThickMan = svg_b_height.state = 0;
+
+    disc dist bool thickDistrC1 = bernoulli(0);
+    disc dist bool thickDistrC2 = bernoulli(0.5);
+    disc dist bool thickDistrC3 = bernoulli(0.05);
+    disc dist bool blackDistrC1 = bernoulli(0);
+    disc dist bool blackDistrC2 = bernoulli(0.5);
+    disc dist bool blackDistrC3 = bernoulli(0.05);
+    disc dist real timeDistr = normal(10,5);
+
+    cont timer der -1;
+    location Waiting:
+        initial;
+        edge spawn_clicked when Coordinator.ManualMode do (boxColor, isThick) := (boxColorMan, isThickMan) goto Inter;
+        edge when Coordinator.AutoMode and timer < 0 and UseCase.Case1
+                do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
+        edge when Coordinator.AutoMode and timer < 0 and UseCase.Case2
+                do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
+        edge when Coordinator.AutoMode and timer < 0 and UseCase.Case3
+                do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
+    location Inter:
+        edge when Coordinator.AutoMode do boxColor := boxColorAuto goto SpawnBlock;
+        edge when Coordinator.ManualMode goto SpawnBlock;
+    location SpawnBlock:
+        edge spawn_new_block! (Const.Box.StartThickBounds, boxColor, isThick,0) when isThick goto Post;
+        edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick,0) when not isThick goto Post;
+    location Post:
+        edge do (timer, timeDistr) := sample timeDistr goto Waiting;
+end
+
+
+
+
+
