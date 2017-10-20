@@ -1,0 +1,112 @@
+
+alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
+alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc;
+
+input bool s_product;
+input bool s_atseparator;
+input bool s_atexit;
+input bool s_processingbusy;
+
+	automaton SeparatorContr:
+		cont t der 1;
+		location Empty: // Left
+			initial;
+			edge when s_atseparator goto Incoming;
+		location Incoming: //Left
+			edge when not s_atseparator goto FullNoInc;
+
+		location FullNoInc: //Left
+			edge when s_atseparator goto FullInc;
+			edge when not s_atseparator and not s_processingbusy goto Open; 		//to be replaced by s_processingbusy
+		location Open: //Right
+			edge when s_atexit goto Empty;
+
+		location FullInc: //Left + Stop conveyer
+			edge when not s_processingbusy goto OpenInc;
+		location OpenInc: //Right
+			edge when s_processingbusy do t := 0 goto Reloading;
+
+		location Reloading: //Goes Left and waits to see if there is an incoming product
+			edge when t >= 1 and s_atseparator goto FullInc;
+			edge when t >= 1 and not s_atseparator goto FullNoInc;
+
+	end
+
+	automaton ConveyerContr:
+		cont t der 1;
+		location Empty: 	//To save energy, it is useful to not have the conveyer active when there are no products on it.
+			initial;
+			edge when CountFive.OneActiveEntry goto Moving;
+		location Moving:
+			edge when CountFive.Zero do t := 0 goto Delay;
+		location Delay:
+			edge when t > 1.5 goto Empty;
+	end
+
+	automaton CountFive:			//Keeps track of how many products are on the belt.
+		alg real count;
+
+
+		location Zero: 				//when CountFive = 5, stops the pusher; see control
+			initial;
+			equation count = 0;
+			edge when s_product goto OneActiveEntry;
+		location ZeroActiveExit:
+			equation count = 0;
+			edge when not s_atexit goto Zero;
+
+		location OneActiveEntry:
+			equation count = 1;
+			edge when not s_product goto One;
+		location One:
+			equation count = 1;
+			edge when s_atexit goto ZeroActiveExit;
+			edge when s_product goto TwoActiveEntry;
+		location OneActiveExit:
+			equation count = 1;
+			edge when not s_atexit goto One;
+
+		location TwoActiveEntry:
+			equation count = 2;
+			edge when not s_product goto Two;
+		location Two:
+			equation count = 2;
+			edge when s_atexit goto OneActiveExit;
+			edge when s_product goto ThreeActiveEntry;
+		location TwoActiveExit:
+			equation count = 2;
+			edge when not s_atexit goto Two;
+
+		location ThreeActiveEntry:
+			equation count = 3;
+			edge when not s_product goto Three;
+		location Three:
+			equation count = 3;
+			edge when s_atexit goto TwoActiveExit;
+			edge when s_product goto FourActiveEntry;
+		location ThreeActiveExit:
+			equation count = 3;
+			edge when not s_atexit goto Three;
+
+		location FourActiveEntry:
+			equation count = 4;
+			edge when not s_product goto Four;
+		location Four:
+			equation count = 4;
+			edge when s_atexit goto ThreeActiveExit;
+			edge when s_product goto Five;
+		location FourActiveExit:
+			equation count = 4;
+			edge when not s_atexit goto Four;
+
+		location Five:
+			equation count = 5;
+			edge when s_atexit goto FourActiveExit;
+	end
+
+
+
+
+
+
+

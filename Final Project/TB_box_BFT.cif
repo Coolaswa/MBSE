@@ -1,4 +1,5 @@
 import "T_plant_BFT.cif";
+import "B_plant_BFT.cif";
 
 automaton def Box():
     monitor productRejected;
@@ -54,5 +55,49 @@ automaton def Box():
         edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     location SlideBufferTransit:
         equation x' = -boxSpeed, y' = 0;
-        edge when rotation > 0 do rotDer := 0 goto Inactive;
+        edge when rotation > 0 do rotDer := 0 goto OnBuffer1;
+			location OnBuffer1:											//Buffer before sep
+		equation x' = Belt.speed, y' = 0;
+		edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count-1) * 50 goto SeparatorLeftBlock;
+		edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count-1) * 50 goto SeparatorRightBlock;
+		edge when x < 620 goto OnBuffer2;
+
+	location OnBuffer2:											//Buffer at right side sep
+		equation x' = Belt.speed, y' = 0;
+		edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+		edge when x < 600 goto OnBuffer3;
+
+	location OnBuffer3: 										//Buffer at left side sep
+		equation x' = Belt.speed, y' = 0;
+		edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+		edge when x < 485 goto Inactive;
+
+	location SeparatorLeftBlock:
+		equation x' = 0, y' = 0;
+		edge when Separator.Right and x >= 620 goto OnBuffer1;
+		edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+		edge when Separator.Right and x < 600 goto OnBuffer3;
+
+	location SeparatorRightBlock:
+		equation x' = 0, y' = 0;
+		edge when Separator.Left and x >= 620 goto OnBuffer1;
+		edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+		edge when Separator.Left and x < 600 goto OnBuffer3;
 end
+
+group LeftBlockCheck:
+	alg int boxI = RectRectColl((Const.Sensors.LeftBlockBounds[x],
+	 						    Const.Sensors.LeftBlockBounds[y],
+	  							Const.Sensors.LeftBlockBounds[width],
+	   							Const.Sensors.LeftBlockBounds[height]), BoxUpdater.data);
+	alg bool isActive =  (boxI != -1) and Separator.Left;
+end
+
+group RightBlockCheck:
+	alg int boxI = RectRectColl((Const.Sensors.RightBlockBounds[x],
+	 						    Const.Sensors.RightBlockBounds[y],
+	  							Const.Sensors.RightBlockBounds[width],
+	   							Const.Sensors.RightBlockBounds[height]), BoxUpdater.data);
+	alg bool isActive =  (boxI != -1) and Separator.Right;
+end
+
