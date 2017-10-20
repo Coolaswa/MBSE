@@ -53,8 +53,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="1124.1858"
-     inkscape:cy="203.87662"
+     inkscape:cx="384.59193"
+     inkscape:cy="342.75177"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -84,79 +84,18 @@
      id="layer1">
     <g
        id="Vertical rails"
-       transform="matrix(1.801077,0,0,1.801077,1266.8446,96.187303)">
+       transform="translate(1264.5167,170.71578)">
       <rect
          height="250"
-         width="1.5"
+         width="2.5"
          id="rails"
          style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.72058535;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          x="0"
          y="0" />
     </g>
     <g
-       id="Platform"
-       transform="translate(29,-88)">
-      <rect
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect1497"
-         width="122.83144"
-         height="23.325727"
-         x="1146.7288"
-         y="473.23547" />
-      <rect
-         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect2291"
-         width="38.863682"
-         height="2.3826747"
-         x="1173.9886"
-         y="430.4953"
-         ry="1.1913373" />
-      <g
-         id="a_pusher">
-        <rect
-           y="439.14569"
-           x="1196.7826"
-           height="24.486172"
-           width="8.0239935"
-           id="rect1389"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <rect
-           y="445.9733"
-           x="1196.7826"
-           height="11.536604"
-           width="85.559074"
-           id="rect4530"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      </g>
-      <rect
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect4528"
-         width="50.344799"
-         height="47.312157"
-         x="1219.1833"
-         y="427.63614" />
-      <rect
-         style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:6.44108152;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect2286"
-         width="9.190299"
-         height="8.5095644"
-         x="1209.993"
-         y="427.63614" />
-    </g>
-    <g
-       id="Product"
-       transform="translate(1883.7046,-73.324645)">
-      <rect
-         x="-704.28571"
-         y="434.28571"
-         height="23"
-         width="40"
-         id="ProductGraphics"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-    <g
        id="Discarded"
-       transform="translate(969.54947,387.71671)">
+       transform="translate(979.21804,387.38253)">
       <rect
          height="20"
          width="211"
@@ -167,45 +106,88 @@
          transform="rotate(5)" />
     </g>
     <g
+       id="Platform"
+       transform="translate(1183,254)">
+      <rect
+         style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2291"
+         width="38.863682"
+         height="2.3826747"
+         ry="1.1913373"
+         y="-13"
+         x="20" />
+      <rect
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1497"
+         width="110"
+         height="18"
+         y="0"
+         x="0" />
+      <g
+         id="a_pusher"
+         transform="translate(40,-16)">
+        <rect
+           height="24"
+           width="6"
+           id="rect1389"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="-8"
+           x="0" />
+        <rect
+           height="8"
+           width="80"
+           id="rect4530"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
+      </g>
+      <rect
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect4528"
+         width="50"
+         height="25"
+         y="-24.5"
+         x="60" />
+    </g>
+    <g
        id="height_sensor"
-       transform="translate(32.324881,17.172593)">
+       transform="translate(1191.98,175.76654)">
       <g
          id="a_height_head">
         <rect
            style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.92217016;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="rect1389-7"
-           width="26.626215"
-           height="6.4190168"
-           x="1163.7747"
-           y="204.99565" />
+           width="25"
+           height="6"
+           y="60"
+           x="4" />
         <rect
            style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.43428373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="rect4530-4"
            width="13.313107"
            height="54.139351"
-           x="1170.9646"
-           y="151.85513" />
+           y="10"
+           x="10" />
       </g>
       <rect
-         y="137.58922"
-         x="1160.1531"
          height="38.514103"
          width="33.282772"
          id="rect4528-0"
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.92202401;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         style="opacity:1;fill:#f9ee2e;fill-opacity:0.49028081;stroke:none;stroke-width:10.00791359;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="CollisionRect"
-         width="33.847229"
-         height="35.65147"
-         x="1160.1531"
-         y="176.10332" />
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.92202401;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
+      <circle
+         style="opacity:1;fill:#ff0000;stroke:#333333;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+         id="s_height2"
+         cy="32"
+         r="1.5178572"
+         cx="28" />
     </g>
     <g
        id="Control panel"
        transform="matrix(1.5,0,0,1.5,408.57143,65.714287)">
       <rect
-         height="100"
+         height="110"
          width="70"
          id="rect2263"
          style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -213,7 +195,7 @@
          y="0" />
       <g
          id="startbutton"
-         transform="translate(10,10)">
+         transform="translate(10,20)">
         <rect
            style="opacity:1;fill:#008000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="start"
@@ -236,7 +218,7 @@
       </g>
       <g
          id="stopbutton"
-         transform="translate(40,10)">
+         transform="translate(40,20)">
         <rect
            style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="stop"
@@ -259,7 +241,7 @@
       </g>
       <g
          id="resetbutton"
-         transform="translate(10,40)">
+         transform="translate(10,50)">
         <text
            id="text819-1"
            y="25"
@@ -281,7 +263,7 @@
            x="0" />
       </g>
       <g
-         transform="translate(40,40)"
+         transform="translate(40,50)"
          id="automanswitch">
         <text
            xml:space="preserve"
@@ -335,7 +317,7 @@
       </g>
       <g
          id="q1button"
-         transform="translate(10,70)">
+         transform="translate(10,80)">
         <text
            id="text819-1-3"
            y="25"
@@ -358,7 +340,7 @@
       </g>
       <g
          id="q2button"
-         transform="translate(40,70)">
+         transform="translate(40,80)">
         <text
            id="text819-1-3-6"
            y="25"
@@ -379,9 +361,20 @@
            x="0"
            y="0" />
       </g>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0088aa;fill-opacity:1;stroke:none;"
+         id="text336"
+         x="37"
+         y="14"><tspan
+           sodipodi:role="line"
+           id="tspan334"
+           x="35"
+           y="14"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa;">FESTO</tspan></text>
     </g>
     <g
-       id="Sensor indicators"
+       id="Sensor panel"
        transform="translate(114.65232,139.40105)">
       <g
          id="g528"
@@ -430,18 +423,19 @@
           <g
              id="g188">
             <rect
-               style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                id="rect2286-8-1-5"
                width="9"
                height="9"
                x="0"
-               y="0" />
+               y="0"
+               ry="1.5" />
             <circle
                r="3"
                cy="4.5"
                cx="4.5"
                id="sensorLiftUp-3-7"
-               style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+               style="opacity:1;fill:#00ffcc;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
           </g>
         </g>
         <g
@@ -465,16 +459,17 @@
             <rect
                y="0"
                x="0"
-               style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                id="rect2286-8-5-3"
                width="9"
-               height="9" />
+               height="9"
+               ry="1.5" />
             <circle
                r="3"
                cy="4.5"
                cx="4.5"
                id="s_capacitive"
-               style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+               style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
           </g>
         </g>
         <g
@@ -496,12 +491,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect2286-8-9-8"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="sensorLiftUp-0-6"
              cx="4.5"
              cy="4.5"
@@ -534,12 +530,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect2286-8-7-8"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#00ffcc;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_lift_down"
              cx="4.5"
              cy="4.5"
@@ -572,15 +569,16 @@
              height="9"
              width="9"
              id="rect4232"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              x="0"
-             y="0" />
+             y="0"
+             ry="1.5" />
           <circle
              r="3"
              cy="4.5"
              cx="4.5"
              id="s_product_entry"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
         <g
            transform="translate(20.5,68)"
@@ -612,12 +610,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect4246"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_product_separator"
              cx="4.5"
              cy="4.5"
@@ -654,15 +653,16 @@
              height="9"
              width="9"
              id="rect4260"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              x="0"
-             y="0" />
+             y="0"
+             ry="1.5" />
           <circle
              r="3"
              cy="4.5"
              cx="4.5"
              id="s_product_exit"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
         <g
            transform="translate(5.5,85)"
@@ -690,12 +690,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect4274"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_separator_opened"
              cx="4.5"
              cy="4.5"
@@ -728,15 +729,16 @@
              height="9"
              width="9"
              id="rect4288"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              x="0"
-             y="0" />
+             y="0"
+             ry="1.5" />
           <circle
              r="3"
              cy="4.5"
              cx="4.5"
              id="s_separator_closed"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
         <g
            transform="translate(35.5,85)"
@@ -768,12 +770,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect4302"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_processing_busy"
              cx="4.5"
              cy="4.5"
@@ -798,12 +801,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect2286-8-31"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_pusher"
              cx="4.5"
              cy="4.5"
@@ -838,12 +842,13 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect2286-8-3"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_lift_up"
              cx="4.5"
              cy="4.5"
@@ -881,13 +886,14 @@
              height="9"
              width="9"
              id="rect2286-8-9"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             ry="1.5" />
           <circle
              r="3"
              cy="4.5"
              cx="4.5"
              id="sensorLiftUp-0"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
         <g
            transform="translate(20.5,17)"
@@ -918,13 +924,14 @@
           <rect
              y="0"
              x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="rect2286-8-7"
              width="9"
-             height="9" />
+             height="9"
+             ry="1.5" />
           <circle
              cy="4.5"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="s_height"
              cx="4.5"
              r="3" />
@@ -948,13 +955,14 @@
              height="9"
              width="9"
              id="rect2286-8-7-9"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             ry="1.5" />
           <circle
              r="3"
              cy="4.5"
              cx="4.5"
              id="sensorLiftUp-4-9"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+             style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
       </g>
     </g>
@@ -971,7 +979,7 @@
          style="stroke-width:0.26458332">10</tspan></text>
     <g
        id="Slider"
-       transform="translate(947.8293,295.35642)">
+       transform="translate(954.97216,294.64213)">
       <rect
          y="0"
          x="0"
@@ -979,7 +987,8 @@
          id="Air"
          width="10"
          height="228"
-         transform="rotate(-100)" />
+         transform="rotate(-100)"
+         ry="20" />
       <g
          id="g7416">
         <rect
@@ -993,8 +1002,576 @@
       </g>
     </g>
     <g
+       id="Actuator panel"
+       transform="translate(357.594,281.83256)">
+      <g
+         id="g388"
+         transform="scale(3)">
+        <rect
+           y="0"
+           x="0"
+           height="90"
+           width="50"
+           id="rect2263-3-5"
+           style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:2.17715502;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <rect
+           y="13.363477"
+           x="7.4835467"
+           height="0.75595713"
+           width="35.529762"
+           id="rect1214-24"
+           style="opacity:1;fill:#e1e1e1;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <text
+           y="10.75241"
+           x="2.3645546"
+           id="text972-4"
+           style="font-style:normal;font-weight:normal;font-size:9.5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             y="10.75241"
+             x="2.3645546"
+             style="stroke-width:0.26458332"
+             id="tspan970-3"
+             sodipodi:role="line">Actuators</tspan></text>
+        <g
+           transform="translate(35.5,51)"
+           id="height">
+          <g
+             id="b_height">
+            <rect
+               y="0"
+               x="0"
+               style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               id="rect2286-8-5-3-7-4"
+               width="9"
+               height="9" />
+            <rect
+               x="3"
+               y="1.75"
+               ry="1.4732143"
+               height="5.5"
+               width="3"
+               id="rect1543-5"
+               style="fill:#4d4d4d" />
+            <rect
+               x="0.25"
+               y="4.25"
+               ry="0.3125"
+               height="0.5"
+               width="1.75"
+               id="rect1613"
+               style="fill:#483737;paint-order:fill markers stroke" />
+            <rect
+               x="0.25"
+               y="1.25"
+               ry="0.3125"
+               height="0.5"
+               width="1.75"
+               id="rect1613-9"
+               style="fill:#483737;paint-order:fill markers stroke" />
+            <rect
+               x="0.25"
+               y="7.25"
+               ry="0.3125"
+               height="0.5"
+               width="1.75"
+               id="rect1613-9-8"
+               style="fill:#483737;paint-order:fill markers stroke" />
+          </g>
+          <g
+             transform="translate(-0.3,12)"
+             id="g1001-0-4-1-6-3">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text991-2-4-7-2-3"><tspan
+                 sodipodi:role="line"
+                 id="tspan989-3-6-6-1-5"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Height</tspan></text>
+          </g>
+          <g
+             id="height_knob">
+            <g
+               transform="translate(4,2)"
+               id="g1234">
+              <rect
+                 transform="rotate(90,0.5,2.5)"
+                 y="0"
+                 x="0"
+                 style="fill:#483737;paint-order:fill markers stroke"
+                 id="height_pole"
+                 width="1"
+                 height="2.5"
+                 ry="0.53571427" />
+            </g>
+            <rect
+               transform="translate(0,3.5)"
+               x="0.5"
+               y="0"
+               style="fill:#c8b7b7;paint-order:fill markers stroke"
+               id="height_bar"
+               width="8"
+               height="2.5"
+               ry="1.25" />
+          </g>
+        </g>
+        <g
+           transform="translate(20.5,51)"
+           id="colour">
+          <g
+             transform="translate(-0.25,12)"
+             id="g1001-0-4-1-8-1">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text991-2-4-7-4-2"><tspan
+                 sodipodi:role="line"
+                 id="tspan989-3-6-6-0-6"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Colour</tspan></text>
+          </g>
+          <g
+             id="b_colour">
+            <rect
+               y="0"
+               x="0"
+               style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               id="rect2286-8-5-3-7"
+               width="9"
+               height="9" />
+            <rect
+               y="0"
+               x="0"
+               height="1.5"
+               width="9"
+               id="rect1534"
+               style="fill:#000000" />
+            <rect
+               x="0"
+               y="7.5"
+               height="1.5"
+               width="9"
+               id="rect1540"
+               style="fill:#940606" />
+            <rect
+               x="3"
+               y="1.75"
+               ry="1.4732143"
+               height="5.5"
+               width="3"
+               id="rect1543"
+               style="fill:#4d4d4d" />
+          </g>
+          <g
+             transform="rotate(180,4.5,4.5)"
+             id="colour_knob">
+            <rect
+               y="2"
+               x="4"
+               ry="0.53571427"
+               height="2.5"
+               width="1"
+               id="rect1548"
+               style="fill:#483737;paint-order:fill markers stroke" />
+            <rect
+               x="0.5"
+               y="0.25"
+               style="fill:#c8b7b7;paint-order:fill markers stroke"
+               id="rect1546"
+               width="8"
+               height="2.5"
+               ry="1.25" />
+          </g>
+        </g>
+        <g
+           transform="translate(5.5,51)"
+           id="spawn">
+          <g
+             transform="translate(-0.5,12)"
+             id="g1001-0-4-1-7">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text991-2-4-7-3"><tspan
+                 sodipodi:role="line"
+                 id="tspan989-3-6-6-6"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Spawn</tspan></text>
+          </g>
+          <rect
+             y="0"
+             x="0"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="b_spawn"
+             width="9"
+             height="9"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(20.5,34)"
+           id="elevator down">
+          <text
+             transform="translate(-1.75,12)"
+             xml:space="preserve"
+             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             id="text991-2-9"><tspan
+               sodipodi:role="line"
+               id="tspan989-3-8"
+               x="0"
+               y="0"
+               style="stroke-width:0.26458332">Elevator</tspan></text>
+          <text
+             transform="translate(0.25,15)"
+             id="text995-3-8"
+             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="stroke-width:0.26458332"
+               y="0"
+               x="0"
+               id="tspan993-6-3"
+               sodipodi:role="line">down</tspan></text>
+          <rect
+             y="0"
+             x="0"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="a_lift_down"
+             width="9"
+             height="9"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(35.5,34)"
+           id="pusher">
+          <g
+             id="g1001-0-4-4">
+            <text
+               transform="translate(-0.8,12)"
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text991-2-4-8"><tspan
+                 sodipodi:role="line"
+                 id="tspan989-3-6-8"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Pusher</tspan></text>
+          </g>
+          <rect
+             y="0"
+             x="0"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="b_pusher"
+             width="9"
+             height="9"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(5.5,34)"
+           id="elevator up">
+          <g
+             id="g1001-9">
+            <text
+               transform="translate(-1.5,12)"
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text991-09"><tspan
+                 y="0"
+                 x="0"
+                 sodipodi:role="line"
+                 id="tspan989-1"
+                 style="stroke-width:0.26458332">Elevator</tspan></text>
+            <text
+               transform="translate(2.5,15)"
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text995-1"><tspan
+                 sodipodi:role="line"
+                 id="tspan993-4"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">up</tspan></text>
+          </g>
+          <rect
+             y="0"
+             x="0"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="a_lift_up"
+             width="9"
+             height="9"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(35.5,17)"
+           id="air slide">
+          <g
+             id="g1001-3-1-1">
+            <text
+               transform="translate(2.5,12)"
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text991-0-5-8"><tspan
+                 sodipodi:role="line"
+                 id="tspan989-39-3-2"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Air</tspan></text>
+            <text
+               transform="translate(1,15)"
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text995-2-5-4"><tspan
+                 sodipodi:role="line"
+                 id="tspan993-7-0-1"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">slide</tspan></text>
+          </g>
+          <rect
+             y="0"
+             x="0"
+             height="9"
+             width="9"
+             id="b_airslide"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(20.5,17)"
+           id="testing ready">
+          <g
+             id="g1001-3-6">
+            <text
+               transform="translate(-0.75,12)"
+               id="text991-0-8"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="stroke-width:0.26458332"
+                 y="0"
+                 x="0"
+                 id="tspan989-39-8"
+                 sodipodi:role="line">Testing</tspan></text>
+            <text
+               transform="translate(0,15)"
+               id="text995-2-1"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="stroke-width:0.26458332"
+                 y="0"
+                 x="0"
+                 id="tspan993-7-1"
+                 sodipodi:role="line">ready</tspan></text>
+          </g>
+          <rect
+             ry="1.5"
+             y="0"
+             x="0"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="b_testingready"
+             width="9"
+             height="9" />
+        </g>
+        <g
+           id="usecase 1"
+           transform="translate(5.5,68)">
+          <g
+             id="g387">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text381"
+               transform="translate(1.9,12)"><tspan
+                 sodipodi:role="line"
+                 id="tspan379"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Use</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text385"
+               transform="translate(-0.25,15)"><tspan
+                 sodipodi:role="line"
+                 id="tspan383"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">case 1</tspan></text>
+          </g>
+          <rect
+             height="9"
+             width="9"
+             id="b_case1"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             x="0"
+             y="0"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(20.5,68)"
+           id="usecase 2">
+          <g
+             id="g435">
+            <text
+               transform="translate(1.9,12)"
+               id="text429"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="stroke-width:0.26458332"
+                 y="0"
+                 x="0"
+                 id="tspan427"
+                 sodipodi:role="line">Use</tspan></text>
+            <text
+               transform="translate(-0.4,15)"
+               id="text433"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               xml:space="preserve"><tspan
+                 style="stroke-width:0.26458332"
+                 y="0"
+                 x="0"
+                 id="tspan431"
+                 sodipodi:role="line">case 2</tspan></text>
+          </g>
+          <rect
+             ry="1.5"
+             y="0"
+             x="0"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="b_case2"
+             width="9"
+             height="9" />
+        </g>
+        <g
+           id="usecase 3"
+           transform="translate(35.5,68)">
+          <g
+             id="g451">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text445"
+               transform="translate(1.9,12)"><tspan
+                 sodipodi:role="line"
+                 id="tspan443"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">Use</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               id="text449"
+               transform="translate(-0.5,15)"><tspan
+                 sodipodi:role="line"
+                 id="tspan447"
+                 x="0"
+                 y="0"
+                 style="stroke-width:0.26458332">case 3</tspan></text>
+          </g>
+          <rect
+             height="9"
+             width="9"
+             id="b_case3"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             x="0"
+             y="0"
+             ry="1.5" />
+        </g>
+        <g
+           transform="translate(5.5,17)"
+           id="conveyor">
+          <text
+             transform="translate(-2.5,12)"
+             id="text991-0-59-7"
+             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               y="0"
+               x="0"
+               style="stroke-width:0.21975574"
+               id="tspan989-39-1-1"
+               sodipodi:role="line">Conveyor</tspan></text>
+          <rect
+             x="0"
+             y="0"
+             height="9"
+             width="9"
+             id="b_conveyor"
+             style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             ry="1.5" />
+        </g>
+      </g>
+    </g>
+    <g
+       id="Arm"
+       transform="translate(1368.6307,352.41696)">
+      <g
+         id="Rotator"
+         transform="rotate(100,12.5,0)">
+        <rect
+           style="fill:#b3b3b3;paint-order:fill markers stroke"
+           id="rect4341"
+           width="20"
+           height="181"
+           x="0"
+           y="0" />
+        <rect
+           y="0"
+           x="-6"
+           height="30"
+           width="32"
+           id="rect4331"
+           style="fill:#333333;paint-order:fill markers stroke" />
+        <circle
+           cy="0"
+           style="fill:#333333;paint-order:fill markers stroke"
+           id="path4326"
+           r="16"
+           cx="10" />
+        <g
+           id="g1234556"
+           transform="translate(6.25,181)">
+          <g
+             id="Holder"
+             transform="rotate(-100,6.25,0)">
+            <rect
+               style="fill:#0066ff;paint-order:fill markers stroke"
+               id="rect4347"
+               width="12.5"
+               height="40"
+               y="0"
+               x="0" />
+          </g>
+        </g>
+        <circle
+           style="fill:#333333;paint-order:fill markers stroke"
+           id="path4344"
+           cx="10"
+           cy="181"
+           r="16" />
+        <rect
+           style="opacity:1;fill:none;stroke:#333333;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="rect327"
+           width="30.5"
+           height="211"
+           y="-15"
+           x="-5.25"
+           ry="16" />
+      </g>
+    </g>
+    <g
+       id="Product"
+       transform="translate(1182.9086,360.92603)">
+      <rect
+         height="23"
+         width="40"
+         id="ProductGraphics"
+         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         y="0"
+         x="0" />
+    </g>
+    <g
        id="Conveyor"
-       transform="translate(600.53808,299.01015)">
+       transform="translate(606.96665,298.29586)">
       <rect
          ry="10"
          height="20"
@@ -1122,11 +1699,11 @@
              x="-25"
              y="-5" />
           <rect
-             height="50"
-             width="25"
+             height="45"
+             width="10"
              id="rect282"
              style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke"
-             y="0"
+             y="5"
              x="0" />
         </g>
         <g
@@ -1154,609 +1731,6 @@
            height="30"
            y="3"
            x="15" />
-      </g>
-    </g>
-    <g
-       id="Actuator indicator"
-       transform="translate(357.594,281.83256)">
-      <g
-         id="g388"
-         transform="scale(3)">
-        <rect
-           y="0"
-           x="0"
-           height="90"
-           width="50"
-           id="rect2263-3-5"
-           style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:2.17715502;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <rect
-           y="13.363477"
-           x="7.4835467"
-           height="0.75595713"
-           width="35.529762"
-           id="rect1214-24"
-           style="opacity:1;fill:#e1e1e1;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <text
-           y="10.75241"
-           x="2.3645546"
-           id="text972-4"
-           style="font-style:normal;font-weight:normal;font-size:9.5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-           xml:space="preserve"><tspan
-             y="10.75241"
-             x="2.3645546"
-             style="stroke-width:0.26458332"
-             id="tspan970-3"
-             sodipodi:role="line">Actuators</tspan></text>
-        <g
-           transform="translate(35.5,51)"
-           id="height">
-          <g
-             id="b_height">
-            <rect
-               y="0"
-               x="0"
-               style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-               id="rect2286-8-5-3-7-4"
-               width="9"
-               height="9" />
-            <rect
-               x="3"
-               y="1.75"
-               ry="1.4732143"
-               height="5.5"
-               width="3"
-               id="rect1543-5"
-               style="fill:#4d4d4d" />
-            <rect
-               x="0.25"
-               y="4.25"
-               ry="0.3125"
-               height="0.5"
-               width="1.75"
-               id="rect1613"
-               style="fill:#483737;paint-order:fill markers stroke" />
-            <rect
-               x="0.25"
-               y="1.25"
-               ry="0.3125"
-               height="0.5"
-               width="1.75"
-               id="rect1613-9"
-               style="fill:#483737;paint-order:fill markers stroke" />
-            <rect
-               x="0.25"
-               y="7.25"
-               ry="0.3125"
-               height="0.5"
-               width="1.75"
-               id="rect1613-9-8"
-               style="fill:#483737;paint-order:fill markers stroke" />
-          </g>
-          <g
-             transform="translate(-0.3,12)"
-             id="g1001-0-4-1-6-3">
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text991-2-4-7-2-3"><tspan
-                 sodipodi:role="line"
-                 id="tspan989-3-6-6-1-5"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Height</tspan></text>
-          </g>
-          <g
-             id="height_knob">
-            <g
-               transform="translate(4,2)"
-               id="g1234">
-              <rect
-                 transform="rotate(90,0.5,2.5)"
-                 y="0"
-                 x="0"
-                 style="fill:#483737;paint-order:fill markers stroke"
-                 id="height_pole"
-                 width="1"
-                 height="2.5"
-                 ry="0.53571427" />
-            </g>
-            <rect
-               transform="translate(0,3.5)"
-               x="0.5"
-               y="0"
-               style="fill:#c8b7b7;paint-order:fill markers stroke"
-               id="height_bar"
-               width="8"
-               height="2.5"
-               ry="1.25" />
-          </g>
-        </g>
-        <g
-           transform="translate(20.5,51)"
-           id="colour">
-          <g
-             transform="translate(-0.25,12)"
-             id="g1001-0-4-1-8-1">
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text991-2-4-7-4-2"><tspan
-                 sodipodi:role="line"
-                 id="tspan989-3-6-6-0-6"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Colour</tspan></text>
-          </g>
-          <g
-             id="b_colour">
-            <rect
-               y="0"
-               x="0"
-               style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-               id="rect2286-8-5-3-7"
-               width="9"
-               height="9" />
-            <rect
-               y="0"
-               x="0"
-               height="1.5"
-               width="9"
-               id="rect1534"
-               style="fill:#000000" />
-            <rect
-               x="0"
-               y="7.5"
-               height="1.5"
-               width="9"
-               id="rect1540"
-               style="fill:#940606" />
-            <rect
-               x="3"
-               y="1.75"
-               ry="1.4732143"
-               height="5.5"
-               width="3"
-               id="rect1543"
-               style="fill:#4d4d4d" />
-          </g>
-          <g
-             transform="rotate(180,4.5,4.5)"
-             id="colour_knob">
-            <rect
-               y="2"
-               x="4"
-               ry="0.53571427"
-               height="2.5"
-               width="1"
-               id="rect1548"
-               style="fill:#483737;paint-order:fill markers stroke" />
-            <rect
-               x="0.5"
-               y="0.25"
-               style="fill:#c8b7b7;paint-order:fill markers stroke"
-               id="rect1546"
-               width="8"
-               height="2.5"
-               ry="1.25" />
-          </g>
-        </g>
-        <g
-           transform="translate(5.5,51)"
-           id="spawn">
-          <g
-             transform="translate(-0.5,12)"
-             id="g1001-0-4-1-7">
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text991-2-4-7-3"><tspan
-                 sodipodi:role="line"
-                 id="tspan989-3-6-6-6"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Spawn</tspan></text>
-          </g>
-          <rect
-             y="0"
-             x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect2286-8-9-8-3"
-             width="9"
-             height="9" />
-          <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="b_spawn"
-             cx="4.5"
-             cy="4.5"
-             r="3" />
-        </g>
-        <g
-           transform="translate(20.5,34)"
-           id="elevator down">
-          <text
-             transform="translate(-1.75,12)"
-             xml:space="preserve"
-             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             id="text991-2-9"><tspan
-               sodipodi:role="line"
-               id="tspan989-3-8"
-               x="0"
-               y="0"
-               style="stroke-width:0.26458332">Elevator</tspan></text>
-          <text
-             transform="translate(0.25,15)"
-             id="text995-3-8"
-             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
-               style="stroke-width:0.26458332"
-               y="0"
-               x="0"
-               id="tspan993-6-3"
-               sodipodi:role="line">down</tspan></text>
-          <rect
-             y="0"
-             x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect2286-8-7-8-4"
-             width="9"
-             height="9" />
-          <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="a_lift_down"
-             cx="4.5"
-             cy="4.5"
-             r="3" />
-        </g>
-        <g
-           transform="translate(35.5,34)"
-           id="pusher">
-          <g
-             id="g1001-0-4-4">
-            <text
-               transform="translate(-0.8,12)"
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text991-2-4-8"><tspan
-                 sodipodi:role="line"
-                 id="tspan989-3-6-8"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Pusher</tspan></text>
-          </g>
-          <rect
-             y="0"
-             x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect2286-8-31-9"
-             width="9"
-             height="9" />
-          <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="b_pusher"
-             cx="4.5"
-             cy="4.5"
-             r="3" />
-        </g>
-        <g
-           transform="translate(5.5,34)"
-           id="elevator up">
-          <g
-             id="g1001-9">
-            <text
-               transform="translate(-1.5,12)"
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text991-09"><tspan
-                 y="0"
-                 x="0"
-                 sodipodi:role="line"
-                 id="tspan989-1"
-                 style="stroke-width:0.26458332">Elevator</tspan></text>
-            <text
-               transform="translate(2.5,15)"
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text995-1"><tspan
-                 sodipodi:role="line"
-                 id="tspan993-4"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">up</tspan></text>
-          </g>
-          <rect
-             y="0"
-             x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect2286-8-3-0"
-             width="9"
-             height="9" />
-          <circle
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="a_lift_up"
-             cx="4.5"
-             cy="4.5"
-             r="3" />
-        </g>
-        <g
-           transform="translate(35.5,17)"
-           id="air slide">
-          <g
-             id="g1001-3-1-1">
-            <text
-               transform="translate(2.5,12)"
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text991-0-5-8"><tspan
-                 sodipodi:role="line"
-                 id="tspan989-39-3-2"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Air</tspan></text>
-            <text
-               transform="translate(1,15)"
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text995-2-5-4"><tspan
-                 sodipodi:role="line"
-                 id="tspan993-7-0-1"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">slide</tspan></text>
-          </g>
-          <rect
-             y="0"
-             x="0"
-             height="9"
-             width="9"
-             id="rect2286-8-9-2"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-          <circle
-             r="3"
-             cy="4.5"
-             cx="4.5"
-             id="b_airslide"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-        <g
-           transform="translate(20.5,17)"
-           id="testing ready">
-          <g
-             id="g1001-3-6">
-            <text
-               transform="translate(-0.75,12)"
-               id="text991-0-8"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               xml:space="preserve"><tspan
-                 style="stroke-width:0.26458332"
-                 y="0"
-                 x="0"
-                 id="tspan989-39-8"
-                 sodipodi:role="line">Testing</tspan></text>
-            <text
-               transform="translate(0,15)"
-               id="text995-2-1"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               xml:space="preserve"><tspan
-                 style="stroke-width:0.26458332"
-                 y="0"
-                 x="0"
-                 id="tspan993-7-1"
-                 sodipodi:role="line">ready</tspan></text>
-          </g>
-          <rect
-             ry="1.5"
-             y="0"
-             x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect2286-8-7-57"
-             width="9"
-             height="9" />
-          <circle
-             cy="4.5"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="b_testingready"
-             cx="4.5"
-             r="3" />
-        </g>
-        <g
-           id="usecase 1"
-           transform="translate(5.5,68)">
-          <g
-             id="g387">
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text381"
-               transform="translate(1.9,12)"><tspan
-                 sodipodi:role="line"
-                 id="tspan379"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Use</tspan></text>
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text385"
-               transform="translate(-0.25,15)"><tspan
-                 sodipodi:role="line"
-                 id="tspan383"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">case 1</tspan></text>
-          </g>
-          <rect
-             height="9"
-             width="9"
-             id="rect389"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             x="0"
-             y="0"
-             ry="1.5" />
-          <circle
-             r="3"
-             cx="4.5"
-             id="b_case1"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             cy="4.5" />
-        </g>
-        <g
-           transform="translate(20.5,68)"
-           id="usecase 2">
-          <g
-             id="g435">
-            <text
-               transform="translate(1.9,12)"
-               id="text429"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               xml:space="preserve"><tspan
-                 style="stroke-width:0.26458332"
-                 y="0"
-                 x="0"
-                 id="tspan427"
-                 sodipodi:role="line">Use</tspan></text>
-            <text
-               transform="translate(-0.4,15)"
-               id="text433"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               xml:space="preserve"><tspan
-                 style="stroke-width:0.26458332"
-                 y="0"
-                 x="0"
-                 id="tspan431"
-                 sodipodi:role="line">case 2</tspan></text>
-          </g>
-          <rect
-             ry="1.5"
-             y="0"
-             x="0"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="rect437"
-             width="9"
-             height="9" />
-          <circle
-             cy="4.5"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="b_case2"
-             cx="4.5"
-             r="3" />
-        </g>
-        <g
-           id="usecase 3"
-           transform="translate(35.5,68)">
-          <g
-             id="g451">
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text445"
-               transform="translate(1.9,12)"><tspan
-                 sodipodi:role="line"
-                 id="tspan443"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">Use</tspan></text>
-            <text
-               xml:space="preserve"
-               style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-               id="text449"
-               transform="translate(-0.5,15)"><tspan
-                 sodipodi:role="line"
-                 id="tspan447"
-                 x="0"
-                 y="0"
-                 style="stroke-width:0.26458332">case 3</tspan></text>
-          </g>
-          <rect
-             height="9"
-             width="9"
-             id="rect453"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             x="0"
-             y="0"
-             ry="1.5" />
-          <circle
-             r="3"
-             cx="4.5"
-             id="b_case3"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             cy="4.5" />
-        </g>
-        <g
-           transform="translate(5.5,17)"
-           id="conveyor">
-          <text
-             transform="translate(-2.5,12)"
-             id="text991-0-59-7"
-             style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-             xml:space="preserve"><tspan
-               y="0"
-               x="0"
-               style="stroke-width:0.21975574"
-               id="tspan989-39-1-1"
-               sodipodi:role="line">Conveyor</tspan></text>
-          <rect
-             x="0"
-             y="0"
-             height="9"
-             width="9"
-             id="rect2286-8-7-9-7"
-             style="opacity:1;fill:#939393;fill-opacity:1;stroke:none;stroke-width:3.57623887;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-          <circle
-             r="3"
-             cy="4.5"
-             cx="4.5"
-             id="b_conveyor"
-             style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-      </g>
-    </g>
-    <g
-       id="Arm"
-       transform="translate(1362.6959,330.31987)">
-      <g
-         id="Rotator"
-         transform="rotate(100,12.5,0)">
-        <rect
-           style="fill:#b3b3b3;paint-order:fill markers stroke"
-           id="rect4341"
-           width="25"
-           height="181"
-           x="0"
-           y="0" />
-        <rect
-           y="0"
-           x="-12.5"
-           height="30"
-           width="50"
-           id="rect4331"
-           style="fill:#333333;paint-order:fill markers stroke" />
-        <circle
-           cy="0"
-           style="fill:#333333;paint-order:fill markers stroke"
-           id="path4326"
-           r="25"
-           cx="12.5" />
-        <g
-           id="g1234556"
-           transform="translate(6.25,181)">
-          <g
-             id="Holder"
-             transform="rotate(-100,6.25,0)">
-            <rect
-               style="fill:#0066ff;paint-order:fill markers stroke"
-               id="rect4347"
-               width="12.5"
-               height="60"
-               y="0"
-               x="0" />
-          </g>
-        </g>
-        <circle
-           style="fill:#333333;paint-order:fill markers stroke"
-           id="path4344"
-           cx="12.5"
-           cy="181"
-           r="20" />
       </g>
     </g>
   </g>
