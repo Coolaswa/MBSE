@@ -2,6 +2,7 @@ import "T_plant_BFT.cif";
 svgfile "SystemSVG.svg";
 
 input bool a_airslide_auto;
+input bool a_TledQ1;
 
 test: Create_Boxes_svg(BoxUpdater.data);
 group def Create_Boxes_svg(alg list[10] BoxData data):
@@ -65,6 +66,7 @@ svgout id "Rotator" attr "transform" value fmt("rotate(%f)", Arm.armRot);
 svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,60)", 180-Arm.armRot);
 
 svgout id "Air" attr "opacity" value if a_airslide_auto: 1 else 0 end;
+svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end;
 
 
 
