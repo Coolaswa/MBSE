@@ -52,14 +52,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="359.36897"
-     inkscape:cy="378.54022"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="1124.1858"
+     inkscape:cy="203.87662"
      inkscape:document-units="mm"
-     inkscape:current-layer="Sensor indicators"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1003"
+     inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -84,7 +84,7 @@
      id="layer1">
     <g
        id="Vertical rails"
-       transform="matrix(1.801077,0,0,1.801077,1238.5603,87.09593)">
+       transform="matrix(1.801077,0,0,1.801077,1266.8446,96.187303)">
       <rect
          height="250"
          width="1.5"
@@ -94,7 +94,8 @@
          y="0" />
     </g>
     <g
-       id="Platform">
+       id="Platform"
+       transform="translate(29,-88)">
       <rect
          style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect1497"
@@ -143,52 +144,31 @@
          y="427.63614" />
     </g>
     <g
-       id="Product1"
-       transform="translate(1543.4593,55.170441)">
+       id="Product"
+       transform="translate(1883.7046,-73.324645)">
       <rect
-         x="0"
-         y="0"
-         height="50"
-         width="50"
-         id="ProductGraphics1"
-         style="opacity:1;fill:#230101;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         transform="matrix(1,0,0,2,0,-50)" />
-    </g>
-    <g
-       id="Product3"
-       transform="translate(1651.6575,2.5365971)">
-      <rect
-         x="0"
-         y="0"
-         height="50"
-         width="50"
-         id="ProductGraphics3"
-         style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:6.30694103;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-    <g
-       id="Product2"
-       transform="translate(1469.9933,406.77838)">
-      <rect
-         x="0"
-         y="0"
-         height="50"
-         width="50"
-         id="ProductGraphics2"
+         x="-704.28571"
+         y="434.28571"
+         height="23"
+         width="40"
+         id="ProductGraphics"
          style="opacity:1;fill:#940606;fill-opacity:1;stroke:none;stroke-width:3.08585286;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <g
-       id="Disposed"
-       transform="translate(938.23475,475.59998)">
+       id="Discarded"
+       transform="translate(969.54947,387.71671)">
       <rect
          height="20"
-         width="200"
+         width="211"
          id="rect4526-9"
          style="opacity:1;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         x="0"
-         y="0" />
+         x="-10.281926"
+         y="-19.176846"
+         transform="rotate(5)" />
     </g>
     <g
-       id="height_sensor">
+       id="height_sensor"
+       transform="translate(32.324881,17.172593)">
       <g
          id="a_height_head">
         <rect
@@ -223,136 +203,186 @@
     </g>
     <g
        id="Control panel"
-       transform="matrix(1.5569098,0,0,1.5569098,5.5186206,142.72309)">
+       transform="matrix(1.5,0,0,1.5,408.57143,65.714287)">
       <rect
-         y="-53.827381"
-         x="411.99405"
-         height="96.761909"
-         width="68.035706"
+         height="100"
+         width="70"
          id="rect2263"
-         style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
       <g
-         id="g194">
+         id="startbutton"
+         transform="translate(10,10)">
         <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:#008000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="start"
            width="20"
            height="20"
-           x="419.55359"
-           y="-48.157738"
-           ry="5.2916665" />
+           ry="5.5"
+           x="0"
+           y="0" />
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819"
-           y="-21.941753"
-           x="425.32529"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
-           xml:space="preserve"><tspan
+           xml:space="preserve"
+           x="4"
+           y="25"><tspan
              style="stroke-width:0.23602927"
-             y="-21.941753"
-             x="425.32529"
+             y="25"
+             x="4"
              id="tspan817"
              sodipodi:role="line">Start</tspan></text>
       </g>
       <g
-         id="g199">
+         id="stopbutton"
+         transform="translate(40,10)">
         <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="stop"
            width="20"
            height="20"
-           x="449.08987"
-           y="-48.028446"
-           ry="5.2916665" />
+           ry="5.5"
+           x="0"
+           y="0" />
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819-8"
-           y="-21.888374"
-           x="455.26407"
+           y="25"
+           x="4"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="-21.888374"
-             x="455.26407"
+             y="25"
+             x="4"
              id="tspan817-0"
              sodipodi:role="line">Stop</tspan></text>
       </g>
       <g
-         transform="translate(189.19345,-31.9801)"
-         id="g2168-1">
+         id="resetbutton"
+         transform="translate(10,40)">
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819-1"
-           y="40.434059"
-           x="235.22153"
+           y="25"
+           x="3.25"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="40.434059"
-             x="235.22153"
+             y="25"
+             x="3.25"
              id="tspan817-07"
              sodipodi:role="line">Reset</tspan></text>
         <rect
-           ry="5.2916665"
-           y="14.58631"
-           x="230.56548"
+           ry="5.5"
            height="20"
            width="20"
            id="b_reset"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
       </g>
       <g
-         id="g2256"
-         transform="translate(188.9881,-62.744048)">
+         transform="translate(40,40)"
+         id="automanswitch">
         <text
-           transform="scale(0.99413114,1.0059035)"
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           x="-2"
+           y="25"
+           id="text320"><tspan
+             sodipodi:role="line"
+             id="tspan318"
+             style="stroke-width:0.23602927"
+             x="-2"
+             y="25">Auto/Man</tspan></text>
+        <rect
+           x="0"
+           y="0"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect322"
+           width="20"
+           height="20"
+           ry="5.5" />
+        <circle
+           style="fill:#cccccc;paint-order:fill markers stroke"
+           id="path326"
+           cx="10"
+           cy="10"
+           r="8" />
+        <circle
+           style="opacity:1;fill:none;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path329"
+           cx="10"
+           cy="10"
+           r="7" />
+        <g
+           id="key"
+           transform="rotate(30,10,10)">
+          <rect
+             style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+             id="rect1140"
+             width="4"
+             height="6"
+             x="8"
+             y="7" />
+          <rect
+             y="2.5"
+             x="8.5"
+             height="15"
+             width="3"
+             id="rect1137"
+             style="opacity:1;fill:#4d4d4d" />
+        </g>
+      </g>
+      <g
+         id="q1button"
+         transform="translate(10,70)">
+        <text
            id="text819-1-3"
-           y="101.08297"
-           x="238.62183"
+           y="25"
+           x="6.5"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="101.08297"
-             x="238.62183"
+             y="25"
+             x="6.5"
              id="tspan817-07-6"
              sodipodi:role="line">Q1</tspan></text>
         <rect
-           ry="5.2916665"
-           y="75.593262"
-           x="230.77083"
+           ry="5.5"
            height="20"
            width="20"
-           id="rect2120-2-8"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           id="s_q1"
+           style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
       </g>
       <g
-         id="g2261"
-         transform="translate(188.9881,-62.744048)">
+         id="q2button"
+         transform="translate(40,70)">
         <text
-           transform="scale(0.99413114,1.0059035)"
            id="text819-1-3-6"
-           y="101.23328"
-           x="269.03842"
+           y="25"
+           x="6.5"
            style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
            xml:space="preserve"><tspan
              style="stroke-width:0.23602927"
-             y="101.23328"
-             x="269.03842"
+             y="25"
+             x="6.5"
              id="tspan817-07-6-0"
              sodipodi:role="line">Q2</tspan></text>
         <rect
-           ry="5.2916665"
-           y="75.744453"
-           x="261.00894"
+           ry="5.5"
            height="20"
            width="20"
-           id="rect2120-2-8-1"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+           id="s_q2"
+           style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
       </g>
     </g>
     <g
        id="Sensor indicators"
-       transform="translate(179.80716,-1.5152251)">
+       transform="translate(114.65232,139.40105)">
       <g
          id="g528"
          transform="scale(3)">
@@ -395,8 +425,7 @@
                  id="tspan989-3-6-6-1"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">reflective</tspan></text>
+                 style="stroke-width:0.26458332">Reflective</tspan></text>
           </g>
           <g
              id="g188">
@@ -411,7 +440,7 @@
                r="3"
                cy="4.5"
                cx="4.5"
-               id="s_reflective"
+               id="sensorLiftUp-3-7"
                style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
           </g>
         </g>
@@ -429,11 +458,10 @@
                  id="tspan989-3-6-6-0"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">capacitive</tspan></text>
+                 style="stroke-width:0.26458332">Capacitive</tspan></text>
           </g>
           <g
-             id="g2012">
+             id="g192">
             <rect
                y="0"
                x="0"
@@ -463,8 +491,7 @@
                  id="tspan989-3-6-6"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">optical</tspan></text>
+                 style="stroke-width:0.26458332">Optical</tspan></text>
           </g>
           <rect
              y="0"
@@ -475,14 +502,14 @@
              height="9" />
           <circle
              style="opacity:1;fill:#0df600;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="s_optical"
+             id="sensorLiftUp-0-6"
              cx="4.5"
              cy="4.5"
              r="3" />
         </g>
         <g
            transform="translate(20.5,34)"
-           id="elevator down">
+           id="Elevator down sensor">
           <text
              transform="translate(-1.75,12)"
              xml:space="preserve"
@@ -493,7 +520,7 @@
                x="0"
                y="0"
                style="stroke-width:0.26458332"
-               transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">elevator</tspan></text>
+               transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">Elevator</tspan></text>
           <text
              transform="translate(0.25,15)"
              id="text995-3"
@@ -530,7 +557,7 @@
                y="0"
                x="0"
                id="tspan4224"
-               sodipodi:role="line">product</tspan></text>
+               sodipodi:role="line">Product</tspan></text>
           <text
              xml:space="preserve"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -580,7 +607,7 @@
                  y="0"
                  x="0"
                  id="tspan4238"
-                 sodipodi:role="line">product at</tspan></text>
+                 sodipodi:role="line">Product at</tspan></text>
           </g>
           <rect
              y="0"
@@ -621,7 +648,7 @@
                  id="tspan4252"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332">product at</tspan></text>
+                 style="stroke-width:0.26458332">Product at</tspan></text>
           </g>
           <rect
              height="9"
@@ -649,7 +676,7 @@
                id="tspan4266"
                x="0"
                y="0"
-               style="stroke-width:0.26458332">separator</tspan></text>
+               style="stroke-width:0.26458332">Separator</tspan></text>
           <text
              transform="translate(-1.25,15)"
              id="text4272"
@@ -686,7 +713,7 @@
                y="0"
                x="0"
                id="tspan4280"
-               sodipodi:role="line">separator</tspan></text>
+               sodipodi:role="line">Separator</tspan></text>
           <text
              xml:space="preserve"
              style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -732,12 +759,11 @@
                style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
                xml:space="preserve"
                transform="translate(-3.5,12)"><tspan
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                  style="stroke-width:0.26458332"
                  y="0"
                  x="0"
                  id="tspan4294"
-                 sodipodi:role="line">processing</tspan></text>
+                 sodipodi:role="line">Processing</tspan></text>
           </g>
           <rect
              y="0"
@@ -755,7 +781,7 @@
         </g>
         <g
            transform="translate(35.5,34)"
-           id="pusher">
+           id="Pusher sensor">
           <g
              id="g1001-0-4">
             <text
@@ -767,8 +793,7 @@
                  id="tspan989-3-6"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">pusher</tspan></text>
+                 style="stroke-width:0.26458332">Pusher</tspan></text>
           </g>
           <rect
              y="0"
@@ -786,7 +811,7 @@
         </g>
         <g
            transform="translate(5.5,34)"
-           id="elevator up">
+           id="Elevator up sensor">
           <g
              id="g1001">
             <text
@@ -798,8 +823,7 @@
                  x="0"
                  sodipodi:role="line"
                  id="tspan989"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">elevator</tspan></text>
+                 style="stroke-width:0.26458332">Elevator</tspan></text>
             <text
                transform="translate(2.5,15)"
                xml:space="preserve"
@@ -839,8 +863,7 @@
                  id="tspan989-39-3"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">buffering</tspan></text>
+                 style="stroke-width:0.26458332">Buffering</tspan></text>
             <text
                transform="translate(0.5,15)"
                xml:space="preserve"
@@ -876,12 +899,11 @@
                id="text991-0"
                style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
                xml:space="preserve"><tspan
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                  style="stroke-width:0.26458332"
                  y="0"
                  x="0"
                  id="tspan989-39"
-                 sodipodi:role="line">product</tspan></text>
+                 sodipodi:role="line">Product</tspan></text>
             <text
                transform="translate(-0.25,15)"
                id="text995-2"
@@ -919,7 +941,7 @@
                x="0"
                style="stroke-width:0.21975574"
                id="tspan989-39-1"
-               sodipodi:role="line">init</tspan></text>
+               sodipodi:role="line">Init</tspan></text>
           <rect
              x="0"
              y="0"
@@ -956,27 +978,27 @@
          style="opacity:0.83300003;fill:#aaccff;fill-opacity:1;stroke-width:0.26458332;filter:url(#filter7411)"
          id="Air"
          width="10"
-         height="200"
-         transform="rotate(-105)" />
+         height="228"
+         transform="rotate(-100)" />
       <g
          id="g7416">
         <rect
            y="0"
            x="0"
-           transform="rotate(-15)"
+           transform="rotate(-10)"
            style="fill:#c8beb7;stroke-width:0.26458332"
            id="slider"
-           width="200"
+           width="228"
            height="15" />
       </g>
     </g>
     <g
        id="Conveyor"
-       transform="translate(547.47247,300.02974)">
+       transform="translate(600.53808,299.01015)">
       <rect
          ry="10"
          height="20"
-         width="400"
+         width="347"
          id="rect4526"
          style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          x="0"
@@ -1017,7 +1039,7 @@
       </g>
       <g
          id="Roller-0"
-         transform="translate(390,10)">
+         transform="translate(337,10)">
         <g
            id="Conv1_Wheel2"
            transform="rotate(10)">
@@ -1050,17 +1072,16 @@
         </g>
       </g>
       <g
-         id="Sensors"
-         transform="translate(-548,-300)">
+         id="Sensors">
         <g
            id="BS01"
-           transform="translate(910,265)">
+           transform="translate(310,-40)">
           <rect
              y="0"
              x="0"
              style="fill:#666666;paint-order:fill markers stroke"
              id="rect284-2"
-             width="9"
+             width="10"
              height="50"
              ry="5" />
           <circle
@@ -1072,13 +1093,13 @@
         </g>
         <g
            id="BS02"
-           transform="translate(670,265)">
+           transform="translate(119,-40)">
           <rect
              y="0"
              x="0"
              style="fill:#666666;paint-order:fill markers stroke"
              id="rect284-7"
-             width="9"
+             width="10"
              height="50"
              ry="5" />
           <circle
@@ -1089,33 +1110,34 @@
              style="fill:#ff0000;paint-order:fill markers stroke" />
         </g>
         <g
-           id="g301"
-           style="fill:#6c6753">
+           id="Separator"
+           style="fill:#6c6753"
+           transform="translate(64.5,-35)">
           <rect
              style="fill:#ac9393;paint-order:fill markers stroke"
-             id="rect303"
-             width="69.700523"
-             height="11.111673"
-             x="590.93921"
-             y="267.65982"
-             ry="4.5456843" />
+             id="b_separator"
+             width="50"
+             height="10"
+             ry="4.5"
+             x="-25"
+             y="-5" />
           <rect
-             y="268.80933"
-             x="599.29797"
-             height="50.143578"
-             width="24.543135"
+             height="50"
+             width="25"
              id="rect282"
-             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke" />
+             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke"
+             y="0"
+             x="0" />
         </g>
         <g
-           transform="translate(570,265)"
-           id="BS03">
+           id="BS03"
+           transform="translate(25,-40)">
           <rect
              y="0"
              x="0"
              style="fill:#666666;paint-order:fill markers stroke"
              id="rect284"
-             width="9"
+             width="10"
              height="50"
              ry="5" />
           <circle
@@ -1128,14 +1150,15 @@
         <rect
            style="fill:#c8beb7;paint-order:fill markers stroke"
            id="rect295"
-           width="370"
+           width="317"
            height="30"
-           x="562.14288"
-           y="302.85715" />
+           y="3"
+           x="15" />
       </g>
     </g>
     <g
-       id="Actuator indicator">
+       id="Actuator indicator"
+       transform="translate(357.594,281.83256)">
       <g
          id="g388"
          transform="scale(3)">
@@ -1220,8 +1243,7 @@
                  id="tspan989-3-6-6-1-5"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">height</tspan></text>
+                 style="stroke-width:0.26458332">Height</tspan></text>
           </g>
           <g
              id="height_knob">
@@ -1263,7 +1285,7 @@
                  id="tspan989-3-6-6-0-6"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332">colour</tspan></text>
+                 style="stroke-width:0.26458332">Colour</tspan></text>
           </g>
           <g
              id="b_colour">
@@ -1332,8 +1354,7 @@
                  id="tspan989-3-6-6-6"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">spawn</tspan></text>
+                 style="stroke-width:0.26458332">Spawn</tspan></text>
           </g>
           <rect
              y="0"
@@ -1351,7 +1372,7 @@
         </g>
         <g
            transform="translate(20.5,34)"
-           id="g529">
+           id="elevator down">
           <text
              transform="translate(-1.75,12)"
              xml:space="preserve"
@@ -1361,8 +1382,7 @@
                id="tspan989-3-8"
                x="0"
                y="0"
-               style="stroke-width:0.26458332"
-               transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">elevator</tspan></text>
+               style="stroke-width:0.26458332">Elevator</tspan></text>
           <text
              transform="translate(0.25,15)"
              id="text995-3-8"
@@ -1389,7 +1409,7 @@
         </g>
         <g
            transform="translate(35.5,34)"
-           id="g531">
+           id="pusher">
           <g
              id="g1001-0-4-4">
             <text
@@ -1401,8 +1421,7 @@
                  id="tspan989-3-6-8"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">pusher</tspan></text>
+                 style="stroke-width:0.26458332">Pusher</tspan></text>
           </g>
           <rect
              y="0"
@@ -1420,7 +1439,7 @@
         </g>
         <g
            transform="translate(5.5,34)"
-           id="g533">
+           id="elevator up">
           <g
              id="g1001-9">
             <text
@@ -1432,8 +1451,7 @@
                  x="0"
                  sodipodi:role="line"
                  id="tspan989-1"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">elevator</tspan></text>
+                 style="stroke-width:0.26458332">Elevator</tspan></text>
             <text
                transform="translate(2.5,15)"
                xml:space="preserve"
@@ -1473,8 +1491,7 @@
                  id="tspan989-39-3-2"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">air</tspan></text>
+                 style="stroke-width:0.26458332">Air</tspan></text>
             <text
                transform="translate(1,15)"
                xml:space="preserve"
@@ -1510,12 +1527,11 @@
                id="text991-0-8"
                style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
                xml:space="preserve"><tspan
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                  style="stroke-width:0.26458332"
                  y="0"
                  x="0"
                  id="tspan989-39-8"
-                 sodipodi:role="line">testing</tspan></text>
+                 sodipodi:role="line">Testing</tspan></text>
             <text
                transform="translate(0,15)"
                id="text995-2-1"
@@ -1556,8 +1572,7 @@
                  id="tspan379"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">use</tspan></text>
+                 style="stroke-width:0.26458332">Use</tspan></text>
             <text
                xml:space="preserve"
                style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -1594,12 +1609,11 @@
                id="text429"
                style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
                xml:space="preserve"><tspan
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)"
                  style="stroke-width:0.26458332"
                  y="0"
                  x="0"
                  id="tspan427"
-                 sodipodi:role="line">use</tspan></text>
+                 sodipodi:role="line">Use</tspan></text>
             <text
                transform="translate(-0.4,15)"
                id="text433"
@@ -1640,8 +1654,7 @@
                  id="tspan443"
                  x="0"
                  y="0"
-                 style="stroke-width:0.26458332"
-                 transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)">use</tspan></text>
+                 style="stroke-width:0.26458332">Use</tspan></text>
             <text
                xml:space="preserve"
                style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -1680,7 +1693,7 @@
                x="0"
                style="stroke-width:0.21975574"
                id="tspan989-39-1-1"
-               sodipodi:role="line">conveyor</tspan></text>
+               sodipodi:role="line">Conveyor</tspan></text>
           <rect
              x="0"
              y="0"
@@ -1699,20 +1712,20 @@
     </g>
     <g
        id="Arm"
-       transform="translate(1490.9852,416.18284)">
+       transform="translate(1362.6959,330.31987)">
       <g
          id="Rotator"
-         transform="scale(-1)">
+         transform="rotate(100,12.5,0)">
         <rect
            style="fill:#b3b3b3;paint-order:fill markers stroke"
            id="rect4341"
            width="25"
-           height="300"
-           y="30"
-           x="-12.5" />
+           height="181"
+           x="0"
+           y="0" />
         <rect
            y="0"
-           x="-25"
+           x="-12.5"
            height="30"
            width="50"
            id="rect4331"
@@ -1722,12 +1735,13 @@
            style="fill:#333333;paint-order:fill markers stroke"
            id="path4326"
            r="25"
-           cx="0" />
+           cx="12.5" />
         <g
            id="g1234556"
-           transform="translate(-6.25,265)">
+           transform="translate(6.25,181)">
           <g
-             id="Holder">
+             id="Holder"
+             transform="rotate(-100,6.25,0)">
             <rect
                style="fill:#0066ff;paint-order:fill markers stroke"
                id="rect4347"
@@ -1740,8 +1754,8 @@
         <circle
            style="fill:#333333;paint-order:fill markers stroke"
            id="path4344"
-           cx="0"
-           cy="325"
+           cx="12.5"
+           cy="181"
            r="20" />
       </g>
     </g>
