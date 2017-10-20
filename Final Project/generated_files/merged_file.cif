@@ -11,6 +11,12 @@ alg bool a_elevator_up_manual = ManualControl.Lift.state = UP;
 alg bool a_elevator_down_manual = ManualControl.Lift.state = DOWN;
 alg bool a_testingready_manual = true;
 alg bool a_pusher_manual = ManualControl.PusherContr.Extending;
+alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Delay;
+alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc;
+alg bool s_product = EntrySensor.isActive;
+alg bool s_atseparator = AtSepSensor.isActive;
+alg bool s_atexit = ExitSensor.isActive;
+alg bool s_processingbusy = ProcessingBusySensor.On;
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
@@ -47,6 +53,8 @@ const real boxSpeed = 60.0;
 event b_case1Pressed;
 event b_case2Pressed;
 event b_case3Pressed;
+event ProcessingBusyClicked;
+event ConveyerClicked;
 type Rectangle = tuple(real x; real y; real width; real height);
 type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 type Point = tuple(real x; real y);
@@ -89,6 +97,89 @@ automaton Coordinator:
              pusherExtending = a_pusher_auto,
              ready = a_testingready_auto;
     edge when not s_TautoSwitch goto ManualMode;
+end
+automaton SeparatorContr:
+  cont t der 1.0;
+  location Empty:
+    initial;
+    edge when s_atseparator goto Incoming;
+  location Incoming:
+    edge when not s_atseparator goto FullNoInc;
+  location FullNoInc:
+    edge when s_atseparator goto FullInc;
+    edge when not s_atseparator and not s_processingbusy goto Open;
+  location Open:
+    edge when s_atexit goto Empty;
+  location FullInc:
+    edge when not s_processingbusy goto OpenInc;
+  location OpenInc:
+    edge when s_processingbusy do t := 0.0 goto Reloading;
+  location Reloading:
+    edge when t >= 1 and s_atseparator goto FullInc;
+    edge when t >= 1 and not s_atseparator goto FullNoInc;
+end
+automaton ConveyerContr:
+  cont t der 1.0;
+  location Empty:
+    initial;
+    edge when CountFive.OneActiveEntry goto Moving;
+  location Moving:
+    edge when CountFive.Zero do t := 0.0 goto Delay;
+  location Delay:
+    edge when t > 1.5 goto Empty;
+end
+automaton CountFive:
+  alg real count;
+  location Zero:
+    initial;
+    equation count = 0.0;
+    edge when s_product goto OneActiveEntry;
+  location ZeroActiveExit:
+    equation count = 0.0;
+    edge when not s_atexit goto Zero;
+  location OneActiveEntry:
+    equation count = 1.0;
+    edge when not s_product goto One;
+  location One:
+    equation count = 1.0;
+    edge when s_atexit goto ZeroActiveExit;
+    edge when s_product goto TwoActiveEntry;
+  location OneActiveExit:
+    equation count = 1.0;
+    edge when not s_atexit goto One;
+  location TwoActiveEntry:
+    equation count = 2.0;
+    edge when not s_product goto Two;
+  location Two:
+    equation count = 2.0;
+    edge when s_atexit goto OneActiveExit;
+    edge when s_product goto ThreeActiveEntry;
+  location TwoActiveExit:
+    equation count = 2.0;
+    edge when not s_atexit goto Two;
+  location ThreeActiveEntry:
+    equation count = 3.0;
+    edge when not s_product goto Three;
+  location Three:
+    equation count = 3.0;
+    edge when s_atexit goto TwoActiveExit;
+    edge when s_product goto FourActiveEntry;
+  location ThreeActiveExit:
+    equation count = 3.0;
+    edge when not s_atexit goto Three;
+  location FourActiveEntry:
+    equation count = 4.0;
+    edge when not s_product goto Four;
+  location Four:
+    equation count = 4.0;
+    edge when s_atexit goto ThreeActiveExit;
+    edge when s_product goto Five;
+  location FourActiveExit:
+    equation count = 4.0;
+    edge when not s_atexit goto Four;
+  location Five:
+    equation count = 5.0;
+    edge when s_atexit goto FourActiveExit;
 end
 group AutoControl:
   automaton Lift:
@@ -187,6 +278,14 @@ group ManualControl:
     location Lockdown:
       edge when not s_bufferingbusy goto Retracting;
   end
+end
+group LeftBlockCheck:
+  alg int boxI = RectRectColl((Const.Sensors.LeftBlockBounds[x], Const.Sensors.LeftBlockBounds[y], Const.Sensors.LeftBlockBounds[width], Const.Sensors.LeftBlockBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1 and Separator.Left;
+end
+group RightBlockCheck:
+  alg int boxI = RectRectColl((Const.Sensors.RightBlockBounds[x], Const.Sensors.RightBlockBounds[y], Const.Sensors.RightBlockBounds[width], Const.Sensors.RightBlockBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1 and Separator.Right;
 end
 automaton startBttn:
   alg bool state;
@@ -453,7 +552,35 @@ automaton box1:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box2:
   monitor productRejected;
@@ -519,7 +646,35 @@ automaton box2:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box3:
   monitor productRejected;
@@ -585,7 +740,35 @@ automaton box3:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box4:
   monitor productRejected;
@@ -651,7 +834,35 @@ automaton box4:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box5:
   monitor productRejected;
@@ -717,7 +928,35 @@ automaton box5:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box6:
   monitor productRejected;
@@ -783,7 +1022,35 @@ automaton box6:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box7:
   monitor productRejected;
@@ -849,7 +1116,35 @@ automaton box7:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box8:
   monitor productRejected;
@@ -915,7 +1210,35 @@ automaton box8:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box9:
   monitor productRejected;
@@ -981,7 +1304,35 @@ automaton box9:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton box10:
   monitor productRejected;
@@ -1047,7 +1398,35 @@ automaton box10:
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when rotation > 0 do rotDer := 0.0 goto Inactive;
+    edge when rotation > 0 do rotDer := 0.0 goto OnBuffer1;
+  location OnBuffer1:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
+    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 620 goto OnBuffer2;
+  location OnBuffer2:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x < 600 goto OnBuffer3;
+  location OnBuffer3:
+    equation x' = Belt.speed,
+             y' = 0.0;
+    edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
+    edge when x < 485 goto Inactive;
+  location SeparatorLeftBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Right and x >= 620 goto OnBuffer1;
+    edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Right and x < 600 goto OnBuffer3;
+  location SeparatorRightBlock:
+    equation x' = 0.0,
+             y' = 0.0;
+    edge when Separator.Left and x >= 620 goto OnBuffer1;
+    edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
+    edge when Separator.Left and x < 600 goto OnBuffer3;
 end
 automaton dummy:
   location:
@@ -1235,6 +1614,174 @@ automaton UseCase:
     edge b_case2Pressed goto Case2;
     edge b_case3Pressed;
 end
+group svg_s_product:
+  alg string idfier = "s_product_entry";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = EntrySensor.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_atseparator:
+  alg string idfier = "s_product_separator";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = AtSepSensor.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_atexit:
+  alg string idfier = "s_product_exit";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = ExitSensor.isActive;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_separator_opened:
+  alg string idfier = "s_separator_opened";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = Separator.Left;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_separator_closed:
+  alg string idfier = "s_separator_closed";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = Separator.Right;
+  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_processing:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge ProcessingBusyClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge ProcessingBusyClicked goto Released;
+end
+group svg_b_processing:
+  alg string idfier = "s_processing_busy";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_processing.state;
+  svgin id idfier event ProcessingBusyClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_conveyer:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge ConveyerClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge ConveyerClicked goto Released;
+end
+group svg_b_conveyer:
+  alg string idfier = "b_conveyor";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_conveyer.state;
+  svgin id idfier event ConveyerClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group AtSepSensor:
+  alg int boxI = RectRectColl((Const.Sensors.AtSepSensorBounds[x], Const.Sensors.AtSepSensorBounds[y], Const.Sensors.AtSepSensorBounds[width], Const.Sensors.AtSepSensorBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1;
+end
+group EntrySensor:
+  alg int boxI = RectRectColl((Const.Sensors.EntrySensorBounds[x], Const.Sensors.EntrySensorBounds[y], Const.Sensors.EntrySensorBounds[width], Const.Sensors.EntrySensorBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1;
+end
+group ExitSensor:
+  alg int boxI = RectRectColl((Const.Sensors.ExitSensorBounds[x], Const.Sensors.ExitSensorBounds[y], Const.Sensors.ExitSensorBounds[width], Const.Sensors.ExitSensorBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1;
+end
+automaton ProcessingBusySensor:
+  location On:
+    initial;
+    edge when b_processing.Pressed goto Waiting;
+  location Waiting:
+    edge when b_processing.Released goto Off;
+  location Off:
+    edge when ExitSensor.isActive goto On;
+end
+automaton Belt:
+  alg real speed;
+  cont x der speed;
+  location Moving:
+    equation speed = -50.0;
+    edge when not a_conveyer goto Standstill;
+  location Standstill:
+    initial;
+    equation speed = 0.0;
+    edge when a_conveyer goto Moving;
+end
+automaton Separator:
+  location Right:
+    edge when not a_separator goto Left;
+  location Left:
+    initial;
+    edge when a_separator goto Right;
+end
+automaton CountFive2:
+  alg real count;
+  location Zero:
+    initial;
+    equation count = 0.0;
+    edge when s_product goto OneActiveEntry;
+  location ZeroActiveExit:
+    equation count = 0.0;
+    edge when not s_atexit goto Zero;
+  location OneActiveEntry:
+    equation count = 1.0;
+    edge when not s_product goto One;
+  location One:
+    equation count = 1.0;
+    edge when s_atexit goto ZeroActiveExit;
+    edge when s_product goto TwoActiveEntry;
+  location OneActiveExit:
+    equation count = 1.0;
+    edge when not s_atexit goto One;
+  location TwoActiveEntry:
+    equation count = 2.0;
+    edge when not s_product goto Two;
+  location Two:
+    equation count = 2.0;
+    edge when s_atexit goto OneActiveExit;
+    edge when s_product goto ThreeActiveEntry;
+  location TwoActiveExit:
+    equation count = 2.0;
+    edge when not s_atexit goto Two;
+  location ThreeActiveEntry:
+    equation count = 3.0;
+    edge when not s_product goto Three;
+  location Three:
+    equation count = 3.0;
+    edge when s_atexit goto TwoActiveExit;
+    edge when s_product goto FourActiveEntry;
+  location ThreeActiveExit:
+    equation count = 3.0;
+    edge when not s_atexit goto Three;
+  location FourActiveEntry:
+    equation count = 4.0;
+    edge when not s_product goto Four;
+  location Four:
+    equation count = 4.0;
+    edge when s_atexit goto ThreeActiveExit;
+    edge when s_product goto Five;
+  location FourActiveExit:
+    equation count = 4.0;
+    edge when not s_atexit goto Four;
+  location Five:
+    equation count = 5.0;
+    edge when s_atexit goto FourActiveExit;
+end
 group test:
   alg list[10] BoxData data = BoxUpdater.data;
   group svg_box1:
@@ -1365,6 +1912,11 @@ group Const:
   group Sensors:
     const Rectangle HeightBounds = (1160.0, 176.0, 34.0, 36.0);
     const Rectangle CapSensorBounds = (1147.0, 422.0, 50.0, 50.0);
+    const Rectangle EntrySensorBounds = (860.0, 275.0, 50.0, 50.0);
+    const Rectangle AtSepSensorBounds = (650.0, 275.0, 10.0, 50.0);
+    const Rectangle ExitSensorBounds = (569.0, 275.0, 10.0, 50.0);
+    const Rectangle LeftBlockBounds = (600.0, 275.0, 1.0, 50.0);
+    const Rectangle RightBlockBounds = (620.0, 275.0, 1.0, 50.0);
   end
   group Buttons:
   end

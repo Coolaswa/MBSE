@@ -14,6 +14,7 @@ alg bool a_elevator_down_auto = AutoControl.Lift.state = DOWN;
 alg bool a_testingready_auto = AutoControl.Lift.Waiting;
 alg bool a_pusher_auto = AutoControl.PusherContr.Extending;
 alg bool a_airslide_auto = AutoControl.Airslide.Active;
+alg bool a_TledQ1 = AutoControl.RejectBufferContr.count >=5;
 
 enum LiftState = UP, STOP, DOWN;
 group AutoControl:

@@ -9,16 +9,16 @@ input bool a_pusher;
 input bool a_testingready;
 alg bool inManualMode = not s_TautoSwitch;
 
-alg bool s_TautoSwitch = true;
+alg bool s_TautoSwitch = b_stop.Pressed;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
 alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
-alg bool s_Tstartbutton = startBttn.state;
-alg bool s_Tstopbutton = startBttn.state;
-alg bool s_Tresetbutton = resetBttn.Pressed;
+alg bool s_Tstartbutton = b_start.state;
+alg bool s_Tstopbutton = b_start.state;
+alg bool s_Tresetbutton = b_reset.Pressed;
 alg bool s_bufferingbusy = false;
 alg bool b_lift_upPressed = b_lift_up.Pressed;
 alg bool b_lift_upReleased = b_lift_up.Released;
@@ -26,9 +26,8 @@ alg bool b_lift_downPressed = b_lift_down.Pressed;
 alg bool b_lift_downReleased = b_lift_down.Released;
 alg bool b_pusherReleased = b_pusher.Released;
 alg bool b_pusherPressed = b_pusher.Pressed;
-//alg bool s_Tautoswitch;
 
-event e_startClicked, resetClicked, stopClicked, dummyEvent;
+event startClicked, resetClicked, stopClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
 event spawn_clicked;
@@ -37,15 +36,14 @@ event colorClicked;
 event heightClicked;
 event productRejected;
 
-startBttn: Button(e_startClicked);
-start_svg: Button_svg(e_startClicked, "start", "yellow", "grey",  startBttn.state);
+b_start: Button(startClicked);
+b_start_svg: Button_svg(startClicked, "start", "yellow", "grey",  b_start.state);
 
-resetBttn: Button(resetClicked);
-reset_svg: Button_svg(resetClicked, "b_reset", "yellow", "grey", resetBttn.state);
+b_reset: Button(resetClicked);
+b_reset_svg: Button_svg(resetClicked, "b_reset", "yellow", "grey", b_reset.state);
 
-stopBttn: Button(stopClicked);
-stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  stopBttn.state);
-//resetBttn: Button(resetClicked);
+b_stop: Button(stopClicked);
+stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  b_stop.state);
 
 svg_s_lift_up: Button_svg(dummyEvent, "s_lift_up", "yellow", "grey", LiftSensorUp.isActive);
 svg_s_lift_down: Button_svg(dummyEvent, "s_lift_down", "yellow", "grey", LiftSensorDown.isActive);
@@ -71,7 +69,7 @@ svg_s_capacitive: Button_svg(dummyEvent, "s_capacitive", "yellow", "grey", Capac
 b_spawn: Button(spawn_clicked);
 svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 
-event void e_pusher_activated;
+event void pusher_activated;
 
 box1: Box();
 box2: Box();
@@ -121,8 +119,6 @@ end
 
 const real boxSpeed = 60;
 
-
-
 automaton RejectBuffer:
      event void preRejectEnter;
      location Await:
@@ -162,7 +158,7 @@ automaton Pusher:
     location Retracting:
         initial;
         equation speed = if x < 0: 20 else 0 end;
-        edge e_pusher_activated! when a_pusher goto Extending;
+        edge pusher_activated! when a_pusher goto Extending;
 end
 
 group LiftSensorUp:
