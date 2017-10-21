@@ -32,8 +32,8 @@ automaton def Box():
         edge when not isThick and y > Const.Box.LiftPos[y] do (x,y) := Const.Box.LiftPos goto InLift;
     location InLift:
         equation x' = 0, y' = Lift.speed;
-        edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
-        edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+        edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
+        edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
     location PreRejectBufferTransit:
         equation x' = -boxSpeed, y' = 0;
         edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;
@@ -43,10 +43,10 @@ automaton def Box():
     location OnRejectBuffer:
         equation x' = 0, y' = 0;
         edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-        edge when resetBttn.Pressed goto AwaitResetRelease;
+        edge when b_reset.Pressed goto AwaitResetRelease;
     location AwaitResetRelease:
         equation x' = 0, y' = 0;
-        edge when resetBttn.Released do (x,y) := (-200,-200) goto Inactive;
+        edge when b_reset.Released do (x,y) := (-200,-200) goto Inactive;
     location LiftAirTransit:
         equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
         edge when rotation < -15 do rotDer := 0, accelTimer := 0 goto OnAirslide;
@@ -59,12 +59,12 @@ automaton def Box():
 			location OnBuffer1:											//Buffer before sep
 		equation x' = Belt.speed, y' = 0;
 		edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count-1) * 50 goto SeparatorLeftBlock;
-		edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count-1) * 50 goto SeparatorRightBlock;
-		edge when x < 620 goto OnBuffer2;
+		edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count-1) * 50 goto SeparatorRightBlock;
+		edge when x < 650 goto OnBuffer2;
 
 	location OnBuffer2:											//Buffer at right side sep
 		equation x' = Belt.speed, y' = 0;
-		edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+		edge when x > 649 and Separator.Right goto SeparatorRightBlock;
 		edge when x < 600 goto OnBuffer3;
 
 	location OnBuffer3: 										//Buffer at left side sep

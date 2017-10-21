@@ -9,7 +9,7 @@ input bool a_pusher;
 input bool a_testingready;
 alg bool inManualMode = not s_TautoSwitch;
 
-alg bool s_TautoSwitch = b_stop.Pressed;
+alg bool s_TautoSwitch = true;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
@@ -26,6 +26,9 @@ alg bool b_lift_downPressed = b_lift_down.Pressed;
 alg bool b_lift_downReleased = b_lift_down.Released;
 alg bool b_pusherReleased = b_pusher.Released;
 alg bool b_pusherPressed = b_pusher.Pressed;
+
+alg bool s_Tinitialized = true;
+alg bool s_Binitialized = true;
 
 event startClicked, resetClicked, stopClicked, dummyEvent;
 event lift_up_clicked, lift_down_clicked;

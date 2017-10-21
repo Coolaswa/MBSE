@@ -1,6 +1,6 @@
 
 alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
-alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc;
+alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc or SeparatorContr.Reloading;
 
 input bool s_product;
 input bool s_atseparator;

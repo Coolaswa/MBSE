@@ -9,6 +9,9 @@ input bool s_elevator_down;
 input bool s_Tresetbutton;
 input bool s_pusher;
 input bool s_bufferingbusy;
+input bool s_Tinitialized;
+input bool s_Binitialized;
+input bool s_Tstartbutton;
 alg bool a_elevator_up_auto = AutoControl.Lift.state = UP;
 alg bool a_elevator_down_auto = AutoControl.Lift.state = DOWN;
 alg bool a_testingready_auto = AutoControl.Lift.Waiting;
@@ -16,13 +19,31 @@ alg bool a_pusher_auto = AutoControl.PusherContr.Extending;
 alg bool a_airslide_auto = AutoControl.Airslide.Active;
 alg bool a_TledQ1 = AutoControl.RejectBufferContr.count >=5;
 
+alg bool systemReady = s_Tinitialized and s_Binitialized;
+
 enum LiftState = UP, STOP, DOWN;
+
+automaton SystemState:
+    location Waiting:
+        initial;
+        edge when systemReady and s_Tstartbutton goto WaitForRelease;
+    location WaitForRelease:
+        edge when not s_Tstartbutton goto Running;
+    location Running:
+        edge when s_Tstartbutton goto WaitForRelease2;
+    location WaitForRelease2:
+        edge when not s_Tstartbutton goto Waiting;
+end
+
 group AutoControl:
     automaton Lift:
         alg LiftState state;
         event rejProduct;
-        location Waiting:
+        location Initializing:
+            equation state = STOP;
             initial;
+            edge when SystemState.Running goto Waiting;
+        location Waiting:
             equation state = STOP;
             edge when s_reflective goto WaitingForArm;
         location WaitingForArm:
@@ -37,7 +58,7 @@ group AutoControl:
             edge PusherContr.retract goto ProductFullyRedjected;
         location ProductFullyRedjected:
             equation state = STOP;
-            edge rejProduct goto Waiting;
+            edge rejProduct goto Initializing;
         location GoingUp:
             equation state = UP;
             edge when s_elevator_up goto VerifyBlock2;
@@ -53,7 +74,7 @@ group AutoControl:
             edge PusherContr.retract goto GoingDownEmpty;
         location GoingDownEmpty:
             equation state = DOWN;
-            edge when s_elevator_down goto Waiting;
+            edge when s_elevator_down goto Initializing;
     end
 
     automaton RejectBufferContr:
@@ -84,9 +105,9 @@ group AutoControl:
 
         cont t der 1;
         location Active:
-            initial;
             edge when t > 5 goto InActive;
         location InActive:
+            initial;
             edge PusherContr.extent when s_elevator_up  do t := 0 goto Active;
     end
 end

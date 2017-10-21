@@ -12,7 +12,7 @@ alg bool a_elevator_down_manual = ManualControl.Lift.state = DOWN;
 alg bool a_testingready_manual = true;
 alg bool a_pusher_manual = ManualControl.PusherContr.Extending;
 alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Delay;
-alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc;
+alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc or SeparatorContr.Reloading;
 alg bool s_product = EntrySensor.isActive;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
@@ -22,10 +22,15 @@ alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_productheight = HeightSensor.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
-alg bool s_Tresetbutton = resetBttn.Pressed;
+alg bool s_Tresetbutton = b_reset.Pressed;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_bufferingbusy = false;
+alg bool s_Tinitialized = true;
+alg bool s_Binitialized = true;
+alg bool s_Tstartbutton = b_start.state;
 alg bool a_airslide_auto = AutoControl.Airslide.Active;
+alg bool a_TledQ1 = AutoControl.RejectBufferContr.count >= 5;
+alg bool systemReady = s_Tinitialized and s_Binitialized;
 enum LiftState = UP, STOP, DOWN;
 alg bool b_lift_upPressed = b_lift_up.Pressed;
 alg bool b_lift_upReleased = b_lift_up.Released;
@@ -34,9 +39,8 @@ alg bool b_lift_downReleased = b_lift_down.Released;
 alg bool b_pusherReleased = b_pusher.Released;
 alg bool b_pusherPressed = b_pusher.Pressed;
 alg bool inManualMode = not s_TautoSwitch;
-alg bool s_Tstartbutton = startBttn.state;
-alg bool s_Tstopbutton = startBttn.state;
-event e_startClicked;
+alg bool s_Tstopbutton = b_start.state;
+event startClicked;
 event resetClicked;
 event stopClicked;
 event dummyEvent;
@@ -48,7 +52,7 @@ event BoxData spawn_new_block;
 event colorClicked;
 event heightClicked;
 event productRejected;
-event void e_pusher_activated;
+event void pusher_activated;
 const real boxSpeed = 60.0;
 event b_case1Pressed;
 event b_case2Pressed;
@@ -181,12 +185,26 @@ automaton CountFive:
     equation count = 5.0;
     edge when s_atexit goto FourActiveExit;
 end
+automaton SystemState:
+  location Waiting:
+    initial;
+    edge when systemReady and s_Tstartbutton goto WaitForRelease;
+  location WaitForRelease:
+    edge when not s_Tstartbutton goto Running;
+  location Running:
+    edge when s_Tstartbutton goto WaitForRelease2;
+  location WaitForRelease2:
+    edge when not s_Tstartbutton goto Waiting;
+end
 group AutoControl:
   automaton Lift:
     alg LiftState state;
     event rejProduct;
-    location Waiting:
+    location Initializing:
       initial;
+      equation state = STOP;
+      edge when SystemState.Running goto Waiting;
+    location Waiting:
       equation state = STOP;
       edge when s_reflective goto WaitingForArm;
     location WaitingForArm:
@@ -201,7 +219,7 @@ group AutoControl:
       edge PusherContr.retract goto ProductFullyRedjected;
     location ProductFullyRedjected:
       equation state = STOP;
-      edge rejProduct goto Waiting;
+      edge rejProduct goto Initializing;
     location GoingUp:
       equation state = UP;
       edge when s_elevator_up goto VerifyBlock2;
@@ -217,7 +235,7 @@ group AutoControl:
       edge PusherContr.retract goto GoingDownEmpty;
     location GoingDownEmpty:
       equation state = DOWN;
-      edge when s_elevator_down goto Waiting;
+      edge when s_elevator_down goto Initializing;
   end
   automaton RejectBufferContr:
     disc int count;
@@ -245,9 +263,9 @@ group AutoControl:
     monitor PusherContr.extent;
     cont t der 1.0;
     location Active:
-      initial;
       edge when t > 5 goto InActive;
     location InActive:
+      initial;
       edge PusherContr.extent when s_elevator_up do t := 0.0 goto Active;
   end
 end
@@ -287,25 +305,25 @@ group RightBlockCheck:
   alg int boxI = RectRectColl((Const.Sensors.RightBlockBounds[x], Const.Sensors.RightBlockBounds[y], Const.Sensors.RightBlockBounds[width], Const.Sensors.RightBlockBounds[height]), BoxUpdater.data);
   alg bool isActive = boxI != -1 and Separator.Right;
 end
-automaton startBttn:
+automaton b_start:
   alg bool state;
   location Released:
     initial;
     equation state = false;
-    edge e_startClicked goto Pressed;
+    edge startClicked goto Pressed;
   location Pressed:
     equation state = true;
-    edge e_startClicked goto Released;
+    edge startClicked goto Released;
 end
-group start_svg:
+group b_start_svg:
   alg string idfier = "start";
   alg string onColor = "yellow";
   alg string offColor = "grey";
-  alg bool state = startBttn.state;
-  svgin id idfier event e_startClicked file "../SystemSVG.svg";
+  alg bool state = b_start.state;
+  svgin id idfier event startClicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
-automaton resetBttn:
+automaton b_reset:
   alg bool state;
   location Released:
     initial;
@@ -315,15 +333,15 @@ automaton resetBttn:
     equation state = true;
     edge resetClicked goto Released;
 end
-group reset_svg:
+group b_reset_svg:
   alg string idfier = "b_reset";
   alg string onColor = "yellow";
   alg string offColor = "grey";
-  alg bool state = resetBttn.state;
+  alg bool state = b_reset.state;
   svgin id idfier event resetClicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
-automaton stopBttn:
+automaton b_stop:
   alg bool state;
   location Released:
     initial;
@@ -337,7 +355,7 @@ group stop_svg:
   alg string idfier = "stop";
   alg string onColor = "yellow";
   alg string offColor = "grey";
-  alg bool state = stopBttn.state;
+  alg bool state = b_stop.state;
   svgin id idfier event stopClicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
@@ -522,8 +540,8 @@ automaton box1:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -536,11 +554,11 @@ automaton box1:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -557,12 +575,12 @@ automaton box1:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -616,8 +634,8 @@ automaton box2:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -630,11 +648,11 @@ automaton box2:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -651,12 +669,12 @@ automaton box2:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -710,8 +728,8 @@ automaton box3:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -724,11 +742,11 @@ automaton box3:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -745,12 +763,12 @@ automaton box3:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -804,8 +822,8 @@ automaton box4:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -818,11 +836,11 @@ automaton box4:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -839,12 +857,12 @@ automaton box4:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -898,8 +916,8 @@ automaton box5:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -912,11 +930,11 @@ automaton box5:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -933,12 +951,12 @@ automaton box5:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -992,8 +1010,8 @@ automaton box6:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1006,11 +1024,11 @@ automaton box6:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -1027,12 +1045,12 @@ automaton box6:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -1086,8 +1104,8 @@ automaton box7:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1100,11 +1118,11 @@ automaton box7:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -1121,12 +1139,12 @@ automaton box7:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -1180,8 +1198,8 @@ automaton box8:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1194,11 +1212,11 @@ automaton box8:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -1215,12 +1233,12 @@ automaton box8:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -1274,8 +1292,8 @@ automaton box9:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1288,11 +1306,11 @@ automaton box9:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -1309,12 +1327,12 @@ automaton box9:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -1368,8 +1386,8 @@ automaton box10:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge e_pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
-    edge e_pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftAirTransit;
+    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1382,11 +1400,11 @@ automaton box10:
     equation x' = 0.0,
              y' = 0.0;
     edge productRejected do productRejectPosX := productRejectPosX - Const.Box.Size goto RejectBufferTransit;
-    edge when resetBttn.Pressed goto AwaitResetRelease;
+    edge when b_reset.Pressed goto AwaitResetRelease;
   location AwaitResetRelease:
     equation x' = 0.0,
              y' = 0.0;
-    edge when resetBttn.Released do (x, y) := (-200.0, -200.0) goto Inactive;
+    edge when b_reset.Released do (x, y) := (-200.0, -200.0) goto Inactive;
   location LiftAirTransit:
     equation x' = -boxSpeed * cos(slideAngle),
              y' = boxSpeed * sin(slideAngle);
@@ -1403,12 +1421,12 @@ automaton box10:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count - 1) * 50 goto SeparatorLeftBlock;
-    edge when RightBlockCheck.isActive and x < 620 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
-    edge when x < 620 goto OnBuffer2;
+    edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count - 1) * 50 goto SeparatorRightBlock;
+    edge when x < 650 goto OnBuffer2;
   location OnBuffer2:
     equation x' = Belt.speed,
              y' = 0.0;
-    edge when x > 619 and Separator.Right goto SeparatorRightBlock;
+    edge when x > 649 and Separator.Right goto SeparatorRightBlock;
     edge when x < 600 goto OnBuffer3;
   location OnBuffer3:
     equation x' = Belt.speed,
@@ -1478,7 +1496,7 @@ automaton Pusher:
   location Retracting:
     initial;
     equation speed = if x < 0: 20.0 else 0.0 end;
-    edge e_pusher_activated! when a_pusher goto Extending;
+    edge pusher_activated! when a_pusher goto Extending;
 end
 group LiftSensorUp:
   alg bool isActive = Lift.y <= -Const.Lift.MaxHeight;
@@ -1928,3 +1946,4 @@ svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightS
 svgout id "Rotator" attr "transform" value fmt("rotate(%f)", Arm.armRot) file "../SystemSVG.svg";
 svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,60)", 180 - Arm.armRot) file "../SystemSVG.svg";
 svgout id "Air" attr "opacity" value if a_airslide_auto: 1 else 0 end file "../SystemSVG.svg";
+svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end file "../SystemSVG.svg";
