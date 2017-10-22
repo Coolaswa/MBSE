@@ -4,7 +4,6 @@
   <semanticResources>testing_buffering_station_plant.cif</semanticResources>
   <semanticResources>T_plant_BFT.cif</semanticResources>
   <semanticResources>T_ctrl_BFT.cif</semanticResources>
-  <semanticResources>T_ctrl_linker_BFT.cif</semanticResources>
   <semanticResources>TB_Defs_BFT.cif</semanticResources>
   <semanticResources>B_ctrl_BFT.cif</semanticResources>
   <semanticResources>B_plant_BFT.cif</semanticResources>

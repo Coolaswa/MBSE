@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.878345"
-     inkscape:cx="451.76863"
-     inkscape:cy="149.18147"
+     inkscape:zoom="1.4034607"
+     inkscape:cx="479.37565"
+     inkscape:cy="500.9595"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -182,7 +182,7 @@
     </g>
     <g
        id="Control panel"
-       transform="matrix(1.5,0,0,1.5,408.57143,65.714287)">
+       transform="matrix(1.5,0,0,1.5,352.99453,104.1906)">
       <rect
          height="110"
          width="70"
@@ -295,7 +295,7 @@
            r="7" />
         <g
            id="key"
-           transform="rotate(30,10,10)">
+           transform="rotate(-30,10,10)">
           <rect
              style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
              id="rect1140"
@@ -360,15 +360,15 @@
       </g>
       <text
          xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0088aa;fill-opacity:1;stroke:none;"
+         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0088aa;fill-opacity:1;stroke:none"
          id="text336"
          x="37"
          y="14"><tspan
            sodipodi:role="line"
            id="tspan334"
-           x="35"
+           x="37"
            y="14"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa;">FESTO</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa">FESTO</tspan></text>
     </g>
     <g
        id="Sensor panel"
@@ -1096,7 +1096,7 @@
                  transform="rotate(90,0.5,2.5)"
                  y="0"
                  x="0"
-                 style="fill:#c8b7b7;paint-order:fill markers stroke"
+                 style="fill:#483737;paint-order:fill markers stroke"
                  id="height_pole"
                  width="1"
                  height="2.5"
@@ -1171,7 +1171,7 @@
                height="2.5"
                width="1"
                id="rect1548"
-               style="fill:#c8b7b7;paint-order:fill markers stroke" />
+               style="fill:#483737;paint-order:fill markers stroke" />
             <rect
                x="0.5"
                y="0.25"
@@ -1763,9 +1763,229 @@
     <rect
        style="fill:#00de00;fill-opacity:0.144;stroke:none;stroke-width:0.5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
        id="rect1142"
-       width="39"
-       height="26"
-       x="1184"
-       y="358" />
+       width="15.870671"
+       height="8.5651245"
+       x="1187"
+       y="330.70242" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="130.39197"
+       y="36.393196"
+       id="s_systemMode"><tspan
+         sodipodi:role="line"
+         id="tspan1144"
+         x="130.39197"
+         y="36.393196">System mode: </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="386.18823"
+       y="98.38282"
+       id="text1165"><tspan
+         sodipodi:role="line"
+         id="tspan1163"
+         x="386.18823"
+         y="98.38282">T</tspan></text>
+    <g
+       id="Control panel-4"
+       transform="matrix(1.5,0,0,1.5,474.76806,103.52332)">
+      <rect
+         height="110"
+         width="70"
+         id="rect2263-2"
+         style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="0"
+         y="0" />
+      <g
+         id="startbutton-0"
+         transform="translate(10,20)">
+        <rect
+           style="opacity:1;fill:#008000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="start_B"
+           width="20"
+           height="20"
+           ry="5.5"
+           x="0"
+           y="0" />
+        <text
+           id="text819-7"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           xml:space="preserve"
+           x="4"
+           y="25"><tspan
+             style="stroke-width:0.23602927"
+             y="25"
+             x="4"
+             id="tspan817-7"
+             sodipodi:role="line">Start</tspan></text>
+      </g>
+      <g
+         id="stopbutton-7"
+         transform="translate(40,20)">
+        <rect
+           style="opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="stop-4"
+           width="20"
+           height="20"
+           ry="5.5"
+           x="0"
+           y="0" />
+        <text
+           id="text819-8-9"
+           y="25"
+           x="4"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           xml:space="preserve"><tspan
+             style="stroke-width:0.23602927"
+             y="25"
+             x="4"
+             id="tspan817-0-6"
+             sodipodi:role="line">Stop</tspan></text>
+      </g>
+      <g
+         id="resetbutton-7"
+         transform="translate(10,50)">
+        <text
+           id="text819-1-8"
+           y="25"
+           x="3.25"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           xml:space="preserve"><tspan
+             style="stroke-width:0.23602927"
+             y="25"
+             x="3.25"
+             id="tspan817-07-1"
+             sodipodi:role="line">Reset</tspan></text>
+        <rect
+           ry="5.5"
+           height="20"
+           width="20"
+           id="b_reset-0"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
+      </g>
+      <g
+         transform="translate(40,50)"
+         id="automanswitch-0">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           x="-2"
+           y="25"
+           id="text320-1"><tspan
+             sodipodi:role="line"
+             id="tspan318-9"
+             style="stroke-width:0.23602927"
+             x="-2"
+             y="25">Auto/Man</tspan></text>
+        <rect
+           x="0"
+           y="0"
+           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect322-4"
+           width="20"
+           height="20"
+           ry="5.5" />
+        <circle
+           style="fill:#cccccc;paint-order:fill markers stroke"
+           id="path326-4"
+           cx="10"
+           cy="10"
+           r="8" />
+        <circle
+           style="opacity:1;fill:none;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path329-4"
+           cx="10"
+           cy="10"
+           r="7" />
+        <g
+           id="key-2"
+           transform="rotate(-30,10,10)">
+          <rect
+             style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+             id="rect1140-8"
+             width="4"
+             height="6"
+             x="8"
+             y="7" />
+          <rect
+             y="2.5"
+             x="8.5"
+             height="15"
+             width="3"
+             id="rect1137-6"
+             style="opacity:1;fill:#4d4d4d" />
+        </g>
+      </g>
+      <g
+         id="q1button-0"
+         transform="translate(10,80)">
+        <text
+           id="text819-1-3-9"
+           y="25"
+           x="6.5"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           xml:space="preserve"><tspan
+             style="stroke-width:0.23602927"
+             y="25"
+             x="6.5"
+             id="tspan817-07-6-3"
+             sodipodi:role="line">Q1</tspan></text>
+        <rect
+           ry="5.5"
+           height="20"
+           width="20"
+           id="s_q1-7"
+           style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           y="0"
+           x="0" />
+      </g>
+      <g
+         id="q2button-6"
+         transform="translate(40,80)">
+        <text
+           id="text819-1-3-6-4"
+           y="25"
+           x="6.5"
+           style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"
+           xml:space="preserve"><tspan
+             style="stroke-width:0.23602927"
+             y="25"
+             x="6.5"
+             id="tspan817-07-6-0-6"
+             sodipodi:role="line">Q2</tspan></text>
+        <rect
+           ry="5.5"
+           height="20"
+           width="20"
+           id="s_q2-5"
+           style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           x="0"
+           y="0" />
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0088aa;fill-opacity:1;stroke:none"
+         id="text336-4"
+         x="37"
+         y="14"><tspan
+           sodipodi:role="line"
+           id="tspan334-8"
+           x="37"
+           y="14"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa">FESTO</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="517.29272"
+       y="97.670296"
+       id="text1298"><tspan
+         sodipodi:role="line"
+         id="tspan1296"
+         x="517.29272"
+         y="97.670296">B</tspan></text>
   </g>
 </svg>

@@ -7,9 +7,8 @@ input bool a_elevator_up;
 input bool a_elevator_down;
 input bool a_pusher;
 input bool a_testingready;
-alg bool inManualMode = not s_TautoSwitch;
 
-alg bool s_TautoSwitch = true;
+alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
@@ -25,6 +24,7 @@ alg bool b_lift_downPressed = b_lift_down.Pressed;
 alg bool b_lift_downReleased = b_lift_down.Released;
 alg bool b_pusherReleased = b_pusher.Released;
 alg bool b_pusherPressed = b_pusher.Pressed;
+alg bool s_Bstartbutton  = b_start_B.Pressed;
 
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
@@ -37,6 +37,11 @@ event BoxData spawn_new_block;
 event colorClicked;
 event heightClicked;
 event productRejected;
+event autoManualClicked;
+event startBClicked;
+
+b_start_B: Button(startBClicked);
+b_start_B_svg: Button_svg(startBClicked, "start_B", "yellow", "grey",  b_start_B.state);
 
 b_start: Button(startClicked);
 b_start_svg: Button_svg(startClicked, "start", "yellow", "grey",  b_start.state);
@@ -71,12 +76,32 @@ svg_s_capacitive: Button_svg(dummyEvent, "s_capacitive", "yellow", "grey", Capac
 b_spawn: Button(spawn_clicked);
 svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 
+b_autoManualSwitch: Button(autoManualClicked);
+svg_b_autoManualSwitch: Button_svg(autoManualClicked, "key", "yellow", "grey", b_autoManualSwitch.state);
+
 event void pusher_activated;
 
 automaton dummy:
     location:
         initial;
         edge dummyEvent when false;
+end
+
+automaton SysState:
+    alg string state;
+    location Off:
+        equation state = "Off";
+        initial;
+        edge when s_Tstartbutton goto WaitForRelease;
+    location WaitForRelease:
+        equation state = "Off";
+        edge when not s_Tstartbutton goto On;
+    location On:
+        equation state = if s_Tautoswitch: "Auto" else "Manual" end;
+        edge when s_Tstopbutton goto WaitForStopRelease;
+    location WaitForStopRelease:
+        equation state = if s_Tautoswitch: "Auto" else "Manual" end;
+        edge when not s_Tstopbutton goto Off;
 end
 
 automaton BoxUpdater:
@@ -216,11 +241,11 @@ automaton Factory:
     location Waiting:
         initial;
         edge spawn_clicked when UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
-        edge when not inManualMode and timer < 0 and UseCase.Case1
+        edge when timer < 0 and UseCase.Case1
                 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
-        edge when not inManualMode and timer < 0 and UseCase.Case2
+        edge when timer < 0 and UseCase.Case2
                 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
-        edge when not inManualMode and timer < 0 and UseCase.Case3
+        edge when timer < 0 and UseCase.Case3
                 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
     location Inter:
         edge do boxColor := boxColorAuto goto SpawnBlock;

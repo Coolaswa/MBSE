@@ -13,7 +13,7 @@ alg bool s_processingbusy = ProcessingBusySensor.On;
 
 event ProcessingBusyClicked;
 event ConveyerClicked;
-event BS01Clicked, BS02Clicked, BS03Clicked;
+event BS01Clicked; //, BS02Clicked, BS03Clicked;
 
 b_BS01: Button(BS01Clicked);
 svg_b_BS01: Button_svg(BS01Clicked, "BS01", "yellow", "grey", b_BS01.Pressed);

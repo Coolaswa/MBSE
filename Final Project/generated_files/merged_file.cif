@@ -1,26 +1,11 @@
-alg bool a_elevator_up = Coordinator.liftUp;
-alg bool a_elevator_down = Coordinator.liftDown;
-alg bool a_pusher = Coordinator.pusherExtending;
-alg bool a_testingready = Coordinator.ready;
-alg bool s_TautoSwitch = true;
-alg bool a_elevator_up_auto = AutoControl.Lift.state = UP;
-alg bool a_elevator_down_auto = AutoControl.Lift.state = DOWN;
-alg bool a_testingready_auto = AutoControl.Lift.Waiting;
-alg bool a_pusher_auto = AutoControl.PusherContr.Extending;
-alg bool a_elevator_up_manual = ManualControl.Lift.state = UP;
-alg bool a_elevator_down_manual = ManualControl.Lift.state = DOWN;
-alg bool a_testingready_manual = true;
-alg bool a_pusher_manual = ManualControl.PusherContr.Extending;
 const real box_opacity = 0.3;
 const string box_color = "blue";
-alg bool a_conveyer = true and not malfunction;
+alg bool a_conveyer = ConveyerContr.On and not malfunction;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
 alg bool s_processingbusy = ProcessingBusySensor.On;
-alg bool s_elevator_up = LiftSensorUp.isActive;
-alg bool s_Tresetbutton = b_reset.Pressed;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
@@ -43,23 +28,25 @@ func bool RectRectColl2(Rectangle rect; Rectangle other):
 end
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_capacitive = CapacitiveSensor.isActive;
+alg bool s_elevator_up = LiftSensorUp.isActive;
 alg bool s_productheight = HeightSensor.isActive;
 alg bool s_elevator_down = LiftSensorDown.isActive;
+alg bool s_Tresetbutton = b_reset.Pressed;
 alg bool s_pusher = PusherSensor.isActive;
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
 alg bool s_Tstartbutton = b_start.state;
+alg bool s_Bstartbutton = b_start_B.Pressed;
 alg bool s_Tstopbutton = b_stop.state;
-alg bool a_airslide_auto = AutoControl.Airslide.Active;
-alg bool a_TledQ1 = AutoControl.RejectBufferContr.count >= 5;
+alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
+alg bool a_elevator_up = Lift2.state = UP;
+alg bool a_elevator_down = Lift2.state = DOWN;
+alg bool a_testingready = Lift2.Waiting;
+alg bool a_pusher = PusherContr.Extending;
+alg bool a_airslide = Airslide.Active;
+alg bool a_TledQ1 = RejectBufferContr.count >= 5;
 alg bool systemReady = s_Tinitialized and s_Binitialized;
 enum LiftState = UP, STOP, DOWN;
-alg bool b_lift_upPressed = b_lift_up.Pressed;
-alg bool b_lift_upReleased = b_lift_up.Released;
-alg bool b_lift_downPressed = b_lift_down.Pressed;
-alg bool b_lift_downReleased = b_lift_down.Released;
-alg bool b_pusherReleased = b_pusher.Released;
-alg bool b_pusherPressed = b_pusher.Pressed;
 event box1Clicked;
 event box2Clicked;
 event box3Clicked;
@@ -71,7 +58,12 @@ event box8Clicked;
 event box9Clicked;
 event box10Clicked;
 const real boxSpeed = 80.0;
-alg bool inManualMode = not s_TautoSwitch;
+alg bool b_lift_upPressed = b_lift_up.Pressed;
+alg bool b_lift_upReleased = b_lift_up.Released;
+alg bool b_lift_downPressed = b_lift_down.Pressed;
+alg bool b_lift_downReleased = b_lift_down.Released;
+alg bool b_pusherReleased = b_pusher.Released;
+alg bool b_pusherPressed = b_pusher.Pressed;
 event startClicked;
 event resetClicked;
 event stopClicked;
@@ -84,6 +76,8 @@ event BoxData spawn_new_block;
 event colorClicked;
 event heightClicked;
 event productRejected;
+event autoManualClicked;
+event startBClicked;
 event void pusher_activated;
 event b_case1Pressed;
 event b_case2Pressed;
@@ -91,8 +85,6 @@ event b_case3Pressed;
 event ProcessingBusyClicked;
 event ConveyerClicked;
 event BS01Clicked;
-event BS02Clicked;
-event BS03Clicked;
 type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
   int i = 0;
@@ -108,25 +100,6 @@ func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
     i := i + 1;
   end
   return -1;
-end
-automaton Coordinator:
-  alg bool liftUp;
-  alg bool liftDown;
-  alg bool pusherExtending;
-  alg bool ready;
-  location ManualMode:
-    equation pusherExtending = a_pusher_manual,
-             ready = a_testingready_manual,
-             liftUp = a_elevator_up_manual,
-             liftDown = a_elevator_down_manual;
-    edge when s_TautoSwitch goto AutoMode;
-  location AutoMode:
-    initial;
-    equation liftUp = a_elevator_up_auto,
-             liftDown = a_elevator_down_auto,
-             pusherExtending = a_pusher_auto,
-             ready = a_testingready_auto;
-    edge when not s_TautoSwitch goto ManualMode;
 end
 group box1_svg:
   alg string name = "Product_" + <string>idfier;
@@ -200,7 +173,8 @@ automaton SeparatorContr:
     initial;
     edge when s_atseparator do t := 0.0 goto ProductInSep;
   location ProductInSep:
-    edge when t > 2 and not s_processingbusy goto Opening;
+    edge BStart.toggle? when not s_Tautoswitch and t > 2 and not s_processingbusy goto Opening;
+    edge when s_Tautoswitch and t > 2 and not s_processingbusy goto Opening;
   location Opening:
     edge ConveyerContr.turnOn!2.0 when s_atexit goto AwaitLeave;
     edge close? goto AwaitProduct;
@@ -332,9 +306,9 @@ automaton m_box1:
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
-    edge when y > 273 do rotDer := boxSpeed goto SlideBufferTransit;
+    edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = -boxSpeed,
+    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
@@ -416,9 +390,9 @@ automaton m_box2:
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
-    edge when y > 273 do rotDer := boxSpeed goto SlideBufferTransit;
+    edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = -boxSpeed,
+    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
@@ -500,9 +474,9 @@ automaton m_box3:
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
-    edge when y > 273 do rotDer := boxSpeed goto SlideBufferTransit;
+    edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = -boxSpeed,
+    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
@@ -584,9 +558,9 @@ automaton m_box4:
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
-    edge when y > 273 do rotDer := boxSpeed goto SlideBufferTransit;
+    edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = -boxSpeed,
+    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
@@ -668,9 +642,9 @@ automaton m_box5:
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
-    edge when y > 273 do rotDer := boxSpeed goto SlideBufferTransit;
+    edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = -boxSpeed,
+    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
@@ -725,7 +699,7 @@ automaton m_box5:
     edge SeparatorContr.close! when confTimer > confTime do x := -200.0 goto DecreaseCount;
 end
 automaton errorChecker1:
-  const real mismatchTime = 0.2;
+  const real mismatchTime = 1.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box1.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -739,7 +713,7 @@ automaton errorChecker1:
     edge m_box1.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker2:
-  const real mismatchTime = 0.2;
+  const real mismatchTime = 1.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box2.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -753,7 +727,7 @@ automaton errorChecker2:
     edge m_box2.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker3:
-  const real mismatchTime = 0.2;
+  const real mismatchTime = 1.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box3.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -767,7 +741,7 @@ automaton errorChecker3:
     edge m_box3.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker4:
-  const real mismatchTime = 0.2;
+  const real mismatchTime = 1.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box4.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -781,7 +755,7 @@ automaton errorChecker4:
     edge m_box4.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker5:
-  const real mismatchTime = 0.2;
+  const real mismatchTime = 1.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box5.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -828,106 +802,86 @@ automaton SystemState:
   location WaitForRelease2:
     edge when not s_Tstopbutton goto Waiting;
 end
-group AutoControl:
-  automaton Lift:
-    alg LiftState state;
-    event rejProduct;
-    location Initializing:
-      initial;
-      equation state = STOP;
-      edge when SystemState.Running goto Waiting;
-    location Waiting:
-      equation state = STOP;
-      edge when s_reflective goto WaitingForArm;
-    location WaitingForArm:
-      equation state = STOP;
-      edge when not s_reflective goto VerifyBlock1;
-    location VerifyBlock1:
-      equation state = STOP;
-      edge PusherContr.extent when s_capacitive and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-      edge when not s_capacitive goto GoingUp;
-    location PushingBlockAtBot:
-      equation state = STOP;
-      edge PusherContr.retract goto ProductFullyRedjected;
-    location ProductFullyRedjected:
-      equation state = STOP;
-      edge rejProduct goto Initializing;
-    location GoingUp:
-      equation state = UP;
-      edge when s_elevator_up goto VerifyBlock2;
-    location VerifyBlock2:
-      equation state = STOP;
-      edge when s_productheight goto GoingDownReject;
-      edge PusherContr.extent when not s_productheight goto PushingBlockAtTop;
-    location GoingDownReject:
-      equation state = DOWN;
-      edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-    location PushingBlockAtTop:
-      equation state = STOP;
-      edge PusherContr.retract goto GoingDownEmpty;
-    location GoingDownEmpty:
-      equation state = DOWN;
-      edge when s_elevator_down goto Initializing;
-  end
-  automaton RejectBufferContr:
-    disc int count;
-    location Waiting:
-      initial;
-      edge Lift.rejProduct do count := count + 1;
-      edge when s_Tresetbutton goto AwaitRelease;
-    location AwaitRelease:
-      edge when not s_Tresetbutton do count := 0 goto Waiting;
-  end
-  automaton PusherContr:
-    event extent;
-    event retract;
-    location Extending:
-      edge retract when s_pusher goto Retracting;
-      edge when s_bufferingbusy goto Lockdown;
-    location Retracting:
-      initial;
-      edge extent goto Extending;
-      edge when s_bufferingbusy goto Lockdown;
-    location Lockdown:
-      edge when not s_bufferingbusy goto Retracting;
-  end
-  automaton Airslide:
-    monitor PusherContr.extent;
-    cont t der 1.0;
-    location Active:
-      edge when t > 5 goto InActive;
-    location InActive:
-      initial;
-      edge PusherContr.extent when s_elevator_up do t := 0.0 goto Active;
-  end
+automaton BStart:
+  event void toggle;
+  location Off:
+    initial;
+    edge when s_Bstartbutton goto On;
+  location On:
+    edge toggle! when not s_Bstartbutton goto Off;
 end
-group ManualControl:
-  automaton Lift:
-    alg LiftState state;
-    location Up:
-      equation state = UP;
-      edge when b_lift_upReleased goto Stop;
-      edge when b_lift_downPressed and b_lift_upReleased goto Down;
-    location Stop:
-      initial;
-      equation state = STOP;
-      edge when b_lift_upPressed goto Up;
-      edge when b_lift_downPressed goto Down;
-    location Down:
-      equation state = DOWN;
-      edge when b_lift_upPressed and b_lift_downReleased goto Up;
-      edge when b_lift_downReleased goto Stop;
-  end
-  automaton PusherContr:
-    location Extending:
-      edge when b_pusherReleased goto Retracting;
-    location Retracting:
-      initial;
-      edge when s_bufferingbusy goto Lockdown;
-      edge when b_pusherPressed goto Extending;
-    location Lockdown:
-      edge when not s_bufferingbusy goto Retracting;
-  end
+automaton Lift2:
+  alg LiftState state;
+  event rejProduct;
+  location Initializing:
+    initial;
+    equation state = STOP;
+    edge when SystemState.Running goto Waiting;
+  location Waiting:
+    equation state = STOP;
+    edge when s_reflective goto WaitingForArm;
+  location WaitingForArm:
+    equation state = STOP;
+    edge BStart.toggle? when not s_Tautoswitch and not s_reflective goto VerifyBlock1;
+    edge when s_Tautoswitch and not s_reflective goto VerifyBlock1;
+  location VerifyBlock1:
+    equation state = STOP;
+    edge PusherContr.extent when s_capacitive and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+    edge when not s_capacitive goto GoingUp;
+  location PushingBlockAtBot:
+    equation state = STOP;
+    edge PusherContr.retract goto ProductFullyRedjected;
+  location ProductFullyRedjected:
+    equation state = STOP;
+    edge rejProduct goto Initializing;
+  location GoingUp:
+    equation state = UP;
+    edge BStart.toggle? when not s_Tautoswitch and s_elevator_up goto VerifyBlock2;
+    edge when s_Tautoswitch and s_elevator_up goto VerifyBlock2;
+  location VerifyBlock2:
+    equation state = STOP;
+    edge when s_productheight goto GoingDownReject;
+    edge PusherContr.extent when not s_productheight goto PushingBlockAtTop;
+  location GoingDownReject:
+    equation state = DOWN;
+    edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+  location PushingBlockAtTop:
+    equation state = STOP;
+    edge PusherContr.retract goto GoingDownEmpty;
+  location GoingDownEmpty:
+    equation state = DOWN;
+    edge when s_elevator_down goto Initializing;
+end
+automaton RejectBufferContr:
+  disc int count;
+  location Waiting:
+    initial;
+    edge Lift2.rejProduct do count := count + 1;
+    edge when s_Tresetbutton goto AwaitRelease;
+  location AwaitRelease:
+    edge when not s_Tresetbutton do count := 0 goto Waiting;
+end
+automaton PusherContr:
+  event extent;
+  event retract;
+  location Extending:
+    edge retract when s_pusher goto Retracting;
+    edge when s_bufferingbusy goto Lockdown;
+  location Retracting:
+    initial;
+    edge extent goto Extending;
+    edge when s_bufferingbusy goto Lockdown;
+  location Lockdown:
+    edge when not s_bufferingbusy goto Retracting;
+end
+automaton Airslide:
+  monitor PusherContr.extent;
+  cont t der 1.0;
+  location Active:
+    edge when t > 5 goto InActive;
+  location InActive:
+    initial;
+    edge PusherContr.extent when s_elevator_up do t := 0.0 goto Active;
 end
 automaton box1:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box1Clicked;
@@ -2110,6 +2064,24 @@ automaton ProductCounter:
     edge prodEnter? do rightMostProdX := rightMostProdX + 40;
     edge prodLeave? do rightMostProdX := max(rightMostProdX - 40, 681);
 end
+automaton b_start_B:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge startBClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge startBClicked goto Released;
+end
+group b_start_B_svg:
+  alg string idfier = "start_B";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_start_B.state;
+  svgin id idfier event startBClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
 automaton b_start:
   alg bool state;
   location Released:
@@ -2311,10 +2283,44 @@ group svg_b_spawn:
   svgin id idfier event spawn_clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_autoManualSwitch:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge autoManualClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge autoManualClicked goto Released;
+end
+group svg_b_autoManualSwitch:
+  alg string idfier = "key";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_autoManualSwitch.state;
+  svgin id idfier event autoManualClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
 automaton dummy:
   location:
     initial;
     edge dummyEvent when false;
+end
+automaton SysState:
+  alg string state;
+  location Off:
+    initial;
+    equation state = "Off";
+    edge when s_Tstartbutton goto WaitForRelease;
+  location WaitForRelease:
+    equation state = "Off";
+    edge when not s_Tstartbutton goto On;
+  location On:
+    equation state = if s_Tautoswitch: "Auto" else "Manual" end;
+    edge when s_Tstopbutton goto WaitForStopRelease;
+  location WaitForStopRelease:
+    equation state = if s_Tautoswitch: "Auto" else "Manual" end;
+    edge when not s_Tstopbutton goto Off;
 end
 automaton BoxUpdater:
   alg list[10] BoxData data;
@@ -2416,9 +2422,9 @@ automaton Factory:
   location Waiting:
     initial;
     edge spawn_clicked when UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
-    edge when not inManualMode and timer < 0 and UseCase.Case1 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
-    edge when not inManualMode and timer < 0 and UseCase.Case2 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
-    edge when not inManualMode and timer < 0 and UseCase.Case3 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
+    edge when timer < 0 and UseCase.Case1 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
+    edge when timer < 0 and UseCase.Case2 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
+    edge when timer < 0 and UseCase.Case3 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
   location Inter:
     edge do boxColor := boxColorAuto goto SpawnBlock;
   location SpawnBlock:
@@ -2670,7 +2676,9 @@ svgout id "time" text value round(time) file "../SystemSVG.svg";
 svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightSensor.y) file "../SystemSVG.svg";
 svgout id "Rotator" attr "transform" value fmt("rotate(%f,12.5,0)", Arm.armRot) file "../SystemSVG.svg";
 svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,0)", -Arm.armRot) file "../SystemSVG.svg";
-svgout id "Air" attr "opacity" value if a_airslide_auto: 1 else 0 end file "../SystemSVG.svg";
+svgout id "Air" attr "opacity" value if a_airslide: 1 else 0 end file "../SystemSVG.svg";
 svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end file "../SystemSVG.svg";
 svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "grey" end file "../SystemSVG.svg";
 svgout id "a_separator" attr "transform" value fmt("translate(0,%f)", if a_separator: 0.0 else 10.0 end) file "../SystemSVG.svg";
+svgout id "key" attr "transform" value fmt("rotate(%f,10,10)", if s_Tautoswitch: 90.0 else 0.0 end) file "../SystemSVG.svg";
+svgout id "s_systemMode" text value fmt("System State: %s", SysState.state) file "../SystemSVG.svg";

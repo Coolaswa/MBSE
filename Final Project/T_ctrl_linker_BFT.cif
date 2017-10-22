@@ -1,9 +1,0 @@
-alg bool a_elevator_up = a_elevator_up_auto;
-alg bool a_elevator_down = a_elevator_down_auto;
-alg bool a_pusher = a_pusher_auto;
-alg bool a_testingready = a_testingready_auto;
-
-input bool a_elevator_up_auto;
-input bool a_elevator_down_auto;
-input bool a_pusher_auto;
-input bool a_testingready_auto;
