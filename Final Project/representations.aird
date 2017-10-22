@@ -9,5 +9,6 @@
   <semanticResources>B_ctrl_BFT.cif</semanticResources>
   <semanticResources>B_plant_BFT.cif</semanticResources>
   <semanticResources>TB_box_BFT.cif</semanticResources>
+  <semanticResources>B_ctrl_visual_BFT.cif</semanticResources>
   <semanticResources>generated_files/merged_file.cif</semanticResources>
 </viewpoint:DAnalysis>

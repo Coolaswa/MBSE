@@ -1,112 +1,229 @@
 
-alg bool a_conveyer = ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
-alg bool a_separator = SeparatorContr.Open or SeparatorContr.OpenInc or SeparatorContr.Reloading;
+alg bool a_conveyer = true and not malfunction;// ConveyerContr.On; //ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
+alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
 
 input bool s_product;
 input bool s_atseparator;
 input bool s_atexit;
 input bool s_processingbusy;
+input bool s_elevator_up;
+input bool a_pusher;
+input bool s_Tresetbutton;
 
-	automaton SeparatorContr:
-		cont t der 1;
-		location Empty: // Left
-			initial;
-			edge when s_atseparator goto Incoming;
-		location Incoming: //Left
-			edge when not s_atseparator goto FullNoInc;
+alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
+alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
+alg bool a_TledQ2 = malfunction;
 
-		location FullNoInc: //Left
-			edge when s_atseparator goto FullInc;
-			edge when not s_atseparator and not s_processingbusy goto Open; 		//to be replaced by s_processingbusy
-		location Open: //Right
-			edge when s_atexit goto Empty;
+const real confTime = 1.5;
 
-		location FullInc: //Left + Stop conveyer
-			edge when not s_processingbusy goto OpenInc;
-		location OpenInc: //Right
-			edge when s_processingbusy do t := 0 goto Reloading;
+automaton SeparatorContr:
+    cont t der 1;
+    event void close;
+	location AwaitProduct:
+        initial;
+        edge when s_atseparator do t:= 0 goto ProductInSep;
+    location ProductInSep:
+        edge when t > 2 and not s_processingbusy goto Opening;
+    location Opening:
+        edge ConveyerContr.turnOn! 2 when s_atexit goto AwaitLeave;
+        edge close? goto AwaitProduct;
+    location AwaitLeave:
+        edge when not s_atexit goto AwaitProduct;
+        edge close? goto AwaitProduct;
+end
 
-		location Reloading: //Goes Left and waits to see if there is an incoming product
-			edge when t >= 1 and s_atseparator goto FullInc;
-			edge when t >= 1 and not s_atseparator goto FullNoInc;
+automaton ConveyerContr:
+    monitor atEntry;
+    event real turnOn; // Specify for how long it should be on
+	cont t der -1;
+	location Off:
+		initial;
+		edge turnOn ? do t := ? goto On;
+		edge atEntry do t:= 6 goto On;
+	location On:
+		edge when t < 0 goto Off;
+		edge turnOn ? do t := t + ?;
+end
 
-	end
+automaton CountFive:          //Keeps track of how many products are on the belt.
+    event void decrease;
+    disc int count = 0;
+    location Initial:
+        initial;
+        edge when s_product do count:= count+1 goto WaitFor1;
+        edge when s_atexit do count:= count-1  goto WaitFor2;
+        edge decrease? do count := count - 1;
+    location WaitFor1:
+        edge when not s_product goto Initial;
+    location WaitFor2:
+        edge when not s_atexit goto Initial;
+end
 
-	automaton ConveyerContr:
-		cont t der 1;
-		location Empty: 	//To save energy, it is useful to not have the conveyer active when there are no products on it.
-			initial;
-			edge when CountFive.OneActiveEntry goto Moving;
-		location Moving:
-			edge when CountFive.Zero do t := 0 goto Delay;
-		location Delay:
-			edge when t > 1.5 goto Empty;
-	end
+automaton BoxListener:
+    event void newBox;
+    location Init:
+        initial;
+        edge newBox! when a_pusher and s_elevator_up goto Timeout;
+    location Timeout:
+        edge when not a_pusher goto Init;
+end
+event void atEntry, atSep, atExit;
+event real atEntryConf, atSepConf, atExitConf;
+entryListener: SensorListener(atEntry, atEntryConf, s_product);
+separatorListener: SensorListener(atSep, atSepConf, s_atseparator);
+exitListener: SensorListener(atExit, atExitConf, s_atexit);
+automaton def SensorListener(event void atActivation; event real atActivConf; alg bool sensor):
+    cont t der 1;
+    cont timeDiff der 1;
+    location Init:
+        initial;
+        edge atActivation? do t := 0 goto AwaitSensor;
+        edge when sensor do t := 0, timeDiff := 0 goto AwaitEvent;
+    location AwaitSensor:
+        edge atActivConf!0 when sensor goto AwaitSRelease;
+        edge when t > confTime goto Malfunction;
+    location AwaitEvent:
+        edge atActivation? goto BroadcastConf;
+        edge when t > confTime goto Malfunction;
+    location BroadcastConf:
+        edge atActivConf!timeDiff goto AwaitSRelease;
+    location AwaitSRelease:
+        edge when not sensor goto Init;
+    location Malfunction:
+        edge when s_Tresetbutton goto AwaitSRelease;
+end
 
-	automaton CountFive:			//Keeps track of how many products are on the belt.
-		alg real count;
+m_box1: BoxModel();
+m_box2: BoxModel();
+m_box3: BoxModel();
+m_box4: BoxModel();
+m_box5: BoxModel();
 
+errorChecker1: ErrorChecker(m_box1);
+errorChecker2: ErrorChecker(m_box2);
+errorChecker3: ErrorChecker(m_box3);
+errorChecker4: ErrorChecker(m_box4);
+errorChecker5: ErrorChecker(m_box5);
 
-		location Zero: 				//when CountFive = 5, stops the pusher; see control
-			initial;
-			equation count = 0;
-			edge when s_product goto OneActiveEntry;
-		location ZeroActiveExit:
-			equation count = 0;
-			edge when not s_atexit goto Zero;
+type Point = tuple(real x, y);
+const Point LiftTop = (1182.9, 228);
+automaton def BoxModel():
+    monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
+    cont x;
+    cont y;
+    cont confTimer der 1;
+    cont accelTimer der 1;
+    alg real slideAngle = (10)*3.141592654/180;
+    const real boxSpeed = 60;
+    disc int bufferPos;
+    alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+    cont rotation der rotDer;
+    disc real rotDer;
+    disc bool pastSep, pastEntry;
+    alg Rectangle bounds = (x,y,40,23);
+    event delete;
+    location Waiting:
+        equation x' = -boxSpeed, y' = 0;
+        initial;
+        edge BoxListener.newBox? do (pastSep, pastEntry) := (false,false), (x,y) := LiftTop, accelTimer := 0, rotDer := -30 goto LiftAirTransit;
+    location LiftAirTransit:
+        equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+        edge when rotation < -10 do rotDer := 0, accelTimer := 0 goto OnAirslide;
+   location OnAirslide:
+        equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
+        edge when y > 273 do rotDer := boxSpeed goto SlideBufferTransit;
+    location SlideBufferTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
+    location OnBufferMoving:                                            //Buffer before sep
+        equation x' = if a_conveyer: -boxSpeed else 0 end, y' = 0;
+        edge when x < bufferPos - (if a_separator: 22 else 0 end) goto OnBufferWaiting;
+        edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do  bufferPos := max(bufferPos - 40, 681);
+        edge atSep! when not pastSep and x < 728 do pastSep := true, confTimer := 0 goto AwaitConfSep;
+        edge atEntry! when not pastEntry and x < 929 do pastEntry := true, confTimer :=0 goto AwaitConfEntry;
+        edge delete goto DoDelete;
+    location DoDelete:
+        equation x' = 0, y' = 0;
+        edge ProdBroadcast2.prodLeave!x do x := -200 goto DecreaseCount;
+    location AwaitConfSep:
+        equation x' = 0, y' = 0;
+        edge atSepConf? do x := x - boxSpeed*? goto OnBufferMoving;
+        edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200 goto DecreaseCount;
+    location AwaitConfEntry:
+        equation x' = 0, y' = 0;
+        edge atEntryConf? do x := x - boxSpeed*? goto OnBufferMoving;
+        edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200 goto Waiting;
+    location DecreaseCount:
+        equation x' = 0, y' = 0;
+        edge CountFive.decrease! goto Waiting;
+    location OnBufferWaiting:
+        equation x' = 0, y' = 0;
+        edge ProductCounter2.prodLeave when bufferPos > 682 and x > ProdBroadcast2.lastXRemoved  do bufferPos := bufferPos - 40 goto OnBufferMoving;
+        edge ProdBroadcast2.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
+        edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
+        edge delete goto DoDelete;
+    location ToSeperatorTransit:
+        equation x' = if a_conveyer: -boxSpeed else 0 end, y' = 0;
+        edge when x < 660 goto InSeperatorWaiting;
+    location InSeperatorWaiting:
+        equation x' = 0, y' = 0;
+        edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
+    location Leaving:
+        equation x' = -boxSpeed, y' = 0;
+        edge atExit! when x < 642 do confTimer := 0 goto AwaitConfExit;
+    location AwaitConfExit:
+        equation x' = 0, y' = 0;
+        edge atExitConf? do x:= -200 goto Waiting;
+        edge SeparatorContr.close! when confTimer > confTime do x:= -200 goto DecreaseCount;
+end
 
-		location OneActiveEntry:
-			equation count = 1;
-			edge when not s_product goto One;
-		location One:
-			equation count = 1;
-			edge when s_atexit goto ZeroActiveExit;
-			edge when s_product goto TwoActiveEntry;
-		location OneActiveExit:
-			equation count = 1;
-			edge when not s_atexit goto One;
+automaton ProdBroadcast2:
+    event real prodLeave;
+    event void prodUpdate;
+    event prodDoUpdate;
+    disc real lastXRemoved;
+    location Await:
+        initial;
+        edge prodLeave? do lastXRemoved := ? goto Send1;
+        edge prodUpdate? goto Send2;
+    location Send1:
+        edge ProductCounter2.prodLeave! goto Await;
+    location Send2:
+        edge prodDoUpdate goto Await;
+end
 
-		location TwoActiveEntry:
-			equation count = 2;
-			edge when not s_product goto Two;
-		location Two:
-			equation count = 2;
-			edge when s_atexit goto OneActiveExit;
-			edge when s_product goto ThreeActiveEntry;
-		location TwoActiveExit:
-			equation count = 2;
-			edge when not s_atexit goto Two;
+automaton ProductCounter2:
+    disc int rightMostProdX = 681;
+    event void prodEnter, prodLeave;
+    location:
+        initial;
+        edge prodEnter? do rightMostProdX := rightMostProdX + 40;
+        edge prodLeave? do rightMostProdX := max(rightMostProdX - 40, 681);
+end
 
-		location ThreeActiveEntry:
-			equation count = 3;
-			edge when not s_product goto Three;
-		location Three:
-			equation count = 3;
-			edge when s_atexit goto TwoActiveExit;
-			edge when s_product goto FourActiveEntry;
-		location ThreeActiveExit:
-			equation count = 3;
-			edge when not s_atexit goto Three;
+type Rectangle = tuple(real x, y, width, height);
+const Rectangle AtSepSensorBounds = (717,260,10,41);
+func bool RectRectColl2(Rectangle rect; Rectangle other):
+    if (rect[x] < other[x] + other[width] and
+        rect[x] + rect[width] > other[x] and
+        rect[y] < other[y] + other[height] and
+        rect[height] + rect[y] > other[y]):
+            return true;
+    end
+    return false;
+end
 
-		location FourActiveEntry:
-			equation count = 4;
-			edge when not s_product goto Four;
-		location Four:
-			equation count = 4;
-			edge when s_atexit goto ThreeActiveExit;
-			edge when s_product goto Five;
-		location FourActiveExit:
-			equation count = 4;
-			edge when not s_atexit goto Four;
-
-		location Five:
-			equation count = 5;
-			edge when s_atexit goto FourActiveExit;
-	end
-
-
-
-
-
-
-
+automaton def ErrorChecker(BoxModel target):
+    const real mismatchTime = 0.2;
+    cont mismatchTimer der 1;
+    alg bool modelCol = RectRectColl2(AtSepSensorBounds, target.bounds);
+    alg bool mismatch = (modelCol and not s_atseparator);
+    location Init:
+        initial;
+        edge when target.OnBufferMoving goto OnBufferMoving;
+    location OnBufferMoving:
+        edge when mismatch do mismatchTimer := 0 goto Await;
+    location Await:
+        edge when not mismatch goto OnBufferMoving;
+        edge target.delete when mismatchTimer > mismatchTime goto Init;
+end

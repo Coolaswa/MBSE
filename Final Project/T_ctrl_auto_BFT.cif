@@ -12,6 +12,7 @@ input bool s_bufferingbusy;
 input bool s_Tinitialized;
 input bool s_Binitialized;
 input bool s_Tstartbutton;
+input bool s_Tstopbutton;
 alg bool a_elevator_up_auto = AutoControl.Lift.state = UP;
 alg bool a_elevator_down_auto = AutoControl.Lift.state = DOWN;
 alg bool a_testingready_auto = AutoControl.Lift.Waiting;
@@ -30,9 +31,9 @@ automaton SystemState:
     location WaitForRelease:
         edge when not s_Tstartbutton goto Running;
     location Running:
-        edge when s_Tstartbutton goto WaitForRelease2;
+        edge when s_Tstopbutton goto WaitForRelease2;
     location WaitForRelease2:
-        edge when not s_Tstartbutton goto Waiting;
+        edge when not s_Tstopbutton goto Waiting;
 end
 
 group AutoControl:

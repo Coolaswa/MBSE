@@ -17,9 +17,8 @@ alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
 alg bool s_Tstartbutton = b_start.state;
-alg bool s_Tstopbutton = b_start.state;
+alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tresetbutton = b_reset.Pressed;
-alg bool s_bufferingbusy = false;
 alg bool b_lift_upPressed = b_lift_up.Pressed;
 alg bool b_lift_upReleased = b_lift_up.Released;
 alg bool b_lift_downPressed = b_lift_down.Pressed;
@@ -74,17 +73,6 @@ svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.stat
 
 event void pusher_activated;
 
-box1: Box();
-box2: Box();
-box3: Box();
-box4: Box();
-box5: Box();
-box6: Box();
-box7: Box();
-box8: Box();
-box9: Box();
-box10: Box();
-
 automaton dummy:
     location:
         initial;
@@ -96,31 +84,29 @@ automaton BoxUpdater:
     alg list[10] Rectangle rects;
     location:
         equation data = [
-         ((box1.x,box1.y,50,50), box1.color, box1.isThick, box1.rotation),
-         ((box2.x,box2.y,50,50), box2.color, box2.isThick, box2.rotation),
-         ((box3.x,box3.y,50,50), box3.color, box3.isThick, box3.rotation),
-         ((box4.x,box4.y,50,50), box4.color, box4.isThick, box4.rotation),
-         ((box5.x,box5.y,50,50), box5.color, box5.isThick, box5.rotation),
-         ((box6.x,box6.y,50,50), box6.color, box6.isThick, box6.rotation),
-         ((box7.x,box7.y,50,50), box7.color, box7.isThick, box7.rotation),
-         ((box8.x,box8.y,50,50), box8.color, box8.isThick, box8.rotation),
-         ((box9.x,box9.y,50,50), box9.color, box9.isThick, box9.rotation),
-         ((box10.x,box10.y,50,50), box10.color, box10.isThick, box10.rotation)];
+         ((box1.x,box1.y,40,23), box1.color, box1.isThick, box1.rotation),
+         ((box2.x,box2.y,40,23), box2.color, box2.isThick, box2.rotation),
+         ((box3.x,box3.y,40,23), box3.color, box3.isThick, box3.rotation),
+         ((box4.x,box4.y,40,23), box4.color, box4.isThick, box4.rotation),
+         ((box5.x,box5.y,40,23), box5.color, box5.isThick, box5.rotation),
+         ((box6.x,box6.y,40,23), box6.color, box6.isThick, box6.rotation),
+         ((box7.x,box7.y,40,23), box7.color, box7.isThick, box7.rotation),
+         ((box8.x,box8.y,40,23), box8.color, box8.isThick, box8.rotation),
+         ((box9.x,box9.y,40,23), box9.color, box9.isThick, box9.rotation),
+         ((box10.x,box10.y,40,23), box10.color, box10.isThick, box10.rotation)];
          equation rects = [
-         (box1.x,box1.y,50,50),
-         (box2.x,box2.y,50,50),
-         (box3.x,box3.y,50,50),
-         (box4.x,box4.y,50,50),
-         (box5.x,box5.y,50,50),
-         (box6.x,box6.y,50,50),
-         (box7.x,box7.y,50,50),
-         (box8.x,box8.y,50,50),
-         (box9.x,box9.y,50,50),
-         (box10.x,box10.y,50,50)];
+         (box1.x,box1.y,40,23),
+         (box2.x,box2.y,40,23),
+         (box3.x,box3.y,40,23),
+         (box4.x,box4.y,40,23),
+         (box5.x,box5.y,40,23),
+         (box6.x,box6.y,40,23),
+         (box7.x,box7.y,40,23),
+         (box8.x,box8.y,40,23),
+         (box9.x,box9.y,40,23),
+         (box10.x,box10.y,40,23)];
         initial;
 end
-
-const real boxSpeed = 60;
 
 automaton RejectBuffer:
      event void preRejectEnter;
@@ -206,7 +192,7 @@ automaton Arm:
     location Returning:
         edge when armRot > 180 do armSpeed := 0 goto Waiting;
     location Placing:
-        edge when armRot < 96 do armSpeed := 25 goto Returning;
+        edge when armRot < 99 do armSpeed := 25 goto Returning;
 end
 
 automaton Factory:
@@ -229,7 +215,7 @@ automaton Factory:
     cont timer der -1;
     location Waiting:
         initial;
-        edge spawn_clicked when inManualMode do (boxColor, isThick) := (boxColorMan, isThickMan) goto Inter;
+        edge spawn_clicked when UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
         edge when not inManualMode and timer < 0 and UseCase.Case1
                 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
         edge when not inManualMode and timer < 0 and UseCase.Case2
@@ -237,8 +223,7 @@ automaton Factory:
         edge when not inManualMode and timer < 0 and UseCase.Case3
                 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
     location Inter:
-        edge when not inManualMode do boxColor := boxColorAuto goto SpawnBlock;
-        edge when inManualMode goto SpawnBlock;
+        edge do boxColor := boxColorAuto goto SpawnBlock;
     location SpawnBlock:
         edge spawn_new_block! (Const.Box.StartThickBounds, boxColor, isThick,0) when isThick goto Post;
         edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick,0) when not isThick goto Post;
@@ -256,17 +241,15 @@ b_case3_svg: Button_svg(b_case3Pressed, "b_case3", "yellow", "grey", b_case3.sta
 automaton UseCase:
     location Case1:
         initial;
-        edge b_case1Pressed;
-        edge b_case2Pressed goto Case2;
-        edge b_case3Pressed goto Case3;
+        edge when b_case1.Released goto NoCase;
     location Case2:
-        edge b_case1Pressed goto Case1;
-        edge b_case2Pressed;
-        edge b_case3Pressed goto Case3;
+        edge when b_case2.Released goto NoCase;
     location Case3:
-        edge b_case1Pressed goto Case1;
-        edge b_case2Pressed goto Case2;
-        edge b_case3Pressed;
+        edge when b_case3.Released goto NoCase;
+    location NoCase:
+        edge when b_case1.Pressed goto Case1;
+        edge when b_case2.Pressed goto Case2;
+        edge when b_case3.Pressed goto Case3;
 end
 
 

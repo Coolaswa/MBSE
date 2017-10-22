@@ -3,17 +3,21 @@ import "TB_Defs_BFT.cif";
 import "TB_SVGConstants_BFT.cif";
 import "TB_box_BFT.cif";
 
-
 input bool a_conveyer;
 input bool a_separator;
 
-alg bool s_product = EntrySensor.isActive;
+alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
 alg bool s_processingbusy = ProcessingBusySensor.On;
 
 event ProcessingBusyClicked;
 event ConveyerClicked;
+event BS01Clicked, BS02Clicked, BS03Clicked;
+
+b_BS01: Button(BS01Clicked);
+svg_b_BS01: Button_svg(BS01Clicked, "BS01", "yellow", "grey", b_BS01.Pressed);
+svg_b_i_BS01: Button_svg(BS01Clicked, "i_BS01", "red", "grey", s_product);
 
 svg_s_product: Button_svg(dummyEvent, "s_product_entry", "yellow", "grey", EntrySensor.isActive);
 svg_s_atseparator: Button_svg(dummyEvent, "s_product_separator", "yellow", "grey", AtSepSensor.isActive);
@@ -27,22 +31,7 @@ svg_b_processing: Button_svg(ProcessingBusyClicked, "s_processing_busy", "yellow
 b_conveyer: Button(ConveyerClicked);
 svg_b_conveyer: Button_svg(ConveyerClicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
 
-
-
-automaton def Conveyor():
-	//event turnOn, turnOff;
-	//event toggle;
-	cont wheelRotation der 3*Belt.speed;
-	alg real wheelSpeed;
-	location On:
-
-		equation wheelSpeed = Belt.speed;
-		edge when Belt.Standstill goto Off;
-	location Off:
-		initial;
-		equation wheelSpeed = 0;
-		edge when Belt.Moving goto On;
-end
+svg_conv: Conveyer_svg(1, Belt.wheelRotation);
 
 group AtSepSensor:
 	alg int boxI = RectRectColl((Const.Sensors.AtSepSensorBounds[x],
@@ -70,20 +59,19 @@ end
 
 automaton ProcessingBusySensor: //(Press Button)
 	location On:
-		initial;
-		edge when b_processing.Pressed goto Waiting;
-	location Waiting:
 		edge when b_processing.Released goto Off;
 	location Off:
-		edge when ExitSensor.isActive goto On;
+        initial;
+        edge when b_processing.Pressed goto On;
 end
 
 
 automaton Belt:
+    cont wheelRotation der 3*Belt.speed;
 	alg real speed;
 	cont x der speed;
 	location Moving:
-		equation speed = -50;
+		equation speed = -60;
 		edge when not a_conveyer goto Standstill;
 	location Standstill:
 		initial;
@@ -92,73 +80,10 @@ automaton Belt:
 end
 
 automaton Separator:	//Separator needs to turn/rotate when going from left to right, to be added
-	location Right:
-		edge when not a_separator goto Left;
-	location Left:
-		initial;
-		edge when a_separator goto Right;
+    location Right:
+        edge when not a_separator goto Left;
+    location Left:
+        initial;
+        edge when a_separator goto Right;
 end
-
-	automaton CountFive2:			//Keeps track of how many products are on the belt.
-		alg real count;
-
-
-		location Zero: 				//when CountFive = 5, stops the pusher; see control
-			initial;
-			equation count = 0;
-			edge when s_product goto OneActiveEntry;
-		location ZeroActiveExit:
-			equation count = 0;
-			edge when not s_atexit goto Zero;
-
-		location OneActiveEntry:
-			equation count = 1;
-			edge when not s_product goto One;
-		location One:
-			equation count = 1;
-			edge when s_atexit goto ZeroActiveExit;
-			edge when s_product goto TwoActiveEntry;
-		location OneActiveExit:
-			equation count = 1;
-			edge when not s_atexit goto One;
-
-		location TwoActiveEntry:
-			equation count = 2;
-			edge when not s_product goto Two;
-		location Two:
-			equation count = 2;
-			edge when s_atexit goto OneActiveExit;
-			edge when s_product goto ThreeActiveEntry;
-		location TwoActiveExit:
-			equation count = 2;
-			edge when not s_atexit goto Two;
-
-		location ThreeActiveEntry:
-			equation count = 3;
-			edge when not s_product goto Three;
-		location Three:
-			equation count = 3;
-			edge when s_atexit goto TwoActiveExit;
-			edge when s_product goto FourActiveEntry;
-		location ThreeActiveExit:
-			equation count = 3;
-			edge when not s_atexit goto Three;
-
-		location FourActiveEntry:
-			equation count = 4;
-			edge when not s_product goto Four;
-		location Four:
-			equation count = 4;
-			edge when s_atexit goto ThreeActiveExit;
-			edge when s_product goto Five;
-		location FourActiveExit:
-			equation count = 4;
-			edge when not s_atexit goto Four;
-
-		location Five:
-			equation count = 5;
-			edge when s_atexit goto FourActiveExit;
-	end
-
-
 

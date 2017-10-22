@@ -1,23 +1,48 @@
 import "T_plant_BFT.cif";
 import "B_plant_BFT.cif";
 
-automaton def Box():
-    monitor productRejected;
+event box1Clicked, box2Clicked, box3Clicked, box4Clicked, box5Clicked, box6Clicked, box7Clicked, box8Clicked,box9Clicked, box10Clicked;
+box1: Box(box1Clicked);
+box2: Box(box2Clicked);
+box3: Box(box3Clicked);
+box4: Box(box4Clicked);
+box5: Box(box5Clicked);
+box6: Box(box6Clicked);
+box7: Box(box7Clicked);
+box8: Box(box8Clicked);
+box9: Box(box9Clicked);
+box10:Box(box10Clicked);
+
+button1_svg: Create_Box_svg(1, BoxUpdater.data[0], 1, box1Clicked);
+button2_svg: Create_Box_svg(2, BoxUpdater.data[1], 1, box2Clicked);
+button3_svg: Create_Box_svg(3, BoxUpdater.data[2], 1, box3Clicked);
+button4_svg: Create_Box_svg(4, BoxUpdater.data[3], 1, box4Clicked);
+button5_svg: Create_Box_svg(5, BoxUpdater.data[4], 1, box5Clicked);
+button6_svg: Create_Box_svg(6, BoxUpdater.data[5], 1, box6Clicked);
+button7_svg: Create_Box_svg(7, BoxUpdater.data[6], 1, box7Clicked);
+button8_svg: Create_Box_svg(8, BoxUpdater.data[7], 1, box8Clicked);
+button9_svg: Create_Box_svg(9, BoxUpdater.data[8], 1, box9Clicked);
+button10_svg: Create_Box_svg(10, BoxUpdater.data[9], 1,box10Clicked);
+
+const real boxSpeed = 80;
+automaton def Box(event clickedEvent):
+    monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, clickedEvent;
 
     disc string color = "pink";
-    alg real slideAngle = (15)*3.141592654/180;
+    alg real slideAngle = (10)*3.141592654/180;
     disc bool isThick = false;
     disc real opacityDer = 0;
     disc real rotDer = 0;
-    disc int productRejectPosX = 1090;
-    const int productRejectStartX = 1140;
-    const int productConstRejectX = 1090;
+    disc int productRejectPosX = 1138;
+    disc int bufferPos;
+    const int productRejectStartX = 1178;
+    const int productConstRejectX = 1138;
     cont rotation = 0 der rotDer;
     cont opacity der opacityDer;
     cont x = -200, y=-200;
     cont accelTimer = 1 der 1;
     alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
-    alg real boxSpeedInArm = (2*3.1415*320/360*Arm.armSpeed);
+    alg real boxSpeedInArm = (2*3.1415*181/360*Arm.armSpeed);
     location Inactive:
         equation x' = 0, y' = 0;
         initial;
@@ -28,11 +53,11 @@ automaton def Box():
         edge when opacity > 0.995 do opacityDer := 0 goto InArm;
     location InArm:
         equation x' = -boxSpeedInArm * cos(Arm.armRot/180*3.1415), y' = -boxSpeedInArm * sin(Arm.armRot/180*3.1415);
-        edge when isThick and y > Const.Box.LiftPos[y]+50*0.2 do (x,y) := Const.Box.LiftPos goto InLift;
+        edge when isThick and y > Const.Box.LiftPos[y]+23*0.2 do (x,y) := Const.Box.LiftPos goto InLift;
         edge when not isThick and y > Const.Box.LiftPos[y] do (x,y) := Const.Box.LiftPos goto InLift;
     location InLift:
         equation x' = 0, y' = Lift.speed;
-        edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftAirTransit;
+        edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftSlideTransit;
         edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
     location PreRejectBufferTransit:
         equation x' = -boxSpeed, y' = 0;
@@ -47,42 +72,59 @@ automaton def Box():
     location AwaitResetRelease:
         equation x' = 0, y' = 0;
         edge when b_reset.Released do (x,y) := (-200,-200) goto Inactive;
-    location LiftAirTransit:
+    location LiftSlideTransit:
         equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
-        edge when rotation < -15 do rotDer := 0, accelTimer := 0 goto OnAirslide;
+        edge when rotation < -10 do rotDer := 0, accelTimer := 0 goto OnAirslide;
+        edge clickedEvent goto Removed;
     location OnAirslide:
         equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
         edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
+        edge clickedEvent goto Removed;
     location SlideBufferTransit:
         equation x' = -boxSpeed, y' = 0;
-        edge when rotation > 0 do rotDer := 0 goto OnBuffer1;
-			location OnBuffer1:											//Buffer before sep
+        edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
+        edge clickedEvent goto Removed;
+	location OnBufferMoving:											//Buffer before sep
 		equation x' = Belt.speed, y' = 0;
-		edge when LeftBlockCheck.isActive and x < 600 + (CountFive2.count-1) * 50 goto SeparatorLeftBlock;
-		edge when RightBlockCheck.isActive and x < 650 + (CountFive2.count-1) * 50 goto SeparatorRightBlock;
-		edge when x < 650 goto OnBuffer2;
+		edge when x < bufferPos - (if a_separator: 22 else 0 end) goto OnBufferWaiting;
+		edge ProductCounter.prodLeave when  x > ProdBroadcast.lastXRemoved do  bufferPos := max(bufferPos - 40, 681);
+		edge clickedEvent goto Removed;
+	location OnBufferWaiting:
+        equation x' = 0, y' = 0;
+        edge ProductCounter.prodLeave when bufferPos > 682 and x > ProdBroadcast.lastXRemoved do bufferPos := bufferPos - 40 goto OnBufferMoving;
+        edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
+        edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
+        edge clickedEvent goto Removed;
+    location ToSeperatorTransit:
+        equation x' = Belt.speed, y' = 0;
+        edge when x < 660 goto InSeperatorWaiting;
+        edge clickedEvent goto Removed;
+    location InSeperatorWaiting:
+        equation x' = 0, y' = 0;
+        edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
+        edge clickedEvent goto Removed;
+    location BufferEndTransit:
+        equation x' = -boxSpeed, y' = 0;
+        edge when x < 0 goto Inactive;
+        edge clickedEvent goto Removed;
+    location Removed:
+        equation x'= 0, y'=0;
+        edge ProdBroadcast.prodLeave!x do x:= -200 goto Inactive;
+end
 
-	location OnBuffer2:											//Buffer at right side sep
-		equation x' = Belt.speed, y' = 0;
-		edge when x > 649 and Separator.Right goto SeparatorRightBlock;
-		edge when x < 600 goto OnBuffer3;
-
-	location OnBuffer3: 										//Buffer at left side sep
-		equation x' = Belt.speed, y' = 0;
-		edge when x > 599 and Separator.Left goto SeparatorLeftBlock;
-		edge when x < 485 goto Inactive;
-
-	location SeparatorLeftBlock:
-		equation x' = 0, y' = 0;
-		edge when Separator.Right and x >= 620 goto OnBuffer1;
-		edge when Separator.Right and 620 >= x and x >= 600 goto OnBuffer2;
-		edge when Separator.Right and x < 600 goto OnBuffer3;
-
-	location SeparatorRightBlock:
-		equation x' = 0, y' = 0;
-		edge when Separator.Left and x >= 620 goto OnBuffer1;
-		edge when Separator.Left and 620 >= x and x >= 600 goto OnBuffer2;
-		edge when Separator.Left and x < 600 goto OnBuffer3;
+automaton ProdBroadcast:
+    event real prodLeave;
+    event void prodUpdate;
+    event prodDoUpdate;
+    disc real lastXRemoved;
+    location Await:
+        initial;
+        edge prodLeave? do lastXRemoved := ? goto Send1;
+        edge prodUpdate? goto Send2;
+    location Send1:
+        edge ProductCounter.prodLeave! goto Await;
+    location Send2:
+        edge prodDoUpdate goto Await;
 end
 
 group LeftBlockCheck:
@@ -101,3 +143,20 @@ group RightBlockCheck:
 	alg bool isActive =  (boxI != -1) and Separator.Right;
 end
 
+/*automaton Timer:
+    cont t = 0 der -1;
+    disc dist real timeDelay = normal(25,15);
+    location:
+        initial;
+        edge ProductCounter.prodLeave! when t < 0 do (t, timeDelay) := sample timeDelay;
+end*/
+
+
+automaton ProductCounter:
+    disc int rightMostProdX = 681;
+    event void prodEnter, prodLeave;
+    location:
+        initial;
+        edge prodEnter? do rightMostProdX := rightMostProdX + 40;
+        edge prodLeave? do rightMostProdX := max(rightMostProdX - 40, 681);
+end

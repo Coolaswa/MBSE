@@ -22,15 +22,6 @@ func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
     return -1;
 end
 
-func bool PointInRect(Rectangle rect; Point p):
-    if (rect[x] <= p[x] and rect[y] <= p[y] and
-        rect[x]+rect[width] >= p[x] and rect[y]+rect[height] >= p[y]):
-        return true;
-    end
-    return false;
-end
-
-
 automaton def Button(event Clicked):
     alg bool state;
 

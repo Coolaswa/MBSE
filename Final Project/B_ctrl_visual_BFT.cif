@@ -1,0 +1,18 @@
+import "B_ctrl_BFT.cif";
+svgfile "SystemSVG.svg";
+
+group def Create_Box_svg(alg int idfier; alg string color; alg real x,y, rot, opacity):
+     alg string name = "Product_" + <string>idfier;
+     svgcopy id "Product" post "_" + <string>idfier;
+     svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)",x, y-5, rot);
+     svgout id name attr "opacity" value opacity;
+     svgout id "ProductGraphics_" + <string>idfier attr "fill" value color;
+end
+
+const real box_opacity = 0.3;
+const string box_color = "blue";
+box1_svg: Create_Box_svg(11, box_color, m_box1.x, m_box1.y, m_box1.rotation, box_opacity);
+box2_svg: Create_Box_svg(12, box_color, m_box2.x, m_box2.y, m_box2.rotation, box_opacity);
+box3_svg: Create_Box_svg(13, box_color, m_box3.x, m_box3.y, m_box3.rotation, box_opacity);
+box4_svg: Create_Box_svg(14, box_color, m_box4.x, m_box4.y, m_box4.rotation, box_opacity);
+box5_svg: Create_Box_svg(15, box_color, m_box5.x, m_box5.y, m_box5.rotation, box_opacity);
