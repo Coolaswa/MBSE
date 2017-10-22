@@ -22,6 +22,8 @@ group Const:
 		const Rectangle ExitSensorBounds = (632,256,10,44);
 		const Rectangle LeftBlockBounds = (600,275,1,50);
 		const Rectangle RightBlockBounds = (620,275,1,50);
+		const string offColor = "#004455";
+		const string onColor = "#00ffcc";
     end
     group Buttons:
 

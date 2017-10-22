@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4034607"
-     inkscape:cx="479.37565"
-     inkscape:cy="500.9595"
+     inkscape:zoom="0.70173035"
+     inkscape:cx="486.89108"
+     inkscape:cy="496.36613"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -431,7 +431,7 @@
                r="3"
                cy="4.5"
                cx="4.5"
-               id="sensorLiftUp-3-7"
+               id="s_reflective"
                style="opacity:1;fill:#00ffcc;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
           </g>
         </g>
@@ -495,7 +495,7 @@
              ry="1.5" />
           <circle
              style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             id="sensorLiftUp-0-6"
+             id="s_optical"
              cx="4.5"
              cy="4.5"
              r="3" />
@@ -1739,34 +1739,6 @@
        x="1195.7681"
        y="213.86919"
        style="fill:none" />
-    <rect
-       style="fill:#00de00;fill-opacity:0.144;stroke-width:0.61591911"
-       id="rect5196"
-       width="10.416338"
-       height="40.748814"
-       x="769.38794"
-       y="217.54604" />
-    <rect
-       style="fill:#00de00;fill-opacity:0.144"
-       id="rect5203"
-       width="9.5964489"
-       height="44.446712"
-       x="648.95099"
-       y="215.22171" />
-    <rect
-       style="fill:#00de00;fill-opacity:0.144"
-       id="rect5205"
-       width="11.111678"
-       height="44.699249"
-       x="893.40759"
-       y="220.10565" />
-    <rect
-       style="fill:#00de00;fill-opacity:0.144;stroke:none;stroke-width:0.5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-       id="rect1142"
-       width="15.870671"
-       height="8.5651245"
-       x="1187"
-       y="330.70242" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"

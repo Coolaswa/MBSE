@@ -29,7 +29,7 @@ alg bool s_Bstartbutton  = b_start_B.Pressed;
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
 
-event startClicked, resetClicked, stopClicked, dummyEvent;
+event startClicked, resetClicked, stopClicked;
 event lift_up_clicked, lift_down_clicked;
 event pusher_clicked;
 event spawn_clicked;
@@ -52,8 +52,8 @@ b_reset_svg: Button_svg(resetClicked, "b_reset", "yellow", "grey", b_reset.state
 b_stop: Button(stopClicked);
 stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  b_stop.state);
 
-svg_s_lift_up: Button_svg(dummyEvent, "s_lift_up", "yellow", "grey", LiftSensorUp.isActive);
-svg_s_lift_down: Button_svg(dummyEvent, "s_lift_down", "yellow", "grey", LiftSensorDown.isActive);
+svg_s_lift_up: LED_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, LiftSensorUp.isActive);
+svg_s_lift_down: LED_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, LiftSensorDown.isActive);
 
 b_lift_up: Button(lift_up_clicked);
 svg_a_lift_up: Button_svg(lift_up_clicked, "a_lift_up", "yellow", "grey", b_lift_up.state);
@@ -63,7 +63,7 @@ svg_a_lift_down: Button_svg(lift_down_clicked, "a_lift_down", "yellow", "grey", 
 
 b_pusher: Button(pusher_clicked);
 svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.state);
-svg_s_pusher: Button_svg(dummyEvent, "s_pusher", "yellow", "grey", PusherSensor.isActive);
+svg_s_pusher: LED_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, PusherSensor.isActive);
 
 b_color: Button(colorClicked);
 svg_b_color: Switch_svg(colorClicked, b_color.state);
@@ -71,8 +71,11 @@ svg_b_color: Switch_svg(colorClicked, b_color.state);
 b_height: Button(heightClicked);
 svg_b_height: Switch2_svg(heightClicked);
 
-svg_s_height: Button_svg(dummyEvent, "s_height", "yellow", "grey", HeightSensor.isActive);
-svg_s_capacitive: Button_svg(dummyEvent, "s_capacitive", "yellow", "grey", CapacitiveSensor.isActive);
+svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
+svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, CapacitiveSensor.isActive);
+svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, ReflexiveSensor.isActive);
+svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, OpticalSensor.isActive);
+
 b_spawn: Button(spawn_clicked);
 svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 
@@ -80,12 +83,6 @@ b_autoManualSwitch: Button(autoManualClicked);
 svg_b_autoManualSwitch: Button_svg(autoManualClicked, "key", "yellow", "grey", b_autoManualSwitch.state);
 
 event void pusher_activated;
-
-automaton dummy:
-    location:
-        initial;
-        edge dummyEvent when false;
-end
 
 automaton SysState:
     alg string state;
@@ -202,6 +199,14 @@ group CapacitiveSensor:
                                 Const.Sensors.CapSensorBounds[width],
                                 Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
     alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] = "black");
+end
+
+group OpticalSensor:
+    alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x],
+                                Const.Sensors.CapSensorBounds[y] + Lift.y,
+                                Const.Sensors.CapSensorBounds[width],
+                                Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
+    alg bool isActive = boxI != -1;
 end
 
 group ReflexiveSensor:

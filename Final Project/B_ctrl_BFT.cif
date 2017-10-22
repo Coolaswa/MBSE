@@ -42,6 +42,7 @@ automaton ConveyerContr:
 	location On:
 		edge when t < 0 goto Off;
 		edge turnOn ? do t := t + ?;
+		edge atEntry do t:= 6;
 end
 
 automaton CountFive:          //Keeps track of how many products are on the belt.

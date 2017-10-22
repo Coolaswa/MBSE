@@ -21,8 +21,11 @@ end
 
 group def Button_svg(event action; alg string idfier, onColor, offColor; alg bool state):
 	svgin id idfier event action;
-	svgout id idfier attr "fill" value if state: onColor
-									   else offColor end;
+	svgout id idfier attr "fill" value if state: onColor else offColor end;
+end
+
+group def LED_svg( alg string idfier, onColor, offColor; alg bool state):
+    svgout id idfier attr "fill" value if state: onColor else offColor end;
 end
 
 group def Switch_svg(event action; alg bool state):

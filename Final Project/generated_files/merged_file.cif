@@ -67,7 +67,6 @@ alg bool b_pusherPressed = b_pusher.Pressed;
 event startClicked;
 event resetClicked;
 event stopClicked;
-event dummyEvent;
 event lift_up_clicked;
 event lift_down_clicked;
 event pusher_clicked;
@@ -193,6 +192,7 @@ automaton ConveyerContr:
   location On:
     edge when t < 0 goto Off;
     edge turnOn? do t := t + ?;
+    edge atEntry do t := 6.0;
 end
 automaton CountFive:
   event void decrease;
@@ -2138,18 +2138,16 @@ group stop_svg:
 end
 group svg_s_lift_up:
   alg string idfier = "s_lift_up";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = LiftSensorUp.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_lift_down:
   alg string idfier = "s_lift_down";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = LiftSensorDown.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_lift_up:
@@ -2208,10 +2206,9 @@ group svg_b_pusher:
 end
 group svg_s_pusher:
   alg string idfier = "s_pusher";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = PusherSensor.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_color:
@@ -2251,18 +2248,30 @@ automaton svg_b_height:
 end
 group svg_s_height:
   alg string idfier = "s_height";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = HeightSensor.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_capacitive:
   alg string idfier = "s_capacitive";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = CapacitiveSensor.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_reflective:
+  alg string idfier = "s_reflective";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
+  alg bool state = ReflexiveSensor.isActive;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_optical:
+  alg string idfier = "s_optical";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
+  alg bool state = OpticalSensor.isActive;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_spawn:
@@ -2300,11 +2309,6 @@ group svg_b_autoManualSwitch:
   alg bool state = b_autoManualSwitch.state;
   svgin id idfier event autoManualClicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-automaton dummy:
-  location:
-    initial;
-    edge dummyEvent when false;
 end
 automaton SysState:
   alg string state;
@@ -2389,6 +2393,10 @@ end
 group CapacitiveSensor:
   alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
   alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][color] = "black";
+end
+group OpticalSensor:
+  alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
+  alg bool isActive = boxI != -1;
 end
 group ReflexiveSensor:
   alg bool isActive = Arm.armRot < 130;
@@ -2528,42 +2536,37 @@ group svg_b_i_BS01:
 end
 group svg_s_product:
   alg string idfier = "s_product_entry";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = EntrySensor.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_atseparator:
   alg string idfier = "s_product_separator";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = AtSepSensor.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_atexit:
   alg string idfier = "s_product_exit";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = ExitSensor.isActive;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_separator_opened:
   alg string idfier = "s_separator_opened";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = Separator.Left;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_separator_closed:
   alg string idfier = "s_separator_closed";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = Separator.Right;
-  svgin id idfier event dummyEvent file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_processing:
@@ -2580,7 +2583,7 @@ group svg_b_processing:
   alg string idfier = "s_processing_busy";
   alg string onColor = "yellow";
   alg string offColor = "grey";
-  alg bool state = b_processing.state;
+  alg bool state = ProcessingBusySensor.On;
   svgin id idfier event ProcessingBusyClicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
@@ -2621,11 +2624,14 @@ group ExitSensor:
   alg bool isActive = boxI != -1;
 end
 automaton ProcessingBusySensor:
+  cont timer der 1.0;
   location On:
-    edge when b_processing.Released goto Off;
+    edge when not s_Tautoswitch and b_processing.Released goto Off;
+    edge when s_Tautoswitch and timer > 20 do timer := 0.0 goto Off;
   location Off:
     initial;
-    edge when b_processing.Pressed goto On;
+    edge when not s_Tautoswitch and b_processing.Pressed goto On;
+    edge when s_Tautoswitch and timer > 3 do timer := 0.0 goto On;
 end
 automaton Belt:
   cont wheelRotation der 3.0 * speed;
@@ -2666,6 +2672,8 @@ group Const:
     const Rectangle ExitSensorBounds = (632.0, 256.0, 10.0, 44.0);
     const Rectangle LeftBlockBounds = (600.0, 275.0, 1.0, 50.0);
     const Rectangle RightBlockBounds = (620.0, 275.0, 1.0, 50.0);
+    const string offColor = "#004455";
+    const string onColor = "#00ffcc";
   end
   group Buttons:
   end

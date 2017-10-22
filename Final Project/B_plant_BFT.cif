@@ -19,14 +19,14 @@ b_BS01: Button(BS01Clicked);
 svg_b_BS01: Button_svg(BS01Clicked, "BS01", "yellow", "grey", b_BS01.Pressed);
 svg_b_i_BS01: Button_svg(BS01Clicked, "i_BS01", "red", "grey", s_product);
 
-svg_s_product: Button_svg(dummyEvent, "s_product_entry", "yellow", "grey", EntrySensor.isActive);
-svg_s_atseparator: Button_svg(dummyEvent, "s_product_separator", "yellow", "grey", AtSepSensor.isActive);
-svg_s_atexit: Button_svg(dummyEvent, "s_product_exit", "yellow", "grey", ExitSensor.isActive);
-svg_s_separator_opened: Button_svg(dummyEvent, "s_separator_opened", "yellow", "grey", Separator.Left);
-svg_s_separator_closed: Button_svg(dummyEvent, "s_separator_closed", "yellow", "grey", Separator.Right);
+svg_s_product: LED_svg("s_product_entry", Const.Sensors.onColor, Const.Sensors.offColor, EntrySensor.isActive);
+svg_s_atseparator: LED_svg("s_product_separator", Const.Sensors.onColor, Const.Sensors.offColor, AtSepSensor.isActive);
+svg_s_atexit: LED_svg("s_product_exit", Const.Sensors.onColor, Const.Sensors.offColor, ExitSensor.isActive);
+svg_s_separator_opened: LED_svg("s_separator_opened", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Left);
+svg_s_separator_closed: LED_svg("s_separator_closed", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Right);
 
 b_processing: Button(ProcessingBusyClicked);
-svg_b_processing: Button_svg(ProcessingBusyClicked, "s_processing_busy", "yellow", "grey", b_processing.state);
+svg_b_processing: Button_svg(ProcessingBusyClicked, "s_processing_busy", "yellow", "grey", ProcessingBusySensor.On);
 
 b_conveyer: Button(ConveyerClicked);
 svg_b_conveyer: Button_svg(ConveyerClicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
@@ -58,11 +58,14 @@ group ExitSensor:
 end
 
 automaton ProcessingBusySensor: //(Press Button)
+    cont timer der 1;
 	location On:
-		edge when b_processing.Released goto Off;
+		edge when not s_Tautoswitch and b_processing.Released goto Off;
+		edge when s_Tautoswitch and timer > 20 do timer := 0 goto Off;
 	location Off:
         initial;
-        edge when b_processing.Pressed goto On;
+        edge when not s_Tautoswitch and b_processing.Pressed goto On;
+        edge when s_Tautoswitch and timer > 3 do timer := 0 goto On;
 end
 
 
