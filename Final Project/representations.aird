@@ -14,4 +14,5 @@
   <semanticResources>testing_buffering_station_ctrl.cif</semanticResources>
   <semanticResources>testing_buffering_station_ctrl_svg.cif</semanticResources>
   <semanticResources>testing_buffering_station_svg.cif</semanticResources>
+  <semanticResources>generated_files/merged_file.cif</semanticResources>
 </viewpoint:DAnalysis>

@@ -1,17 +1,22 @@
 const real box_opacity = 0.3;
 const string box_color = "blue";
+const real TimeOnAirslide = 0.5;
+const real TimeDiffEnterAndSep = 3.0;
+const real TimeDiffSepAndExit = 0.5;
 alg bool a_conveyer = ConveyerContr.On and not malfunction;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
 alg bool s_processingbusy = b_BautoManualSwitch.Pressed;
-alg bool s_Bautoswitch = true;
+alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 alg bool actualBusy = s_processingbusy;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
 const real confTime = 5.0;
+alg bool a_BledQ1 = LEDContr.EntryOn or LEDContr.ExitOn;
+alg bool a_BledQ2 = LEDContr.SepOn or LEDContr.ExitOn;
 event void atEntry;
 event void atSep;
 event void atExit;
@@ -169,6 +174,21 @@ group box5_svg:
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
 end
+automaton LEDContr:
+  monitor atEntry, atSep, atExit;
+  cont timer der 1.0;
+  location Init:
+    initial;
+    edge atEntry do timer := 0.0 goto EntryOn;
+    edge atSep do timer := 0.0 goto SepOn;
+    edge atExit do timer := 0.0 goto ExitOn;
+  location EntryOn:
+    edge when timer > 0.5 goto Init;
+  location SepOn:
+    edge when timer > 0.5 goto Init;
+  location ExitOn:
+    edge when timer > 0.5 goto Init;
+end
 automaton SeparatorContr:
   cont t der 1.0;
   event void close;
@@ -292,8 +312,9 @@ automaton m_box1:
   cont accelTimer der 1.0;
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
+  const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
   disc int bufferPos;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
   disc real rotDer;
   disc bool pastSep;
@@ -314,11 +335,11 @@ automaton m_box1:
              y' = acccelSpeed * sin(slideAngle);
     edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
@@ -351,7 +372,7 @@ automaton m_box1:
     edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
     edge delete goto DoDelete;
   location ToSeperatorTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
   location InSeperatorWaiting:
@@ -359,7 +380,7 @@ automaton m_box1:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -boxSpeed,
+    equation x' = -beltSpeed1,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -376,8 +397,9 @@ automaton m_box2:
   cont accelTimer der 1.0;
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
+  const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
   disc int bufferPos;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
   disc real rotDer;
   disc bool pastSep;
@@ -398,11 +420,11 @@ automaton m_box2:
              y' = acccelSpeed * sin(slideAngle);
     edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
@@ -435,7 +457,7 @@ automaton m_box2:
     edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
     edge delete goto DoDelete;
   location ToSeperatorTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
   location InSeperatorWaiting:
@@ -443,7 +465,7 @@ automaton m_box2:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -boxSpeed,
+    equation x' = -beltSpeed1,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -460,8 +482,9 @@ automaton m_box3:
   cont accelTimer der 1.0;
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
+  const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
   disc int bufferPos;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
   disc real rotDer;
   disc bool pastSep;
@@ -482,11 +505,11 @@ automaton m_box3:
              y' = acccelSpeed * sin(slideAngle);
     edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
@@ -519,7 +542,7 @@ automaton m_box3:
     edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
     edge delete goto DoDelete;
   location ToSeperatorTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
   location InSeperatorWaiting:
@@ -527,7 +550,7 @@ automaton m_box3:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -boxSpeed,
+    equation x' = -beltSpeed1,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -544,8 +567,9 @@ automaton m_box4:
   cont accelTimer der 1.0;
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
+  const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
   disc int bufferPos;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
   disc real rotDer;
   disc bool pastSep;
@@ -566,11 +590,11 @@ automaton m_box4:
              y' = acccelSpeed * sin(slideAngle);
     edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
@@ -603,7 +627,7 @@ automaton m_box4:
     edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
     edge delete goto DoDelete;
   location ToSeperatorTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
   location InSeperatorWaiting:
@@ -611,7 +635,7 @@ automaton m_box4:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -boxSpeed,
+    equation x' = -beltSpeed1,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -628,8 +652,9 @@ automaton m_box5:
   cont accelTimer der 1.0;
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
+  const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
   disc int bufferPos;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
   disc real rotDer;
   disc bool pastSep;
@@ -650,11 +675,11 @@ automaton m_box5:
              y' = acccelSpeed * sin(slideAngle);
     edge when y > 273 do rotDer := boxSpeed * 100.0 goto SlideBufferTransit;
   location SlideBufferTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
   location OnBufferMoving:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
@@ -687,7 +712,7 @@ automaton m_box5:
     edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
     edge delete goto DoDelete;
   location ToSeperatorTransit:
-    equation x' = if a_conveyer: -boxSpeed else 0.0 end,
+    equation x' = if a_conveyer: -beltSpeed1 else 0.0 end,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
   location InSeperatorWaiting:
@@ -695,7 +720,7 @@ automaton m_box5:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -boxSpeed,
+    equation x' = -beltSpeed1,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -705,7 +730,7 @@ automaton m_box5:
     edge SeparatorContr.close! when confTimer > confTime do x := -200.0 goto DecreaseCount;
 end
 automaton errorChecker1:
-  const real mismatchTime = 5.0;
+  const real mismatchTime = 3.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box1.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -719,7 +744,7 @@ automaton errorChecker1:
     edge m_box1.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker2:
-  const real mismatchTime = 5.0;
+  const real mismatchTime = 3.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box2.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -733,7 +758,7 @@ automaton errorChecker2:
     edge m_box2.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker3:
-  const real mismatchTime = 5.0;
+  const real mismatchTime = 3.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box3.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -747,7 +772,7 @@ automaton errorChecker3:
     edge m_box3.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker4:
-  const real mismatchTime = 5.0;
+  const real mismatchTime = 3.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box4.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -761,7 +786,7 @@ automaton errorChecker4:
     edge m_box4.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker5:
-  const real mismatchTime = 5.0;
+  const real mismatchTime = 3.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box5.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -909,7 +934,7 @@ automaton box1:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1011,7 +1036,7 @@ automaton box2:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1113,7 +1138,7 @@ automaton box3:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1215,7 +1240,7 @@ automaton box4:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1317,7 +1342,7 @@ automaton box5:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1419,7 +1444,7 @@ automaton box6:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1521,7 +1546,7 @@ automaton box7:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1623,7 +1648,7 @@ automaton box8:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1725,7 +1750,7 @@ automaton box9:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -1827,7 +1852,7 @@ automaton box10:
   cont x = -200.0;
   cont y = -200.0;
   cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 100.0, 100.0) + boxSpeed;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
@@ -2577,6 +2602,20 @@ group svg_s_separator_closed:
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
   alg bool state = Separator.Right;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_Q1B:
+  alg string idfier = "s_q1-7";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_BledQ1;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_Q2B:
+  alg string idfier = "s_q2-5";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_BledQ2;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_processing:

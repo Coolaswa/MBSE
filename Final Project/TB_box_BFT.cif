@@ -41,7 +41,7 @@ automaton def Box(event clickedEvent):
     cont opacity der opacityDer;
     cont x = -200, y=-200;
     cont accelTimer = 1 der 1;
-    alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+    alg real acccelSpeed = min(accelTimer * 2000, 800000) + boxSpeed;
     alg real boxSpeedInArm = (2*3.1415*181/360*Arm.armSpeed);
     location Inactive:
         equation x' = 0, y' = 0;

@@ -1,5 +1,9 @@
 import "T_ctrl_BFT.cif";
 
+const real TimeOnAirslide = 0.5;
+const real TimeDiffEnterAndSep  = 3;
+const real TimeDiffSepAndExit = 0.5;
+
 alg bool a_conveyer = ConveyerContr.On and not malfunction;// ConveyerContr.On; //ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
 
@@ -15,6 +19,25 @@ alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
 
 const real confTime = 5;
+
+alg bool a_BledQ1 = LEDContr.EntryOn or LEDContr.ExitOn;
+alg bool a_BledQ2 = LEDContr.SepOn or LEDContr.ExitOn;
+
+automaton LEDContr:
+    monitor atEntry, atSep, atExit;
+    cont timer der 1;
+    location Init:
+        initial;
+        edge atEntry do timer := 0 goto EntryOn;
+        edge atSep do timer := 0 goto SepOn;
+        edge atExit do timer := 0 goto ExitOn;
+    location EntryOn:
+        edge when timer > 0.5 goto Init;
+    location SepOn:
+        edge when timer > 0.5 goto Init;
+    location ExitOn:
+        edge when timer > 0.5 goto Init;
+end
 
 automaton SeparatorContr:
     cont t der 1;
@@ -119,8 +142,10 @@ automaton def BoxModel():
     cont accelTimer der 1;
     alg real slideAngle = (10)*3.141592654/180;
     const real boxSpeed = 60;
+    const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
     disc int bufferPos;
-    alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+    //alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
+    alg real acccelSpeed = 228 / TimeOnAirslide;
     cont rotation der rotDer;
     disc real rotDer;
     disc bool pastSep, pastEntry;
@@ -137,10 +162,10 @@ automaton def BoxModel():
         equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
         edge when y > 273 do rotDer := boxSpeed*100 goto SlideBufferTransit;
     location SlideBufferTransit:
-        equation x' = if a_conveyer: -boxSpeed else 0 end, y' = 0;
+        equation x' = if a_conveyer: -beltSpeed1 else 0 end, y' = 0;
         edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
     location OnBufferMoving:                                            //Buffer before sep
-        equation x' = if a_conveyer: -boxSpeed else 0 end, y' = 0;
+        equation x' = if a_conveyer: -beltSpeed1 else 0 end, y' = 0;
         edge when x < bufferPos - (if a_separator: 22 else 0 end) goto OnBufferWaiting;
         edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do  bufferPos := max(bufferPos - 40, 681);
         edge atSep! when not pastSep and x < 728 do pastSep := true, confTimer := 0 goto AwaitConfSep;
@@ -167,13 +192,13 @@ automaton def BoxModel():
         edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
         edge delete goto DoDelete;
     location ToSeperatorTransit:
-        equation x' = if a_conveyer: -boxSpeed else 0 end, y' = 0;
+        equation x' = if a_conveyer: -beltSpeed1 else 0 end, y' = 0;
         edge when x < 660 goto InSeperatorWaiting;
     location InSeperatorWaiting:
         equation x' = 0, y' = 0;
         edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
     location Leaving:
-        equation x' = -boxSpeed, y' = 0;
+        equation x' = -beltSpeed1, y' = 0;
         edge atExit! when x < 642 do confTimer := 0 goto AwaitConfExit;
     location AwaitConfExit:
         equation x' = 0, y' = 0;
@@ -218,7 +243,7 @@ func bool RectRectColl2(Rectangle rect; Rectangle other):
 end
 
 automaton def ErrorChecker(BoxModel target):
-    const real mismatchTime = 5;
+    const real mismatchTime = 3;
     cont mismatchTimer der 1;
     alg bool modelCol = RectRectColl2(AtSepSensorBounds, target.bounds);
     alg bool mismatch = (modelCol and not s_atseparator);

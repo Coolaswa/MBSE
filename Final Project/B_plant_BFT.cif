@@ -5,7 +5,8 @@ import "TB_box_BFT.cif";
 
 input bool a_conveyer;
 input bool a_separator;
-alg bool s_Bautoswitch = true;
+input bool a_BledQ1, a_BledQ2;
+alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
@@ -26,6 +27,8 @@ svg_s_atseparator: LED_svg("s_product_separator", Const.Sensors.onColor, Const.S
 svg_s_atexit: LED_svg("s_product_exit", Const.Sensors.onColor, Const.Sensors.offColor, ExitSensor.isActive);
 svg_s_separator_opened: LED_svg("s_separator_opened", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Left);
 svg_s_separator_closed: LED_svg("s_separator_closed", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Right);
+svg_s_Q1B: LED_svg("s_q1-7", "yellow", "grey", a_BledQ1);
+svg_s_Q2B: LED_svg("s_q2-5", "yellow", "grey", a_BledQ2);
 
 b_processing: Button(ProcessingBusyClicked);
 svg_b_processing: Button_svg(ProcessingBusyClicked, "s_processing_busy", "yellow", "grey", ProcessingBusySensor.On);

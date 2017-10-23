@@ -17,7 +17,7 @@ cif3merge(fmt("%s %s -o %s", "B_ctrl_visual_BFT.cif", "TB_box_BFT.cif", merged_f
 cif3sim(
     merged_file,
     "--stateviz=1",
-    "--speed=2",
+    "--speed=1",
     "--env-events=svg",
     "-i svg",
     "--auto-choose=tau",
