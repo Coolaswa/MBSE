@@ -13,7 +13,7 @@ input bool s_atexit;
 input bool s_processingbusy;
 input bool s_Bautoswitch;
 
-alg bool actualBusy = s_processingbusy;
+alg bool actualBusy = /*s_processingbusy or*/ s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
@@ -117,7 +117,7 @@ automaton def SensorListener(event void atActivation; event real atActivConf; al
     location AwaitSRelease:
         edge when not sensor goto Init;
     location Malfunction:
-        edge when s_Tresetbutton goto AwaitSRelease;
+        edge ConveyerContr.turnOn! 5 when s_Tresetbutton goto AwaitSRelease;
 end
 
 m_box1: BoxModel();
@@ -143,6 +143,7 @@ automaton def BoxModel():
     alg real slideAngle = (10)*3.141592654/180;
     const real boxSpeed = 60;
     const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
+    const real beltSpeed2 = 50 / TimeDiffSepAndExit;
     disc int bufferPos;
     //alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
     alg real acccelSpeed = 228 / TimeOnAirslide;
@@ -198,7 +199,7 @@ automaton def BoxModel():
         equation x' = 0, y' = 0;
         edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
     location Leaving:
-        equation x' = -beltSpeed1, y' = 0;
+        equation x' = -beltSpeed2, y' = 0;
         edge atExit! when x < 642 do confTimer := 0 goto AwaitConfExit;
     location AwaitConfExit:
         equation x' = 0, y' = 0;

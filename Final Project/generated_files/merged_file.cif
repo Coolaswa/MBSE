@@ -260,7 +260,7 @@ automaton entryListener:
   location AwaitSRelease:
     edge when not sensor goto Init;
   location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
+    edge ConveyerContr.turnOn!5.0 when s_Tresetbutton goto AwaitSRelease;
 end
 automaton separatorListener:
   cont t der 1.0;
@@ -281,7 +281,7 @@ automaton separatorListener:
   location AwaitSRelease:
     edge when not sensor goto Init;
   location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
+    edge ConveyerContr.turnOn!5.0 when s_Tresetbutton goto AwaitSRelease;
 end
 automaton exitListener:
   cont t der 1.0;
@@ -302,7 +302,7 @@ automaton exitListener:
   location AwaitSRelease:
     edge when not sensor goto Init;
   location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
+    edge ConveyerContr.turnOn!5.0 when s_Tresetbutton goto AwaitSRelease;
 end
 automaton m_box1:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
@@ -313,6 +313,7 @@ automaton m_box1:
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
   const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
+  const real beltSpeed2 = 50 / TimeDiffSepAndExit;
   disc int bufferPos;
   alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
@@ -380,7 +381,7 @@ automaton m_box1:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -beltSpeed1,
+    equation x' = -beltSpeed2,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -398,6 +399,7 @@ automaton m_box2:
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
   const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
+  const real beltSpeed2 = 50 / TimeDiffSepAndExit;
   disc int bufferPos;
   alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
@@ -465,7 +467,7 @@ automaton m_box2:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -beltSpeed1,
+    equation x' = -beltSpeed2,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -483,6 +485,7 @@ automaton m_box3:
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
   const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
+  const real beltSpeed2 = 50 / TimeDiffSepAndExit;
   disc int bufferPos;
   alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
@@ -550,7 +553,7 @@ automaton m_box3:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -beltSpeed1,
+    equation x' = -beltSpeed2,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -568,6 +571,7 @@ automaton m_box4:
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
   const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
+  const real beltSpeed2 = 50 / TimeDiffSepAndExit;
   disc int bufferPos;
   alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
@@ -635,7 +639,7 @@ automaton m_box4:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -beltSpeed1,
+    equation x' = -beltSpeed2,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
@@ -653,6 +657,7 @@ automaton m_box5:
   alg real slideAngle = 10 * 3.141592654 / 180;
   const real boxSpeed = 60.0;
   const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
+  const real beltSpeed2 = 50 / TimeDiffSepAndExit;
   disc int bufferPos;
   alg real acccelSpeed = 228 / TimeOnAirslide;
   cont rotation der rotDer;
@@ -720,7 +725,7 @@ automaton m_box5:
              y' = 0.0;
     edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
   location Leaving:
-    equation x' = -beltSpeed1,
+    equation x' = -beltSpeed2,
              y' = 0.0;
     edge atExit! when x < 642 do confTimer := 0.0 goto AwaitConfExit;
   location AwaitConfExit:
