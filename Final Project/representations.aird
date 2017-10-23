@@ -9,5 +9,9 @@
   <semanticResources>B_plant_BFT.cif</semanticResources>
   <semanticResources>TB_box_BFT.cif</semanticResources>
   <semanticResources>B_ctrl_visual_BFT.cif</semanticResources>
-  <semanticResources>generated_files/merged_file.cif</semanticResources>
+  <semanticResources>generated_files/testing_buffering_station_ctrl_hw.cif</semanticResources>
+  <semanticResources>output.cif</semanticResources>
+  <semanticResources>testing_buffering_station_ctrl.cif</semanticResources>
+  <semanticResources>testing_buffering_station_ctrl_svg.cif</semanticResources>
+  <semanticResources>testing_buffering_station_svg.cif</semanticResources>
 </viewpoint:DAnalysis>

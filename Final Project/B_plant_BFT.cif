@@ -10,11 +10,12 @@ alg bool s_Bautoswitch = true;
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = true;
+alg bool s_processingbusy = b_BautoManualSwitch.Pressed;
 
 event ProcessingBusyClicked;
 event ConveyerClicked;
 event BS01Clicked; //, BS02Clicked, BS03Clicked;
+event b_BautoClicked;
 
 b_BS01: Button(BS01Clicked);
 svg_b_BS01: Button_svg(BS01Clicked, "BS01", "yellow", "grey", b_BS01.Pressed);
@@ -33,6 +34,9 @@ b_conveyer: Button(ConveyerClicked);
 svg_b_conveyer: Button_svg(ConveyerClicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
 
 svg_conv: Conveyer_svg(1, Belt.wheelRotation);
+
+b_BautoManualSwitch: Button(b_BautoClicked);
+svg_b_BautoManualSwitch: Button_svg(b_BautoClicked, "key-2", "yellow", "grey", b_autoManualSwitch.state);
 
 group AtSepSensor:
 	alg int boxI = RectRectColl((Const.Sensors.AtSepSensorBounds[x],

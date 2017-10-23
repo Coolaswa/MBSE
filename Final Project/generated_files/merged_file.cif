@@ -5,9 +5,9 @@ alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSe
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = true;
+alg bool s_processingbusy = b_BautoManualSwitch.Pressed;
 alg bool s_Bautoswitch = true;
-alg bool actualBusy = s_Bautoswitch;
+alg bool actualBusy = s_processingbusy;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
@@ -87,6 +87,7 @@ event b_case3Pressed;
 event ProcessingBusyClicked;
 event ConveyerClicked;
 event BS01Clicked;
+event b_BautoClicked;
 type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
   int i = 0;
@@ -2620,6 +2621,24 @@ group svg_conv:
   svgout id fmt("Conv%d_Wheel", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360) file "../SystemSVG.svg";
   svgout id fmt("Conv%d_Wheel2", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360) file "../SystemSVG.svg";
 end
+automaton b_BautoManualSwitch:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge b_BautoClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge b_BautoClicked goto Released;
+end
+group svg_b_BautoManualSwitch:
+  alg string idfier = "key-2";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_autoManualSwitch.state;
+  svgin id idfier event b_BautoClicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
 group AtSepSensor:
   alg int boxI = RectRectColl((Const.Sensors.AtSepSensorBounds[x], Const.Sensors.AtSepSensorBounds[y], Const.Sensors.AtSepSensorBounds[width], Const.Sensors.AtSepSensorBounds[height]), BoxUpdater.data);
   alg bool isActive = boxI != -1;
@@ -2696,6 +2715,7 @@ svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,0)", -Arm.armRot) 
 svgout id "Air" attr "opacity" value if a_airslide: 1 else 0 end file "../SystemSVG.svg";
 svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end file "../SystemSVG.svg";
 svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "grey" end file "../SystemSVG.svg";
-svgout id "a_separator" attr "transform" value fmt("translate(%f,0)", if a_separator: -10.0 else 25.0 end) file "../SystemSVG.svg";
+svgout id "a_separator" attr "transform" value fmt("translate(%f,0)", if a_separator: -10.0 else -25.0 end) file "../SystemSVG.svg";
 svgout id "key" attr "transform" value fmt("rotate(%f,10,10)", if s_Tautoswitch: 90.0 else 0.0 end) file "../SystemSVG.svg";
+svgout id "key-2" attr "transform" value fmt("rotate(%f,10,10)", if s_Bautoswitch: 90.0 else 0.0 end) file "../SystemSVG.svg";
 svgout id "s_systemMode" text value fmt("System State: %s", SysState.state) file "../SystemSVG.svg";

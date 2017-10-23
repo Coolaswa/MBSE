@@ -9,7 +9,7 @@ input bool s_atexit;
 input bool s_processingbusy;
 input bool s_Bautoswitch;
 
-alg bool actualBusy = s_Bautoswitch;
+alg bool actualBusy = s_processingbusy;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
