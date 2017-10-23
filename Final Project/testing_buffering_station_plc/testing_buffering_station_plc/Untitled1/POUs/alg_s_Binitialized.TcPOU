@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TcPlcObject ProductVersion="3.1.0.18" Version="1.1.0.1">
+  <POU Name="alg_s_Binitialized">
+    <Declaration><![CDATA[FUNCTION alg_s_Binitialized: BOOL
+VAR_INPUT
+    state: STATE;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[alg_s_Binitialized := (state.dvar_M_HardwareMap) = (elit_initialized);]]></ST>
+    </Implementation>
+    <ObjectProperties/>
+  </POU>
+</TcPlcObject>

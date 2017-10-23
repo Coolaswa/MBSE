@@ -18,6 +18,7 @@ alg bool s_productheight = HeightSensor.isActive;
 alg bool s_Tstartbutton = b_start.state;
 alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tresetbutton = b_reset.Pressed;
+alg bool s_optical = OpticalSensor.isActive;
 alg bool b_lift_upPressed = b_lift_up.Pressed;
 alg bool b_lift_upReleased = b_lift_up.Released;
 alg bool b_lift_downPressed = b_lift_down.Pressed;
@@ -186,7 +187,7 @@ end
 
 automaton HeightSensor:
     alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
-    alg bool isActive =  (boxI != -1) and BoxUpdater.data[boxI][thick];
+    alg bool isActive =  (boxI != -1) and not BoxUpdater.data[boxI][thick];
     cont y;
     location:
         equation y' = if boxI != -1: Lift.speed elif y < 0: 10 else 0 end;
@@ -198,7 +199,7 @@ group CapacitiveSensor:
                                 Const.Sensors.CapSensorBounds[y] + Lift.y,
                                 Const.Sensors.CapSensorBounds[width],
                                 Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-    alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] = "black");
+    alg bool isActive = (boxI != -1);
 end
 
 group OpticalSensor:
@@ -206,7 +207,7 @@ group OpticalSensor:
                                 Const.Sensors.CapSensorBounds[y] + Lift.y,
                                 Const.Sensors.CapSensorBounds[width],
                                 Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-    alg bool isActive = boxI != -1;
+    alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] != "black");
 end
 
 group ReflexiveSensor:

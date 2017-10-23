@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TcPlcObject ProductVersion="3.1.0.18" Version="1.1.0.1">
+  <GVL Name="INPUTS">
+    <Declaration><![CDATA[VAR_GLOBAL // INPUTS
+    ivar_s_Tstartbutton AT %I*: BOOL;
+    ivar_s_Tstopbutton AT %I*: BOOL;
+    ivar_s_Tautoswitch AT %I*: BOOL;
+    ivar_s_Tresetbutton AT %I*: BOOL;
+    ivar_s_Tin4 AT %I*: BOOL;
+    ivar_s_Tin5 AT %I*: BOOL;
+    ivar_s_Tin6 AT %I*: BOOL;
+    ivar_s_Tin7 AT %I*: BOOL;
+    ivar_s_elevator_up AT %I*: BOOL;
+    ivar_s_elevator_down AT %I*: BOOL;
+    ivar_s_pusher AT %I*: BOOL;
+    ivar_s_optical AT %I*: BOOL;
+    ivar_s_capacitive AT %I*: BOOL;
+    ivar_s_reflective AT %I*: BOOL;
+    ivar_s_productheight AT %I*: BOOL;
+    ivar_s_bufferingbusy AT %I*: BOOL;
+    ivar_s_Bstartbutton AT %I*: BOOL;
+    ivar_s_Bstopbutton AT %I*: BOOL;
+    ivar_s_Bautoswitch AT %I*: BOOL;
+    ivar_s_Bresetbutton AT %I*: BOOL;
+    ivar_s_Bin4 AT %I*: BOOL;
+    ivar_s_Bin5 AT %I*: BOOL;
+    ivar_s_Bin6 AT %I*: BOOL;
+    ivar_s_Bin7 AT %I*: BOOL;
+    ivar_s_product AT %I*: BOOL;
+    ivar_s_atseparator AT %I*: BOOL;
+    ivar_s_atexit AT %I*: BOOL;
+    ivar_s_separator_opened AT %I*: BOOL;
+    ivar_s_separator_closed AT %I*: BOOL;
+    ivar_s_processingbusy AT %I*: BOOL;
+    ivar_a_Tstartled AT %I*: BOOL;
+    ivar_a_Tresetled AT %I*: BOOL;
+    ivar_a_Tout4 AT %I*: BOOL;
+    ivar_a_Tout5 AT %I*: BOOL;
+    ivar_a_Tout6 AT %I*: BOOL;
+    ivar_a_Tout7 AT %I*: BOOL;
+    ivar_a_elevator_up AT %I*: BOOL;
+    ivar_a_elevator_down AT %I*: BOOL;
+    ivar_a_pusher AT %I*: BOOL;
+    ivar_a_airslide AT %I*: BOOL;
+    ivar_a_testingready AT %I*: BOOL;
+    ivar_a_Bstartled AT %I*: BOOL;
+    ivar_a_Bresetled AT %I*: BOOL;
+    ivar_a_BledQ1 AT %I*: BOOL;
+    ivar_a_BledQ2 AT %I*: BOOL;
+    ivar_a_Bout4 AT %I*: BOOL;
+    ivar_a_Bout5 AT %I*: BOOL;
+    ivar_a_Bout6 AT %I*: BOOL;
+    ivar_a_Bout7 AT %I*: BOOL;
+    ivar_a_separator AT %I*: BOOL;
+    ivar_a_conveyer AT %I*: BOOL;
+    ivar_a_bufferingready AT %I*: BOOL;
+END_VAR]]></Declaration>
+    <ObjectProperties/>
+  </GVL>
+</TcPlcObject>

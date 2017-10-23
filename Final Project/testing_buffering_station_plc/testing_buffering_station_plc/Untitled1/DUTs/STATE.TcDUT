@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TcPlcObject ProductVersion="3.1.0.18" Version="1.1.0.1">
+  <DUT Name="STATE">
+    <Declaration><![CDATA[TYPE STATE:
+    STRUCT
+        curTime: LREAL;
+        cvar_M_blinker_timer AT %Q*: LREAL;
+        dvar_M_blinker AT %Q*: enum_E;
+        dvar_M_HardwareMap_out_a_Tstartled AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Tresetled AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_TledQ1 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_TledQ2 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Tout4 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Tout5 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Tout6 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Tout7 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_elevator_up AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_elevator_down AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_pusher AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_airslide AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_testingready AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Bstartled AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Bresetled AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_BledQ1 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_BledQ2 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Bout4 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Bout5 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Bout6 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_Bout7 AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_separator AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_conveyer AT %Q*: BOOL;
+        dvar_M_HardwareMap_out_a_bufferingready AT %Q*: BOOL;
+        dvar_M_HardwareMap_init_err_sen_idx AT %Q*: DINT;
+        dvar_M_HardwareMap_init_err_led_idx AT %Q*: DINT;
+        cvar_M_HardwareMap_t AT %Q*: LREAL;
+        dvar_M_HardwareMap AT %Q*: enum_E;
+        dvar_M_led1 AT %Q*: enum_E;
+        dvar_M_led2 AT %Q*: enum_E;
+    END_STRUCT
+END_TYPE]]></Declaration>
+    <ObjectProperties/>
+  </DUT>
+</TcPlcObject>

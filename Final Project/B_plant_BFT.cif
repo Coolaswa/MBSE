@@ -5,11 +5,12 @@ import "TB_box_BFT.cif";
 
 input bool a_conveyer;
 input bool a_separator;
+alg bool s_Bautoswitch = true;
 
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = ProcessingBusySensor.On;
+alg bool s_processingbusy = true;
 
 event ProcessingBusyClicked;
 event ConveyerClicked;

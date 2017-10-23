@@ -3,7 +3,7 @@ from "lib:cif3" import *;
 string name = "testing_buffering";
 
 string gen_dir     = "generated_files";
-string ctrl_file   = fmt("%s_station_ctrl.cif",                name);
+//string ctrl_file   = fmt("%s_station_ctrl.cif",                name);
 string hw_file     = fmt("%s_station_hw.cif",                  name);
 string merged_file = fmt("%s/merged_file.cif", gen_dir);
 string plc_dir     = fmt("%s_station_plc",                     name);
@@ -11,5 +11,5 @@ string plc_dir     = fmt("%s_station_plc",                     name);
 if not isdir(gen_dir):: mkdir(gen_dir);
 if isfile(merged_file):: rmfile(merged_file);
 
-cif3merge(fmt("%s %s %s -o %s", "B_ctrl_BFT", "T_ctrl_linker_BFT.cif", "T_ctrl_auto_BFT.cif", hw_file, merged_file));
+cif3merge(fmt("%s %s -o %s", "B_ctrl_BFT.cif", hw_file, merged_file));
 cif3plc(fmt("%s -o %s -t twincat", merged_file, plc_dir));

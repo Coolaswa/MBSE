@@ -1,0 +1,1119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TcPlcObject ProductVersion="3.1.0.18" Version="1.1.0.1">
+  <POU Name="MAIN">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR_OUTPUT
+    timerValue0: TIME;
+    timerValue1: TIME;
+END_VAR
+VAR
+    cnt: LINT;
+    first: BOOL := TRUE;
+    curTimerValue: TIME;
+    state0: STATE;
+    curTime: LREAL;
+    loopsKilled: LINT;
+END_VAR
+VAR_TEMP
+    lastTimerValue: TIME;
+    curDeltaTime: TIME;
+    curDeltaSecs: LREAL;
+    state1: STATE;
+    progress: BOOL;
+    loopCount: INT;
+    b1: BOOL;
+    b2: BOOL;
+    b3: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+// Handle 'time' and cycle time.
+cnt := cnt + 1;
+
+timer0(IN := curTimer = 0, PT := T#1D);
+timer1(IN := curTimer = 1, PT := T#1D);
+timerValue0 := timer0.ET;
+timerValue1 := timer1.ET;
+
+lastTimerValue := curTimerValue;
+IF curTimer = 0 THEN
+    curTimerValue := timerValue0;
+ELSE
+    curTimerValue := timerValue1;
+END_IF;
+curDeltaTime := curTimerValue - lastTimerValue;
+curDeltaSecs := TIME_TO_LREAL(curDeltaTime) / 1000;
+curTime := curTime + curDeltaSecs;
+
+IF cnt MOD 10 = 0 THEN
+    curTimer := 1 - curTimer;
+    curTimerValue := T#0S;
+    timer0(IN := curTimer = 0, PT := T#1D);
+    timer1(IN := curTimer = 1, PT := T#1D);
+    timerValue0 := timer0.ET;
+    timerValue1 := timer1.ET;
+END_IF;
+
+IF first THEN
+    first := FALSE;
+
+    // Initialize state variables for initial state.
+    state0.cvar_M_blinker_timer := 0.0;
+    state0.dvar_M_blinker := elit_Start;
+    state0.dvar_M_HardwareMap_out_a_Tstartled := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Tresetled := FALSE;
+    state0.dvar_M_HardwareMap_out_a_TledQ1 := TRUE;
+    state0.dvar_M_HardwareMap_out_a_TledQ2 := TRUE;
+    state0.dvar_M_HardwareMap_out_a_Tout4 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Tout5 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Tout6 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Tout7 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_elevator_up := FALSE;
+    state0.dvar_M_HardwareMap_out_a_elevator_down := TRUE;
+    state0.dvar_M_HardwareMap_out_a_pusher := FALSE;
+    state0.dvar_M_HardwareMap_out_a_airslide := FALSE;
+    state0.dvar_M_HardwareMap_out_a_testingready := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Bstartled := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Bresetled := FALSE;
+    state0.dvar_M_HardwareMap_out_a_BledQ1 := TRUE;
+    state0.dvar_M_HardwareMap_out_a_BledQ2 := TRUE;
+    state0.dvar_M_HardwareMap_out_a_Bout4 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Bout5 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Bout6 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_Bout7 := FALSE;
+    state0.dvar_M_HardwareMap_out_a_separator := FALSE;
+    state0.dvar_M_HardwareMap_out_a_conveyer := FALSE;
+    state0.dvar_M_HardwareMap_out_a_bufferingready := FALSE;
+    state0.dvar_M_HardwareMap_init_err_sen_idx := -1;
+    state0.dvar_M_HardwareMap_init_err_led_idx := 0;
+    state0.cvar_M_HardwareMap_t := 0.0;
+    state0.dvar_M_HardwareMap := elit_init0;
+    state0.dvar_M_led1 := elit_Off;
+    state0.dvar_M_led2 := elit_Off;
+ELSE
+    // Update continuous variables for time delay.
+    state1.cvar_M_blinker_timer := state0.cvar_M_blinker_timer + curDeltaSecs * derivcvar_M_blinker_timer(state0);
+    state1.cvar_M_HardwareMap_t := state0.cvar_M_HardwareMap_t + curDeltaSecs * derivcvar_M_HardwareMap_t(state0);
+
+    state0.curTime := curTime;
+    state0.cvar_M_blinker_timer := state1.cvar_M_blinker_timer;
+    state0.cvar_M_HardwareMap_t := state1.cvar_M_HardwareMap_t;
+END_IF;
+
+// Event loop.
+WHILE TRUE DO
+    progress := FALSE;
+
+    // Event "M.led1_toggle".
+    IF NOT progress THEN
+        b3 := (state0.dvar_M_blinker) = (elit_BlinkQ1On);
+        b3 := b3 AND ((state0.cvar_M_blinker_timer) > (0.5));
+        b2 := b3;
+        IF NOT(b2) THEN
+            b3 := (state0.dvar_M_blinker) = (elit_BlinkQ1Off);
+            b3 := b3 AND ((state0.cvar_M_blinker_timer) > (0.5));
+            b2 := b2 OR (b3);
+        END_IF;
+        b1 := b2;
+        IF b1 THEN
+            b2 := (state0.dvar_M_led1) = (elit_On);
+            b2 := b2 OR ((state0.dvar_M_led1) = (elit_Off));
+            b1 := b1 AND (b2);
+        END_IF;
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            IF (((state0.dvar_M_blinker) = (elit_BlinkQ1On)) AND ((state0.cvar_M_blinker_timer) > (0.5))) THEN
+                state1.cvar_M_blinker_timer := 0.0;
+                state1.dvar_M_blinker := elit_BlinkQ1Off;
+            ELSIF (((state0.dvar_M_blinker) = (elit_BlinkQ1Off)) AND ((state0.cvar_M_blinker_timer) > (0.5))) THEN
+                state1.cvar_M_blinker_timer := 0.0;
+                state1.dvar_M_blinker := elit_BlinkQ1On;
+            END_IF;
+            IF ((state0.dvar_M_led1) = (elit_On)) THEN
+                state1.dvar_M_led1 := elit_Off;
+            ELSIF ((state0.dvar_M_led1) = (elit_Off)) THEN
+                state1.dvar_M_led1 := elit_On;
+            END_IF;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "M.led2_toggle".
+    IF NOT progress THEN
+        b3 := (state0.dvar_M_blinker) = (elit_Wait2s);
+        b3 := b3 AND ((state0.cvar_M_blinker_timer) > (2));
+        b2 := b3;
+        IF NOT(b2) THEN
+            b3 := (state0.dvar_M_blinker) = (elit_Q2Activated);
+            b3 := b3 AND (ivar_s_Tstartbutton);
+            b2 := b2 OR (b3);
+        END_IF;
+        b1 := b2;
+        IF b1 THEN
+            b2 := (state0.dvar_M_led2) = (elit_On);
+            b2 := b2 OR ((state0.dvar_M_led2) = (elit_Off));
+            b1 := b1 AND (b2);
+        END_IF;
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            IF (((state0.dvar_M_blinker) = (elit_Wait2s)) AND ((state0.cvar_M_blinker_timer) > (2))) THEN
+                state1.dvar_M_blinker := elit_Q2Activated;
+            ELSIF (((state0.dvar_M_blinker) = (elit_Q2Activated)) AND (ivar_s_Tstartbutton)) THEN
+                state1.dvar_M_blinker := elit_WaitForRelease;
+            END_IF;
+            IF ((state0.dvar_M_led2) = (elit_On)) THEN
+                state1.dvar_M_led2 := elit_Off;
+            ELSIF ((state0.dvar_M_led2) = (elit_Off)) THEN
+                state1.dvar_M_led2 := elit_On;
+            END_IF;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        IF (state0.dvar_M_blinker) = (elit_Start) THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.cvar_M_blinker_timer := 0.0;
+            state1.dvar_M_blinker := elit_Wait2s;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_blinker) = (elit_WaitForRelease);
+        b1 := b1 AND (NOT(ivar_s_Tstartbutton));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_blinker := elit_BlinkQ1On;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init0);
+        b1 := b1 AND ((state0.cvar_M_HardwareMap_t) >= (2.0));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap := elit_init1;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        IF (state0.dvar_M_HardwareMap) = (elit_init1) THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_airslide := TRUE;
+            state1.dvar_M_HardwareMap_out_a_conveyer := TRUE;
+            state1.cvar_M_HardwareMap_t := 0.0;
+            state1.dvar_M_HardwareMap := elit_init2;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init2);
+        b1 := b1 AND ((state0.cvar_M_HardwareMap_t) >= (5));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_airslide := FALSE;
+            state1.dvar_M_HardwareMap_out_a_conveyer := FALSE;
+            state1.dvar_M_HardwareMap := elit_init_sensor_check;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tstartbutton);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 0;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (NOT(ivar_s_Tstopbutton));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 1;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tautoswitch);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 2;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tresetbutton);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 3;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tin4);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 4;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tin5);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 5;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tin6);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 6;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Tin7);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 7;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_elevator_up);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 8;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (NOT(ivar_s_elevator_down));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 9;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_pusher);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 10;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_optical);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 11;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_capacitive);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 12;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_reflective);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 13;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_productheight);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 14;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bstartbutton);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 17;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (NOT(ivar_s_Bstopbutton));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 18;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bautoswitch);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 19;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bresetbutton);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 20;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bin4);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 21;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bin5);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 22;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bin6);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 23;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_Bin7);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 24;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_product);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 25;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_atseparator);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 26;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_atexit);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 27;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (ivar_s_separator_opened);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 28;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (NOT(ivar_s_separator_closed));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_init_err_sen_idx := 29;
+            state1.dvar_M_HardwareMap := elit_init_error;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_sensor_check);
+        b1 := b1 AND (NOT(ivar_s_Tstartbutton));
+        b1 := b1 AND (ivar_s_Tstopbutton);
+        b1 := b1 AND (NOT(ivar_s_Tautoswitch));
+        b1 := b1 AND (NOT(ivar_s_Tresetbutton));
+        b1 := b1 AND (NOT(ivar_s_Tin4));
+        b1 := b1 AND (NOT(ivar_s_Tin5));
+        b1 := b1 AND (NOT(ivar_s_Tin6));
+        b1 := b1 AND (NOT(ivar_s_Tin7));
+        b1 := b1 AND (NOT(ivar_s_elevator_up));
+        b1 := b1 AND (ivar_s_elevator_down);
+        b1 := b1 AND (NOT(ivar_s_pusher));
+        b1 := b1 AND (NOT(ivar_s_optical));
+        b1 := b1 AND (NOT(ivar_s_capacitive));
+        b1 := b1 AND (NOT(ivar_s_reflective));
+        b1 := b1 AND (NOT(ivar_s_productheight));
+        b1 := b1 AND (NOT(ivar_s_Bstartbutton));
+        b1 := b1 AND (ivar_s_Bstopbutton);
+        b1 := b1 AND (NOT(ivar_s_Bautoswitch));
+        b1 := b1 AND (NOT(ivar_s_Bresetbutton));
+        b1 := b1 AND (NOT(ivar_s_Bin4));
+        b1 := b1 AND (NOT(ivar_s_Bin5));
+        b1 := b1 AND (NOT(ivar_s_Bin6));
+        b1 := b1 AND (NOT(ivar_s_Bin7));
+        b1 := b1 AND (NOT(ivar_s_product));
+        b1 := b1 AND (NOT(ivar_s_atseparator));
+        b1 := b1 AND (NOT(ivar_s_atexit));
+        b1 := b1 AND (NOT(ivar_s_separator_opened));
+        b1 := b1 AND (ivar_s_separator_closed);
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap := elit_init_ok;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_error);
+        b1 := b1 AND ((state0.cvar_M_HardwareMap_t) >= (0.5));
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_init_err_led_idx) = (0));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.cvar_M_HardwareMap_t := 0.0;
+            state1.dvar_M_HardwareMap_init_err_led_idx := 1;
+            state1.dvar_M_HardwareMap_out_a_TledQ1 := TRUE;
+            state1.dvar_M_HardwareMap_out_a_TledQ2 := FALSE;
+            state1.dvar_M_HardwareMap_out_a_BledQ1 := TRUE;
+            state1.dvar_M_HardwareMap_out_a_BledQ2 := FALSE;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_init_error);
+        b1 := b1 AND ((state0.cvar_M_HardwareMap_t) >= (0.5));
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_init_err_led_idx) = (1));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.cvar_M_HardwareMap_t := 0.0;
+            state1.dvar_M_HardwareMap_init_err_led_idx := 0;
+            state1.dvar_M_HardwareMap_out_a_TledQ1 := FALSE;
+            state1.dvar_M_HardwareMap_out_a_TledQ2 := TRUE;
+            state1.dvar_M_HardwareMap_out_a_BledQ1 := FALSE;
+            state1.dvar_M_HardwareMap_out_a_BledQ2 := TRUE;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        IF (state0.dvar_M_HardwareMap) = (elit_init_ok) THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_TledQ1 := FALSE;
+            state1.dvar_M_HardwareMap_out_a_TledQ2 := FALSE;
+            state1.dvar_M_HardwareMap_out_a_BledQ1 := FALSE;
+            state1.dvar_M_HardwareMap_out_a_BledQ2 := FALSE;
+            state1.dvar_M_HardwareMap := elit_initialized;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Tstartled) <> (ivar_a_Tstartled));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Tstartled := ivar_a_Tstartled;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Tresetled) <> (ivar_a_Tresetled));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Tresetled := ivar_a_Tresetled;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_TledQ1) <> (alg_a_TledQ1(state0)));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_TledQ1 := alg_a_TledQ1(state0);
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_TledQ2) <> (alg_a_TledQ2(state0)));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_TledQ2 := alg_a_TledQ2(state0);
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Tout4) <> (ivar_a_Tout4));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Tout4 := ivar_a_Tout4;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Tout5) <> (ivar_a_Tout5));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Tout5 := ivar_a_Tout5;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Tout6) <> (ivar_a_Tout6));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Tout6 := ivar_a_Tout6;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Tout7) <> (ivar_a_Tout7));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Tout7 := ivar_a_Tout7;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_elevator_up) <> (ivar_a_elevator_up));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_elevator_up := ivar_a_elevator_up;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_elevator_down) <> (ivar_a_elevator_down));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_elevator_down := ivar_a_elevator_down;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_pusher) <> (ivar_a_pusher));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_pusher := ivar_a_pusher;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_airslide) <> (ivar_a_airslide));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_airslide := ivar_a_airslide;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_testingready) <> (ivar_a_testingready));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_testingready := ivar_a_testingready;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Bstartled) <> (ivar_a_Bstartled));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Bstartled := ivar_a_Bstartled;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Bresetled) <> (ivar_a_Bresetled));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Bresetled := ivar_a_Bresetled;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_BledQ1) <> (ivar_a_BledQ1));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_BledQ1 := ivar_a_BledQ1;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_BledQ2) <> (ivar_a_BledQ2));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_BledQ2 := ivar_a_BledQ2;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Bout4) <> (ivar_a_Bout4));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Bout4 := ivar_a_Bout4;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Bout5) <> (ivar_a_Bout5));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Bout5 := ivar_a_Bout5;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Bout6) <> (ivar_a_Bout6));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Bout6 := ivar_a_Bout6;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_Bout7) <> (ivar_a_Bout7));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_Bout7 := ivar_a_Bout7;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_separator) <> (ivar_a_separator));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_separator := ivar_a_separator;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_conveyer) <> (ivar_a_conveyer));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_conveyer := ivar_a_conveyer;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Event "tau".
+    IF NOT progress THEN
+        b1 := (state0.dvar_M_HardwareMap) = (elit_initialized);
+        b1 := b1 AND ((state0.dvar_M_HardwareMap_out_a_bufferingready) <> (ivar_a_bufferingready));
+        IF b1 THEN
+            progress := TRUE;
+            state1 := state0;
+
+            state1.dvar_M_HardwareMap_out_a_bufferingready := ivar_a_bufferingready;
+
+            state0 := state1;
+        END_IF;
+    END_IF;
+
+    // Done with events?
+    IF NOT progress THEN
+        EXIT;
+    END_IF;
+
+    // Protect against events that are always enabled.
+    loopCount := loopCount + 1;
+    IF loopCount >= 100 THEN
+        loopsKilled := loopsKilled + 1;
+        EXIT;
+    END_IF;
+END_WHILE;]]></ST>
+    </Implementation>
+    <ObjectProperties/>
+  </POU>
+</TcPlcObject>

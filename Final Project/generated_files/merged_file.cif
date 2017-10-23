@@ -5,11 +5,13 @@ alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSe
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = ProcessingBusySensor.On;
+alg bool s_processingbusy = true;
+alg bool s_Bautoswitch = true;
+alg bool actualBusy = s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
-const real confTime = 1.5;
+const real confTime = 5.0;
 event void atEntry;
 event void atSep;
 event void atExit;
@@ -39,6 +41,7 @@ alg bool s_Tstartbutton = b_start.state;
 alg bool s_Bstartbutton = b_start_B.Pressed;
 alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
+alg bool s_optical = OpticalSensor.isActive;
 alg bool a_elevator_up = Lift2.state = UP;
 alg bool a_elevator_down = Lift2.state = DOWN;
 alg bool a_testingready = Lift2.Waiting;
@@ -172,10 +175,12 @@ automaton SeparatorContr:
     initial;
     edge when s_atseparator do t := 0.0 goto ProductInSep;
   location ProductInSep:
-    edge BStart.toggle? when not s_Tautoswitch and t > 2 and not s_processingbusy goto Opening;
-    edge when s_Tautoswitch and t > 2 and not s_processingbusy goto Opening;
+    edge BStart.toggle? when not s_Tautoswitch and t > 2 and not actualBusy goto TurnOnConv;
+    edge when s_Tautoswitch and t > 2 and not actualBusy goto TurnOnConv;
+  location TurnOnConv:
+    edge ConveyerContr.turnOn!2.0 goto Opening;
   location Opening:
-    edge ConveyerContr.turnOn!2.0 when s_atexit goto AwaitLeave;
+    edge when s_atexit goto AwaitLeave;
     edge close? goto AwaitProduct;
   location AwaitLeave:
     edge when not s_atexit goto AwaitProduct;
@@ -699,7 +704,7 @@ automaton m_box5:
     edge SeparatorContr.close! when confTimer > confTime do x := -200.0 goto DecreaseCount;
 end
 automaton errorChecker1:
-  const real mismatchTime = 1.0;
+  const real mismatchTime = 5.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box1.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -713,7 +718,7 @@ automaton errorChecker1:
     edge m_box1.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker2:
-  const real mismatchTime = 1.0;
+  const real mismatchTime = 5.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box2.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -727,7 +732,7 @@ automaton errorChecker2:
     edge m_box2.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker3:
-  const real mismatchTime = 1.0;
+  const real mismatchTime = 5.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box3.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -741,7 +746,7 @@ automaton errorChecker3:
     edge m_box3.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker4:
-  const real mismatchTime = 1.0;
+  const real mismatchTime = 5.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box4.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -755,7 +760,7 @@ automaton errorChecker4:
     edge m_box4.delete when mismatchTimer > mismatchTime goto Init;
 end
 automaton errorChecker5:
-  const real mismatchTime = 1.0;
+  const real mismatchTime = 5.0;
   cont mismatchTimer der 1.0;
   alg bool modelCol = RectRectColl2(AtSepSensorBounds, m_box5.bounds);
   alg bool mismatch = modelCol and not s_atseparator;
@@ -798,9 +803,9 @@ automaton SystemState:
   location WaitForRelease:
     edge when not s_Tstartbutton goto Running;
   location Running:
-    edge when s_Tstopbutton goto WaitForRelease2;
+    edge when not s_Tstopbutton goto WaitForRelease2;
   location WaitForRelease2:
-    edge when not s_Tstopbutton goto Waiting;
+    edge when s_Tstopbutton goto Waiting;
 end
 automaton BStart:
   event void toggle;
@@ -813,21 +818,22 @@ end
 automaton Lift2:
   alg LiftState state;
   event rejProduct;
+  cont timer der 1.0;
   location Initializing:
     initial;
     equation state = STOP;
     edge when SystemState.Running goto Waiting;
   location Waiting:
     equation state = STOP;
-    edge when s_reflective goto WaitingForArm;
+    edge when s_reflective or s_capacitive do timer := 0.0 goto WaitingForArm;
   location WaitingForArm:
     equation state = STOP;
     edge BStart.toggle? when not s_Tautoswitch and not s_reflective goto VerifyBlock1;
-    edge when s_Tautoswitch and not s_reflective goto VerifyBlock1;
+    edge when s_Tautoswitch and not s_reflective and timer > 2 goto VerifyBlock1;
   location VerifyBlock1:
     equation state = STOP;
-    edge PusherContr.extent when s_capacitive and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-    edge when not s_capacitive goto GoingUp;
+    edge PusherContr.extent when not s_optical and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+    edge when s_optical goto GoingUp;
   location PushingBlockAtBot:
     equation state = STOP;
     edge PusherContr.retract goto ProductFullyRedjected;
@@ -836,12 +842,15 @@ automaton Lift2:
     edge rejProduct goto Initializing;
   location GoingUp:
     equation state = UP;
-    edge BStart.toggle? when not s_Tautoswitch and s_elevator_up goto VerifyBlock2;
-    edge when s_Tautoswitch and s_elevator_up goto VerifyBlock2;
+    edge BStart.toggle? when not s_Tautoswitch and s_elevator_up do timer := 0.0 goto Delay2;
+    edge when s_Tautoswitch and s_elevator_up do timer := 0.0 goto Delay2;
+  location Delay2:
+    equation state = STOP;
+    edge when timer > 1 goto VerifyBlock2;
   location VerifyBlock2:
     equation state = STOP;
-    edge when s_productheight goto GoingDownReject;
-    edge PusherContr.extent when not s_productheight goto PushingBlockAtTop;
+    edge when not s_productheight goto GoingDownReject;
+    edge PusherContr.extent when s_productheight goto PushingBlockAtTop;
   location GoingDownReject:
     equation state = DOWN;
     edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
@@ -2384,7 +2393,7 @@ group PusherSensor:
 end
 automaton HeightSensor:
   alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
-  alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][thick];
+  alg bool isActive = boxI != -1 and not BoxUpdater.data[boxI][thick];
   cont y;
   location:
     initial;
@@ -2392,11 +2401,11 @@ automaton HeightSensor:
 end
 group CapacitiveSensor:
   alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-  alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][color] = "black";
+  alg bool isActive = boxI != -1;
 end
 group OpticalSensor:
   alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-  alg bool isActive = boxI != -1;
+  alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][color] != "black";
 end
 group ReflexiveSensor:
   alg bool isActive = Arm.armRot < 130;
@@ -2687,6 +2696,6 @@ svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,0)", -Arm.armRot) 
 svgout id "Air" attr "opacity" value if a_airslide: 1 else 0 end file "../SystemSVG.svg";
 svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end file "../SystemSVG.svg";
 svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "grey" end file "../SystemSVG.svg";
-svgout id "a_separator" attr "transform" value fmt("translate(0,%f)", if a_separator: 0.0 else 10.0 end) file "../SystemSVG.svg";
+svgout id "a_separator" attr "transform" value fmt("translate(%f,0)", if a_separator: -10.0 else 25.0 end) file "../SystemSVG.svg";
 svgout id "key" attr "transform" value fmt("rotate(%f,10,10)", if s_Tautoswitch: 90.0 else 0.0 end) file "../SystemSVG.svg";
 svgout id "s_systemMode" text value fmt("System State: %s", SysState.state) file "../SystemSVG.svg";

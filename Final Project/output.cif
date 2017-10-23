@@ -1,0 +1,216 @@
+alg bool a_TledQ1 = led1.On;
+alg bool a_TledQ2 = led2.On;
+alg bool s_Tstartbutton = startBttn.state;
+event dummy;
+event e_startBttnClicked;
+alg bool s_Tstopbutton = false;
+alg bool s_Tautoswitch = false;
+alg bool s_Tresetbutton = false;
+alg bool s_Tin4 = false;
+alg bool s_Tin5 = false;
+alg bool s_Tin6 = false;
+alg bool s_Tin7 = false;
+alg bool s_elevator_up = false;
+alg bool s_elevator_down = false;
+alg bool s_pusher = false;
+alg bool s_optical = false;
+alg bool s_capacitive = false;
+alg bool s_reflective = false;
+alg bool s_productheight = false;
+alg bool s_bufferingbusy = false;
+alg bool s_Bstartbutton = false;
+alg bool s_Bstopbutton = false;
+alg bool s_Bautoswitch = false;
+alg bool s_Bresetbutton = false;
+alg bool s_Bin4 = false;
+alg bool s_Bin5 = false;
+alg bool s_Bin6 = false;
+alg bool s_Bin7 = false;
+alg bool s_product = false;
+alg bool s_atseparator = false;
+alg bool s_atexit = false;
+alg bool s_separator_opened = false;
+alg bool s_separator_closed = false;
+alg bool s_processingbusy = false;
+alg bool s_Tinitialized;
+alg bool s_Binitialized;
+input bool a_Tstartled;
+input bool a_Tresetled;
+input bool a_Tout4;
+input bool a_Tout5;
+input bool a_Tout6;
+input bool a_Tout7;
+input bool a_elevator_up;
+input bool a_elevator_down;
+input bool a_pusher;
+input bool a_airslide;
+input bool a_testingready;
+input bool a_Bstartled;
+input bool a_Bresetled;
+input bool a_BledQ1;
+input bool a_BledQ2;
+input bool a_Bout4;
+input bool a_Bout5;
+input bool a_Bout6;
+input bool a_Bout7;
+input bool a_separator;
+input bool a_conveyer;
+input bool a_bufferingready;
+group led1_svg:
+  alg string idfier = "Q1";
+  alg bool pressed = led1.On;
+  svgin id idfier event dummy file "Leds.svg";
+  svgout id idfier attr "fill" value if pressed: "yellow" else "grey" end file "Leds.svg";
+end
+group led2_svg:
+  alg string idfier = "Q2";
+  alg bool pressed = led2.On;
+  svgin id idfier event dummy file "Leds.svg";
+  svgout id idfier attr "fill" value if pressed: "yellow" else "grey" end file "Leds.svg";
+end
+automaton blinker:
+  cont timer der 1.0;
+  location Start:
+    initial;
+    edge do timer := 0.0 goto Wait2s;
+  location Wait2s:
+    edge led2.toggle!1 when timer > 2 goto Q2Activated;
+  location Q2Activated:
+    edge led2.toggle!1 when s_Tstartbutton goto WaitForRelease;
+  location WaitForRelease:
+    edge when not s_Tstartbutton goto BlinkQ1On;
+  location BlinkQ1On:
+    edge led1.toggle!1 when timer > 0.5 do timer := 0.0 goto BlinkQ1Off;
+  location BlinkQ1Off:
+    edge led1.toggle!1 when timer > 0.5 do timer := 0.0 goto BlinkQ1On;
+end
+automaton led1:
+  event int toggle;
+  location On:
+    edge toggle? goto Off;
+  location Off:
+    initial;
+    edge toggle? goto On;
+end
+automaton led2:
+  event int toggle;
+  location On:
+    edge toggle? goto Off;
+  location Off:
+    initial;
+    edge toggle? goto On;
+end
+automaton startBttn:
+  alg bool state;
+  location Released:
+    initial;
+    equation state = false;
+    edge e_startBttnClicked goto Pressed;
+  location Pressed:
+    equation state = true;
+    edge e_startBttnClicked goto Released;
+end
+group button_svg:
+  alg string idfier = "Start";
+  alg bool pressed = s_Tstartbutton;
+  svgin id idfier event e_startBttnClicked file "Leds.svg";
+  svgout id idfier attr "fill" value if pressed: "yellow" else "grey" end file "Leds.svg";
+end
+automaton HardwareMap:
+  disc bool out_a_Tstartled = false;
+  disc bool out_a_Tresetled = false;
+  disc bool out_a_TledQ1 = true;
+  disc bool out_a_TledQ2 = true;
+  disc bool out_a_Tout4 = false;
+  disc bool out_a_Tout5 = false;
+  disc bool out_a_Tout6 = false;
+  disc bool out_a_Tout7 = false;
+  disc bool out_a_elevator_up = false;
+  disc bool out_a_elevator_down = true;
+  disc bool out_a_pusher = false;
+  disc bool out_a_airslide = false;
+  disc bool out_a_testingready = false;
+  disc bool out_a_Bstartled = false;
+  disc bool out_a_Bresetled = false;
+  disc bool out_a_BledQ1 = true;
+  disc bool out_a_BledQ2 = true;
+  disc bool out_a_Bout4 = false;
+  disc bool out_a_Bout5 = false;
+  disc bool out_a_Bout6 = false;
+  disc bool out_a_Bout7 = false;
+  disc bool out_a_separator = false;
+  disc bool out_a_conveyer = false;
+  disc bool out_a_bufferingready = false;
+  disc int init_err_sen_idx = -1;
+  disc int init_err_led_idx = 0;
+  cont t der 1.0;
+  location init0:
+    initial;
+    edge when t >= 2.0 goto init1;
+  location init1:
+    edge do out_a_airslide := true, out_a_conveyer := true, t := 0.0 goto init2;
+  location init2:
+    edge when t >= 5 do out_a_airslide := false, out_a_conveyer := false goto init_sensor_check;
+  location init_sensor_check:
+    edge when s_Tstartbutton do init_err_sen_idx := 0 goto init_error;
+    edge when not s_Tstopbutton do init_err_sen_idx := 1 goto init_error;
+    edge when s_Tautoswitch do init_err_sen_idx := 2 goto init_error;
+    edge when s_Tresetbutton do init_err_sen_idx := 3 goto init_error;
+    edge when s_Tin4 do init_err_sen_idx := 4 goto init_error;
+    edge when s_Tin5 do init_err_sen_idx := 5 goto init_error;
+    edge when s_Tin6 do init_err_sen_idx := 6 goto init_error;
+    edge when s_Tin7 do init_err_sen_idx := 7 goto init_error;
+    edge when s_elevator_up do init_err_sen_idx := 8 goto init_error;
+    edge when not s_elevator_down do init_err_sen_idx := 9 goto init_error;
+    edge when s_pusher do init_err_sen_idx := 10 goto init_error;
+    edge when s_optical do init_err_sen_idx := 11 goto init_error;
+    edge when s_capacitive do init_err_sen_idx := 12 goto init_error;
+    edge when s_reflective do init_err_sen_idx := 13 goto init_error;
+    edge when s_productheight do init_err_sen_idx := 14 goto init_error;
+    edge when s_Bstartbutton do init_err_sen_idx := 17 goto init_error;
+    edge when not s_Bstopbutton do init_err_sen_idx := 18 goto init_error;
+    edge when s_Bautoswitch do init_err_sen_idx := 19 goto init_error;
+    edge when s_Bresetbutton do init_err_sen_idx := 20 goto init_error;
+    edge when s_Bin4 do init_err_sen_idx := 21 goto init_error;
+    edge when s_Bin5 do init_err_sen_idx := 22 goto init_error;
+    edge when s_Bin6 do init_err_sen_idx := 23 goto init_error;
+    edge when s_Bin7 do init_err_sen_idx := 24 goto init_error;
+    edge when s_product do init_err_sen_idx := 25 goto init_error;
+    edge when s_atseparator do init_err_sen_idx := 26 goto init_error;
+    edge when s_atexit do init_err_sen_idx := 27 goto init_error;
+    edge when s_separator_opened do init_err_sen_idx := 28 goto init_error;
+    edge when not s_separator_closed do init_err_sen_idx := 29 goto init_error;
+    edge when not s_Tstartbutton, s_Tstopbutton, not s_Tautoswitch, not s_Tresetbutton, not s_Tin4, not s_Tin5, not s_Tin6, not s_Tin7, not s_elevator_up, s_elevator_down, not s_pusher, not s_optical, not s_capacitive, not s_reflective, not s_productheight, not s_Bstartbutton, s_Bstopbutton, not s_Bautoswitch, not s_Bresetbutton, not s_Bin4, not s_Bin5, not s_Bin6, not s_Bin7, not s_product, not s_atseparator, not s_atexit, not s_separator_opened, s_separator_closed goto init_ok;
+  location init_error:
+    edge when t >= 0.5, init_err_led_idx = 0 do t := 0.0, init_err_led_idx := 1, out_a_TledQ1 := true, out_a_TledQ2 := false, out_a_BledQ1 := true, out_a_BledQ2 := false;
+    edge when t >= 0.5, init_err_led_idx = 1 do t := 0.0, init_err_led_idx := 0, out_a_TledQ1 := false, out_a_TledQ2 := true, out_a_BledQ1 := false, out_a_BledQ2 := true;
+  location init_ok:
+    edge do out_a_TledQ1 := false, out_a_TledQ2 := false, out_a_BledQ1 := false, out_a_BledQ2 := false goto initialized;
+  location initialized:
+    edge when out_a_Tstartled != a_Tstartled do out_a_Tstartled := a_Tstartled;
+    edge when out_a_Tresetled != a_Tresetled do out_a_Tresetled := a_Tresetled;
+    edge when out_a_TledQ1 != a_TledQ1 do out_a_TledQ1 := a_TledQ1;
+    edge when out_a_TledQ2 != a_TledQ2 do out_a_TledQ2 := a_TledQ2;
+    edge when out_a_Tout4 != a_Tout4 do out_a_Tout4 := a_Tout4;
+    edge when out_a_Tout5 != a_Tout5 do out_a_Tout5 := a_Tout5;
+    edge when out_a_Tout6 != a_Tout6 do out_a_Tout6 := a_Tout6;
+    edge when out_a_Tout7 != a_Tout7 do out_a_Tout7 := a_Tout7;
+    edge when out_a_elevator_up != a_elevator_up do out_a_elevator_up := a_elevator_up;
+    edge when out_a_elevator_down != a_elevator_down do out_a_elevator_down := a_elevator_down;
+    edge when out_a_pusher != a_pusher do out_a_pusher := a_pusher;
+    edge when out_a_airslide != a_airslide do out_a_airslide := a_airslide;
+    edge when out_a_testingready != a_testingready do out_a_testingready := a_testingready;
+    edge when out_a_Bstartled != a_Bstartled do out_a_Bstartled := a_Bstartled;
+    edge when out_a_Bresetled != a_Bresetled do out_a_Bresetled := a_Bresetled;
+    edge when out_a_BledQ1 != a_BledQ1 do out_a_BledQ1 := a_BledQ1;
+    edge when out_a_BledQ2 != a_BledQ2 do out_a_BledQ2 := a_BledQ2;
+    edge when out_a_Bout4 != a_Bout4 do out_a_Bout4 := a_Bout4;
+    edge when out_a_Bout5 != a_Bout5 do out_a_Bout5 := a_Bout5;
+    edge when out_a_Bout6 != a_Bout6 do out_a_Bout6 := a_Bout6;
+    edge when out_a_Bout7 != a_Bout7 do out_a_Bout7 := a_Bout7;
+    edge when out_a_separator != a_separator do out_a_separator := a_separator;
+    edge when out_a_conveyer != a_conveyer do out_a_conveyer := a_conveyer;
+    edge when out_a_bufferingready != a_bufferingready do out_a_bufferingready := a_bufferingready;
+end
+equation s_Tinitialized = HardwareMap.initialized,
+         s_Binitialized = HardwareMap.initialized;

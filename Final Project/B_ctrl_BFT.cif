@@ -7,12 +7,14 @@ input bool s_product;
 input bool s_atseparator;
 input bool s_atexit;
 input bool s_processingbusy;
+input bool s_Bautoswitch;
 
+alg bool actualBusy = s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
 
-const real confTime = 1.5;
+const real confTime = 5;
 
 automaton SeparatorContr:
     cont t der 1;
@@ -21,10 +23,12 @@ automaton SeparatorContr:
         initial;
         edge when s_atseparator do t:= 0 goto ProductInSep;
     location ProductInSep:
-        edge BStart.toggle? when not s_Tautoswitch and t > 2 and not s_processingbusy goto Opening;
-        edge when s_Tautoswitch and t > 2 and not s_processingbusy goto Opening;
+        edge BStart.toggle? when not s_Tautoswitch and t > 2 and not actualBusy goto TurnOnConv;
+        edge when s_Tautoswitch and t > 2 and not actualBusy goto TurnOnConv;
+    location TurnOnConv:
+        edge ConveyerContr.turnOn! 2 goto Opening;
     location Opening:
-        edge ConveyerContr.turnOn! 2 when s_atexit goto AwaitLeave;
+        edge when s_atexit goto AwaitLeave;
         edge close? goto AwaitProduct;
     location AwaitLeave:
         edge when not s_atexit goto AwaitProduct;
@@ -214,7 +218,7 @@ func bool RectRectColl2(Rectangle rect; Rectangle other):
 end
 
 automaton def ErrorChecker(BoxModel target):
-    const real mismatchTime = 1;
+    const real mismatchTime = 5;
     cont mismatchTimer der 1;
     alg bool modelCol = RectRectColl2(AtSepSensorBounds, target.bounds);
     alg bool mismatch = (modelCol and not s_atseparator);
