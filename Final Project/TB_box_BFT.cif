@@ -66,8 +66,8 @@ automaton def Box(event clickedEvent):
         edge when not isThick and y > Const.Box.LiftPos[y] do (x,y) := Const.Box.LiftPos goto InLift;
     location InLift:
         equation x' = 0, y' = Lift.speed;
-        edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30 goto LiftSlideTransit;
-        edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+        edge pusher_activated? when s_elevator_up do rotDer := -30 goto LiftSlideTransit;
+        edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
     location PreRejectBufferTransit:
         equation x' = -boxSpeed, y' = 0;
         edge RejectBuffer.preRejectEnter! when x < productRejectStartX goto RejectBufferTransit;

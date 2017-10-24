@@ -1,5 +1,0 @@
-import "testing_buffering_station_svg.cif";
-import "testing_buffering_station_ctrl.cif";
-
-led1_svg: Button_svg("Q1", dummy, led1.On);
-led2_svg: Button_svg("Q2", dummy, led2.On);

@@ -18,28 +18,38 @@ alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
+alg bool a_BledQ1 = false, a_BledQ2 = false;
 
+event void atEntry, atSep, atExit;
+event real atEntryConf, atSepConf, atExitConf;
+
+// Maximum mismatch time between the model of the box and the sensors
 const real confTime = 5;
 
-alg bool a_BledQ1 = LEDContr.EntryOn or LEDContr.ExitOn;
-alg bool a_BledQ2 = LEDContr.SepOn or LEDContr.ExitOn;
 
-automaton LEDContr:
-    monitor atEntry, atSep, atExit;
-    cont timer der 1;
-    location Init:
-        initial;
-        edge atEntry do timer := 0 goto EntryOn;
-        edge atSep do timer := 0 goto SepOn;
-        edge atExit do timer := 0 goto ExitOn;
-    location EntryOn:
-        edge when timer > 0.5 goto Init;
-    location SepOn:
-        edge when timer > 0.5 goto Init;
-    location ExitOn:
-        edge when timer > 0.5 goto Init;
-end
+m_box1: BoxModel();
+m_box2: BoxModel();
+m_box3: BoxModel();
+m_box4: BoxModel();
+m_box5: BoxModel();
 
+errorChecker1: ErrorChecker(m_box1);
+errorChecker2: ErrorChecker(m_box2);
+errorChecker3: ErrorChecker(m_box3);
+errorChecker4: ErrorChecker(m_box4);
+errorChecker5: ErrorChecker(m_box5);
+
+entryListener: SensorListener(atEntry, atEntryConf, s_product);
+separatorListener: SensorListener(atSep, atSepConf, s_atseparator);
+exitListener: SensorListener(atExit, atExitConf, s_atexit);
+
+type Point = tuple(real x, y);
+const Point LiftTop = (1182.9, 228);
+
+type Rectangle = tuple(real x, y, width, height);
+const Rectangle AtSepSensorBounds = (717,260,10,41);
+
+// Responsible for controlling the separator
 automaton SeparatorContr:
     cont t der 1;
     event void close;
@@ -61,10 +71,11 @@ automaton SeparatorContr:
         edge ConveyerContr.turnOff! goto AwaitProduct;
 end
 
+// Responsible for turning the conveyer on and off
 automaton ConveyerContr:
-    event void turnOn; // Request turnOn
-    event void turnOff; // Request turnOff
-    disc int onReqs = 0;
+    event void turnOn; // Request a turn on
+    event void turnOff; // Request a turn off
+    disc int onReqs = 0; // If onReqs > 0, then apparently someone still wants the conveyer on
 	location Off:
 		initial;
 		edge turnOn ? do onReqs := onReqs + 1 goto On;
@@ -76,6 +87,7 @@ automaton ConveyerContr:
         edge when onReqs <= 0 goto Off;
 end
 
+// Responsible for turning on the conveyer when a new product enters the buffering station
 automaton EntryController:
     cont timer der 1;
     location Init:
@@ -92,7 +104,8 @@ automaton EntryController:
         edge ConveyerContr.turnOff! goto Init;
 end
 
-automaton CountFive:          //Keeps track of how many products are on the belt.
+//Keeps track of how many products are on the belt.
+automaton CountFive:
     event void decrease;
     disc int count = 0;
     location Initial:
@@ -106,6 +119,7 @@ automaton CountFive:          //Keeps track of how many products are on the belt
         edge when not s_atexit goto Initial;
 end
 
+// Responsible for listening when a new box is ejected by the testing station
 automaton BoxListener:
     event void newBox;
     location Init:
@@ -114,11 +128,8 @@ automaton BoxListener:
     location Timeout:
         edge when not a_pusher goto Init;
 end
-event void atEntry, atSep, atExit;
-event real atEntryConf, atSepConf, atExitConf;
-entryListener: SensorListener(atEntry, atEntryConf, s_product);
-separatorListener: SensorListener(atSep, atSepConf, s_atseparator);
-exitListener: SensorListener(atExit, atExitConf, s_atexit);
+
+// Used for comparing the sensor data and the models of the boxes
 automaton def SensorListener(event void atActivation; event real atActivConf; alg bool sensor):
     cont t der 1;
     cont timeDiff der 1;
@@ -140,20 +151,7 @@ automaton def SensorListener(event void atActivation; event real atActivConf; al
         edge when s_Tresetbutton goto AwaitSRelease;
 end
 
-m_box1: BoxModel();
-m_box2: BoxModel();
-m_box3: BoxModel();
-m_box4: BoxModel();
-m_box5: BoxModel();
-
-errorChecker1: ErrorChecker(m_box1);
-errorChecker2: ErrorChecker(m_box2);
-errorChecker3: ErrorChecker(m_box3);
-errorChecker4: ErrorChecker(m_box4);
-errorChecker5: ErrorChecker(m_box5);
-
-type Point = tuple(real x, y);
-const Point LiftTop = (1182.9, 228);
+// Model of the box as simulated by the controller
 automaton def BoxModel():
     monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
     cont x = -200;
@@ -229,6 +227,7 @@ automaton def BoxModel():
         edge SeparatorContr.close! when confTimer > confTime do x:= -200 goto DecreaseCount;
 end
 
+// Tells every product that they should check their current product
 automaton ProdBroadcast2:
     event real prodLeave;
     event void prodUpdate;
@@ -244,6 +243,7 @@ automaton ProdBroadcast2:
         edge prodDoUpdate goto Await;
 end
 
+// Keeps track of where the next product should go on the buffer
 automaton ProductCounter2:
     disc int rightMostProdX = 681;
     event void prodEnter, prodLeave;
@@ -253,8 +253,8 @@ automaton ProductCounter2:
         edge prodLeave? do rightMostProdX := max(rightMostProdX - 40, 681);
 end
 
-type Rectangle = tuple(real x, y, width, height);
-const Rectangle AtSepSensorBounds = (717,260,10,41);
+
+// Function for checking collision between rectangles
 func bool RectRectColl2(Rectangle rect; Rectangle other):
     if (rect[x] < other[x] + other[width] and
         rect[x] + rect[width] > other[x] and
@@ -265,6 +265,7 @@ func bool RectRectColl2(Rectangle rect; Rectangle other):
     return false;
 end
 
+// Checks for a mismatch between the model of the box (simulated by controller) and the sensors
 automaton def ErrorChecker(BoxModel target):
     const real mismatchTime = 3;
     cont mismatchTimer der 1;

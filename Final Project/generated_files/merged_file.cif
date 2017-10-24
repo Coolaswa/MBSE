@@ -15,15 +15,15 @@ alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
-const real confTime = 5.0;
-alg bool a_BledQ1 = LEDContr.EntryOn or LEDContr.ExitOn;
-alg bool a_BledQ2 = LEDContr.SepOn or LEDContr.ExitOn;
+alg bool a_BledQ1 = false;
+alg bool a_BledQ2 = false;
 event void atEntry;
 event void atSep;
 event void atExit;
 event real atEntryConf;
 event real atSepConf;
 event real atExitConf;
+const real confTime = 5.0;
 type Point = tuple(real x; real y);
 const Point LiftTop = (1182.9, 228.0);
 type Rectangle = tuple(real x; real y; real width; real height);
@@ -155,154 +155,6 @@ group box5_svg2:
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rot) file "../SystemSVG.svg";
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
-end
-automaton LEDContr:
-  monitor atEntry, atSep, atExit;
-  cont timer der 1.0;
-  location Init:
-    initial;
-    edge atEntry do timer := 0.0 goto EntryOn;
-    edge atSep do timer := 0.0 goto SepOn;
-    edge atExit do timer := 0.0 goto ExitOn;
-  location EntryOn:
-    edge when timer > 0.5 goto Init;
-  location SepOn:
-    edge when timer > 0.5 goto Init;
-  location ExitOn:
-    edge when timer > 0.5 goto Init;
-end
-automaton SeparatorContr:
-  cont t der 1.0;
-  event void close;
-  location AwaitProduct:
-    initial;
-    edge when s_atseparator do t := 0.0 goto ProductInSep;
-  location ProductInSep:
-    edge BStart.toggle? when not s_Tautoswitch and t > TimeTillAtSep and not actualBusy goto TurnOnConv;
-    edge when s_Tautoswitch and t > TimeTillAtSep and not actualBusy goto TurnOnConv;
-  location TurnOnConv:
-    edge ConveyerContr.turnOn! goto Opening;
-  location Opening:
-    edge when s_atexit goto AwaitLeave;
-    edge close? goto AwaitProduct;
-  location AwaitLeave:
-    edge when not s_atexit goto TurnOffConv;
-    edge close? goto TurnOffConv;
-  location TurnOffConv:
-    edge ConveyerContr.turnOff! goto AwaitProduct;
-end
-automaton ConveyerContr:
-  event void turnOn;
-  event void turnOff;
-  disc int onReqs = 0;
-  location Off:
-    initial;
-    edge turnOn? do onReqs := onReqs + 1 goto On;
-    edge turnOff? do onReqs := onReqs - 1 goto On;
-    edge when onReqs > 0 goto On;
-  location On:
-    edge turnOn? do onReqs := onReqs + 1 goto On;
-    edge turnOff? do onReqs := onReqs - 1 goto On;
-    edge when onReqs <= 0 goto Off;
-end
-automaton EntryController:
-  cont timer der 1.0;
-  location Init:
-    initial;
-    edge atEntryConf goto TurnOnConv;
-  location TurnOnConv:
-    edge ConveyerContr.turnOn! do timer := 0.0 goto AwaitProdAtSep;
-  location AwaitProdAtSep:
-    edge when timer > 5 goto TurnOffConv;
-    edge atSepConf do timer := 0.0 goto Delay;
-  location Delay:
-    edge when timer > TimeTillAtSep goto TurnOffConv;
-  location TurnOffConv:
-    edge ConveyerContr.turnOff! goto Init;
-end
-automaton CountFive:
-  event void decrease;
-  disc int count = 0;
-  location Initial:
-    initial;
-    edge when s_product do count := count + 1 goto WaitFor1;
-    edge when s_atexit do count := count - 1 goto WaitFor2;
-    edge decrease? do count := count - 1;
-  location WaitFor1:
-    edge when not s_product goto Initial;
-  location WaitFor2:
-    edge when not s_atexit goto Initial;
-end
-automaton BoxListener:
-  event void newBox;
-  location Init:
-    initial;
-    edge newBox! when a_pusher and s_elevator_up goto Timeout;
-  location Timeout:
-    edge when not a_pusher goto Init;
-end
-automaton entryListener:
-  cont t der 1.0;
-  cont timeDiff der 1.0;
-  alg bool sensor = s_product;
-  location Init:
-    initial;
-    edge atEntry? do t := 0.0 goto AwaitSensor;
-    edge when sensor do t := 0.0, timeDiff := 0.0 goto AwaitEvent;
-  location AwaitSensor:
-    edge atEntryConf!0.0 when sensor goto AwaitSRelease;
-    edge when t > confTime goto Malfunction;
-  location AwaitEvent:
-    edge atEntry? goto BroadcastConf;
-    edge when t > confTime goto Malfunction;
-  location BroadcastConf:
-    edge atEntryConf!timeDiff goto AwaitSRelease;
-  location AwaitSRelease:
-    edge when not sensor goto Init;
-  location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
-end
-automaton separatorListener:
-  cont t der 1.0;
-  cont timeDiff der 1.0;
-  alg bool sensor = s_atseparator;
-  location Init:
-    initial;
-    edge atSep? do t := 0.0 goto AwaitSensor;
-    edge when sensor do t := 0.0, timeDiff := 0.0 goto AwaitEvent;
-  location AwaitSensor:
-    edge atSepConf!0.0 when sensor goto AwaitSRelease;
-    edge when t > confTime goto Malfunction;
-  location AwaitEvent:
-    edge atSep? goto BroadcastConf;
-    edge when t > confTime goto Malfunction;
-  location BroadcastConf:
-    edge atSepConf!timeDiff goto AwaitSRelease;
-  location AwaitSRelease:
-    edge when not sensor goto Init;
-  location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
-end
-automaton exitListener:
-  cont t der 1.0;
-  cont timeDiff der 1.0;
-  alg bool sensor = s_atexit;
-  location Init:
-    initial;
-    edge atExit? do t := 0.0 goto AwaitSensor;
-    edge when sensor do t := 0.0, timeDiff := 0.0 goto AwaitEvent;
-  location AwaitSensor:
-    edge atExitConf!0.0 when sensor goto AwaitSRelease;
-    edge when t > confTime goto Malfunction;
-  location AwaitEvent:
-    edge atExit? goto BroadcastConf;
-    edge when t > confTime goto Malfunction;
-  location BroadcastConf:
-    edge atExitConf!timeDiff goto AwaitSRelease;
-  location AwaitSRelease:
-    edge when not sensor goto Init;
-  location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
 end
 automaton m_box1:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
@@ -813,6 +665,139 @@ automaton errorChecker5:
   location Await:
     edge when not mismatch goto OnBufferMoving;
     edge m_box5.delete when mismatchTimer > mismatchTime goto Init;
+end
+automaton entryListener:
+  cont t der 1.0;
+  cont timeDiff der 1.0;
+  alg bool sensor = s_product;
+  location Init:
+    initial;
+    edge atEntry? do t := 0.0 goto AwaitSensor;
+    edge when sensor do t := 0.0, timeDiff := 0.0 goto AwaitEvent;
+  location AwaitSensor:
+    edge atEntryConf!0.0 when sensor goto AwaitSRelease;
+    edge when t > confTime goto Malfunction;
+  location AwaitEvent:
+    edge atEntry? goto BroadcastConf;
+    edge when t > confTime goto Malfunction;
+  location BroadcastConf:
+    edge atEntryConf!timeDiff goto AwaitSRelease;
+  location AwaitSRelease:
+    edge when not sensor goto Init;
+  location Malfunction:
+    edge when s_Tresetbutton goto AwaitSRelease;
+end
+automaton separatorListener:
+  cont t der 1.0;
+  cont timeDiff der 1.0;
+  alg bool sensor = s_atseparator;
+  location Init:
+    initial;
+    edge atSep? do t := 0.0 goto AwaitSensor;
+    edge when sensor do t := 0.0, timeDiff := 0.0 goto AwaitEvent;
+  location AwaitSensor:
+    edge atSepConf!0.0 when sensor goto AwaitSRelease;
+    edge when t > confTime goto Malfunction;
+  location AwaitEvent:
+    edge atSep? goto BroadcastConf;
+    edge when t > confTime goto Malfunction;
+  location BroadcastConf:
+    edge atSepConf!timeDiff goto AwaitSRelease;
+  location AwaitSRelease:
+    edge when not sensor goto Init;
+  location Malfunction:
+    edge when s_Tresetbutton goto AwaitSRelease;
+end
+automaton exitListener:
+  cont t der 1.0;
+  cont timeDiff der 1.0;
+  alg bool sensor = s_atexit;
+  location Init:
+    initial;
+    edge atExit? do t := 0.0 goto AwaitSensor;
+    edge when sensor do t := 0.0, timeDiff := 0.0 goto AwaitEvent;
+  location AwaitSensor:
+    edge atExitConf!0.0 when sensor goto AwaitSRelease;
+    edge when t > confTime goto Malfunction;
+  location AwaitEvent:
+    edge atExit? goto BroadcastConf;
+    edge when t > confTime goto Malfunction;
+  location BroadcastConf:
+    edge atExitConf!timeDiff goto AwaitSRelease;
+  location AwaitSRelease:
+    edge when not sensor goto Init;
+  location Malfunction:
+    edge when s_Tresetbutton goto AwaitSRelease;
+end
+automaton SeparatorContr:
+  cont t der 1.0;
+  event void close;
+  location AwaitProduct:
+    initial;
+    edge when s_atseparator do t := 0.0 goto ProductInSep;
+  location ProductInSep:
+    edge BStart.toggle? when not s_Tautoswitch and t > TimeTillAtSep and not actualBusy goto TurnOnConv;
+    edge when s_Tautoswitch and t > TimeTillAtSep and not actualBusy goto TurnOnConv;
+  location TurnOnConv:
+    edge ConveyerContr.turnOn! goto Opening;
+  location Opening:
+    edge when s_atexit goto AwaitLeave;
+    edge close? goto AwaitProduct;
+  location AwaitLeave:
+    edge when not s_atexit goto TurnOffConv;
+    edge close? goto TurnOffConv;
+  location TurnOffConv:
+    edge ConveyerContr.turnOff! goto AwaitProduct;
+end
+automaton ConveyerContr:
+  event void turnOn;
+  event void turnOff;
+  disc int onReqs = 0;
+  location Off:
+    initial;
+    edge turnOn? do onReqs := onReqs + 1 goto On;
+    edge turnOff? do onReqs := onReqs - 1 goto On;
+    edge when onReqs > 0 goto On;
+  location On:
+    edge turnOn? do onReqs := onReqs + 1 goto On;
+    edge turnOff? do onReqs := onReqs - 1 goto On;
+    edge when onReqs <= 0 goto Off;
+end
+automaton EntryController:
+  cont timer der 1.0;
+  location Init:
+    initial;
+    edge atEntryConf goto TurnOnConv;
+  location TurnOnConv:
+    edge ConveyerContr.turnOn! do timer := 0.0 goto AwaitProdAtSep;
+  location AwaitProdAtSep:
+    edge when timer > 5 goto TurnOffConv;
+    edge atSepConf do timer := 0.0 goto Delay;
+  location Delay:
+    edge when timer > TimeTillAtSep goto TurnOffConv;
+  location TurnOffConv:
+    edge ConveyerContr.turnOff! goto Init;
+end
+automaton CountFive:
+  event void decrease;
+  disc int count = 0;
+  location Initial:
+    initial;
+    edge when s_product do count := count + 1 goto WaitFor1;
+    edge when s_atexit do count := count - 1 goto WaitFor2;
+    edge decrease? do count := count - 1;
+  location WaitFor1:
+    edge when not s_product goto Initial;
+  location WaitFor2:
+    edge when not s_atexit goto Initial;
+end
+automaton BoxListener:
+  event void newBox;
+  location Init:
+    initial;
+    edge newBox! when a_pusher and s_elevator_up goto Timeout;
+  location Timeout:
+    edge when not a_pusher goto Init;
 end
 automaton ProdBroadcast2:
   event real prodLeave;
@@ -2752,15 +2737,15 @@ group svg_b_BautoManualSwitch:
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group AtSepSensor:
-  alg int boxI = RectRectColl((Const.Sensors.AtSepSensorBounds[x], Const.Sensors.AtSepSensorBounds[y], Const.Sensors.AtSepSensorBounds[width], Const.Sensors.AtSepSensorBounds[height]), BoxUpdater.data);
+  alg int boxI = RectRectColl(Const.Sensors.AtSepSensorBounds, BoxUpdater.data);
   alg bool isActive = boxI != -1;
 end
 group EntrySensor:
-  alg int boxI = RectRectColl((Const.Sensors.EntrySensorBounds[x], Const.Sensors.EntrySensorBounds[y], Const.Sensors.EntrySensorBounds[width], Const.Sensors.EntrySensorBounds[height]), BoxUpdater.data);
+  alg int boxI = RectRectColl(Const.Sensors.EntrySensorBounds, BoxUpdater.data);
   alg bool isActive = boxI != -1;
 end
 group ExitSensor:
-  alg int boxI = RectRectColl((Const.Sensors.ExitSensorBounds[x], Const.Sensors.ExitSensorBounds[y], Const.Sensors.ExitSensorBounds[width], Const.Sensors.ExitSensorBounds[height]), BoxUpdater.data);
+  alg int boxI = RectRectColl(Const.Sensors.ExitSensorBounds, BoxUpdater.data);
   alg bool isActive = boxI != -1;
 end
 automaton ProcessingBusySensor:
@@ -2794,6 +2779,16 @@ automaton Separator:
   location Left:
     initial;
     edge when a_separator goto Right;
+end
+automaton Q2ResetPresser:
+  cont timer der 1.0;
+  location Init:
+    initial;
+    edge when not UseCase.NoCase and a_TledQ2 do timer := 0.0 goto Wait1;
+  location Wait1:
+    edge b_reset.toggle! when timer > 3 do timer := 0.0 goto Wait2;
+  location Wait2:
+    edge b_reset.toggle! when timer > 1 goto Init;
 end
 group Const:
   group Box:

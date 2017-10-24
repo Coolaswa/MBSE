@@ -9,9 +9,9 @@ input bool a_pusher;
 input bool a_testingready;
 
 alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
-alg bool s_pusher = PusherSensor.isActive;
-alg bool s_elevator_up = LiftSensorUp.isActive;
-alg bool s_elevator_down = LiftSensorDown.isActive;
+alg bool s_pusher = Pusher.Extending and Pusher.x < -35;
+alg bool s_elevator_up = Lift.y <= -Const.Lift.MaxHeight;
+alg bool s_elevator_down = Lift.y >= 0;
 alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
@@ -19,17 +19,10 @@ alg bool s_Tstartbutton = b_start.state;
 alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tresetbutton = b_reset.Pressed;
 alg bool s_optical = OpticalSensor.isActive;
-//alg bool b_lift_upPressed = b_lift_up.Pressed;
-//alg bool b_lift_upReleased = b_lift_up.Released;
-//alg bool b_lift_downPressed = b_lift_down.Pressed;
-//alg bool b_lift_downReleased = b_lift_down.Released;
-//alg bool b_pusherReleased = b_pusher.Released;
-//alg bool b_pusherPressed = b_pusher.Pressed;
 alg bool s_Bstartbutton  = b_start_B.Pressed;
 
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
-
 
 event BoxData spawn_new_block;
 event productRejected;
@@ -46,18 +39,8 @@ b_reset_svg: Button_svg(b_reset.clicked, "b_reset", "yellow", "grey", b_reset.st
 b_stop: Button(true);
 stop_svg: Button_svg(b_stop.clicked, "stop", "yellow", "grey",  b_stop.state);
 
-svg_s_lift_up: LED_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, LiftSensorUp.isActive);
-svg_s_lift_down: LED_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, LiftSensorDown.isActive);
-
-/* b_lift_up: Button(lift_up_clicked, false);
-svg_a_lift_up: Button_svg(lift_up_clicked, "a_lift_up", "yellow", "grey", b_lift_up.state);
-
-b_lift_down: Button(lift_down_clicked, false);
-svg_a_lift_down: Button_svg(lift_down_clicked, "a_lift_down", "yellow", "grey", b_lift_down.state);
-
-b_pusher: Button(pusher_clicked, false);
-svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.state);
-svg_s_pusher: LED_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, PusherSensor.isActive);*/
+svg_s_lift_up: LED_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_up);
+svg_s_lift_down: LED_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_down);
 
 b_color: Button(false);
 svg_b_color: Switch_svg(b_color.clicked, b_color.state);
@@ -79,6 +62,7 @@ svg_b_autoManualSwitch: Button_svg(b_autoManualSwitch.clicked, "key", "yellow", 
 
 event void pusher_activated;
 
+// Responsible for keeping track of the state of the system
 automaton SysState:
     alg string state;
     location Off:
@@ -96,6 +80,7 @@ automaton SysState:
         edge when not s_Tstopbutton goto Off;
 end
 
+// Placeholder for the data of the boxes
 automaton BoxUpdater:
     alg list[10] BoxData data;
     alg list[10] Rectangle rects;
@@ -125,6 +110,7 @@ automaton BoxUpdater:
         initial;
 end
 
+// Responsible for broadcasting when a product has entered the rejectbuffer
 automaton RejectBuffer:
      event void preRejectEnter;
      location Await:
@@ -134,6 +120,7 @@ automaton RejectBuffer:
         edge productRejected goto Await;
 end
 
+// Responsible for controlling the lift based on the actuators
 automaton Lift:
     const real maxSpeed = 80;
     alg real speed;
@@ -142,41 +129,30 @@ automaton Lift:
         equation speed = -maxSpeed;
         edge when not a_elevator_up goto Stop;
         edge when a_elevator_down goto Down;
-        edge when LiftSensorUp.isActive goto Stop;
+        edge when s_elevator_up goto Stop;
     location Stop:
         initial;
         equation speed = 0;
-        edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
-        edge when a_elevator_down and not LiftSensorDown.isActive  goto Down;
+        edge when a_elevator_up and not s_elevator_up goto Up;
+        edge when a_elevator_down and not s_elevator_down  goto Down;
     location Down:
         equation speed = maxSpeed;
         edge when not a_elevator_down goto Stop;
         edge when a_elevator_up goto Up;
-        edge when LiftSensorDown.isActive goto Stop;
+        edge when s_elevator_down goto Stop;
 end
 
+// Responsible for controlling the pusher based on the state of the actuators
 automaton Pusher:
     alg real speed;
     cont x der speed;
     location Extending:
-        equation speed = if not PusherSensor.isActive: -boxSpeed else 0 end;
+        equation speed = if not s_pusher: -boxSpeed else 0 end;
         edge when not a_pusher goto Retracting;
     location Retracting:
         initial;
         equation speed = if x < 0: boxSpeed else 0 end;
         edge pusher_activated! when a_pusher goto Extending;
-end
-
-group LiftSensorUp:
-    alg bool isActive = Lift.y <= -Const.Lift.MaxHeight;
-end
-
-group LiftSensorDown:
-    alg bool isActive = Lift.y >= 0;
-end
-
-group PusherSensor:
-    alg bool isActive = Pusher.Extending and Pusher.x < -35;
 end
 
 automaton HeightSensor:
