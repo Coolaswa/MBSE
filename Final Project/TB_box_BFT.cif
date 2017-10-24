@@ -28,6 +28,7 @@ const real boxSpeed = 80;
 automaton def Box(event clickedEvent):
     monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, clickedEvent;
 
+    const real timeOnAirslide = 0.2;
     disc string color = "pink";
     alg real slideAngle = (10)*3.141592654/180;
     disc bool isThick = false;

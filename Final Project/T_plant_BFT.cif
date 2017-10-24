@@ -219,11 +219,11 @@ automaton Arm:
     disc real armSpeed = 0;
     location Waiting:
         initial;
-        edge spawn_new_block when a_testingready do armSpeed := -25 goto Placing;
+        edge spawn_new_block when a_testingready do armSpeed := -100 goto Placing;
     location Returning:
         edge when armRot > 180 do armSpeed := 0 goto Waiting;
     location Placing:
-        edge when armRot < 99 do armSpeed := 25 goto Returning;
+        edge when armRot < 99 do armSpeed := 100 goto Returning;
 end
 
 automaton Factory:

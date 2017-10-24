@@ -58,7 +58,7 @@ automaton Lift2:
         edge when SystemState.Running goto Waiting;
     location Waiting:
         equation state = STOP;
-        edge when s_reflective or s_capacitive do timer := 0 goto WaitingForArm;
+        edge when s_capacitive do timer := 0 goto WaitingForArm;
     location WaitingForArm:
         equation state = STOP;
         edge BStart.toggle? when not s_Tautoswitch and not s_reflective goto VerifyBlock1;

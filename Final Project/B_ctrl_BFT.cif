@@ -1,8 +1,9 @@
 import "T_ctrl_BFT.cif";
 
-const real TimeOnAirslide = 0.5;
+const real TimeOnAirslide = 0.2;
 const real TimeDiffEnterAndSep  = 3;
-const real TimeDiffSepAndExit = 0.5;
+const real TimeDiffSepAndExit = 0.2;
+const real TimeTillAtSep = 2;
 
 alg bool a_conveyer = ConveyerContr.On and not malfunction;// ConveyerContr.On; //ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
@@ -46,30 +47,49 @@ automaton SeparatorContr:
         initial;
         edge when s_atseparator do t:= 0 goto ProductInSep;
     location ProductInSep:
-        edge BStart.toggle? when not s_Tautoswitch and t > 2 and not actualBusy goto TurnOnConv;
-        edge when s_Tautoswitch and t > 2 and not actualBusy goto TurnOnConv;
+        edge BStart.toggle? when not s_Tautoswitch and t > TimeTillAtSep and not actualBusy goto TurnOnConv;
+        edge when s_Tautoswitch and t > TimeTillAtSep and not actualBusy goto TurnOnConv;
     location TurnOnConv:
-        edge ConveyerContr.turnOn! 2 goto Opening;
+        edge ConveyerContr.turnOn! goto Opening;
     location Opening:
         edge when s_atexit goto AwaitLeave;
         edge close? goto AwaitProduct;
     location AwaitLeave:
-        edge when not s_atexit goto AwaitProduct;
-        edge close? goto AwaitProduct;
+        edge when not s_atexit goto TurnOffConv;
+        edge close? goto TurnOffConv;
+    location TurnOffConv:
+        edge ConveyerContr.turnOff! goto AwaitProduct;
 end
 
 automaton ConveyerContr:
-    monitor atEntry;
-    event real turnOn; // Specify for how long it should be on
-	cont t der -1;
+    event void turnOn; // Request turnOn
+    event void turnOff; // Request turnOff
+    disc int onReqs = 0;
 	location Off:
 		initial;
-		edge turnOn ? do t := ? goto On;
-		edge atEntry do t:= 6 goto On;
+		edge turnOn ? do onReqs := onReqs + 1 goto On;
+		edge turnOff ? do onReqs := onReqs - 1 goto On;
+		edge when onReqs > 0 goto On;
 	location On:
-		edge when t < 0 goto Off;
-		edge turnOn ? do t := t + ?;
-		edge atEntry do t:= 6;
+		edge turnOn ? do onReqs := onReqs + 1 goto On;
+        edge turnOff ? do onReqs := onReqs - 1 goto On;
+        edge when onReqs <= 0 goto Off;
+end
+
+automaton EntryController:
+    cont timer der 1;
+    location Init:
+        initial;
+        edge atEntryConf goto TurnOnConv;
+    location TurnOnConv:
+        edge ConveyerContr.turnOn! do timer := 0 goto AwaitProdAtSep;
+    location AwaitProdAtSep:
+        edge when timer > 5 goto TurnOffConv;
+        edge atSepConf do timer := 0 goto Delay;
+    location Delay:
+        edge when timer > TimeTillAtSep goto TurnOffConv;
+    location TurnOffConv:
+        edge ConveyerContr.turnOff! goto Init;
 end
 
 automaton CountFive:          //Keeps track of how many products are on the belt.
@@ -117,7 +137,7 @@ automaton def SensorListener(event void atActivation; event real atActivConf; al
     location AwaitSRelease:
         edge when not sensor goto Init;
     location Malfunction:
-        edge ConveyerContr.turnOn! 5 when s_Tresetbutton goto AwaitSRelease;
+        edge when s_Tresetbutton goto AwaitSRelease;
 end
 
 m_box1: BoxModel();
@@ -155,13 +175,13 @@ automaton def BoxModel():
     location Waiting:
         equation x' = -boxSpeed, y' = 0;
         initial;
-        edge BoxListener.newBox? do (pastSep, pastEntry) := (false,false), (x,y) := LiftTop, accelTimer := 0, rotDer := -30 goto LiftAirTransit;
+        edge BoxListener.newBox? do (pastSep, pastEntry) := (false,false), (x,y) := LiftTop, accelTimer := 0, rotDer := -200 goto LiftAirTransit;
     location LiftAirTransit:
-        equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
+        equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
         edge when rotation < -10 do rotDer := 0, accelTimer := 0 goto OnAirslide;
    location OnAirslide:
         equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
-        edge when y > 273 do rotDer := boxSpeed*100 goto SlideBufferTransit;
+        edge when y > 273 do rotDer := 200 goto SlideBufferTransit;
     location SlideBufferTransit:
         equation x' = if a_conveyer: -beltSpeed1 else 0 end, y' = 0;
         edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;

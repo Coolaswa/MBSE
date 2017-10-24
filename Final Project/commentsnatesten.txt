@@ -1,19 +1,20 @@
 TODO 4TC00
 
-
-
-
-- Conveyer moet aan gaan door sensor en niet timer (nu duurt het te lang voor dat hij aan gaat)
+DINGEN DIE NIET GEFIXED ZIJN:
+- Reset knop reset de count niet
 
 - processingbusy -> knop en niet sleutel
 
 - als processingbusy uit gaat kan de band uit gaan en een product laten liggen voor het eind (gebeurde 1 keer)
 
-- Reset knop reset de count niet
+
+DINGEN DIE GEFIXED ZOUDEN MOETEN ZIJN:
+- Conveyer moet aan gaan door sensor en niet timer (nu duurt het te lang voor dat hij aan gaat)
 
 - Band draait te lang, draaien tot iets na s_atseparator voor betere timing
 
 - Lift activeren als de sensor voor de arm aan gaat (zodat je niet per ongeluk de sensor activeert met je vinger oid)
+
 
 DINGEN DIE WERKEN:
 
