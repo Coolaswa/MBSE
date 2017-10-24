@@ -144,31 +144,6 @@ automaton ProdBroadcast:
         edge prodDoUpdate goto Await;
 end
 
-group LeftBlockCheck:
-	alg int boxI = RectRectColl((Const.Sensors.LeftBlockBounds[x],
-	 						    Const.Sensors.LeftBlockBounds[y],
-	  							Const.Sensors.LeftBlockBounds[width],
-	   							Const.Sensors.LeftBlockBounds[height]), BoxUpdater.data);
-	alg bool isActive =  (boxI != -1) and Separator.Left;
-end
-
-group RightBlockCheck:
-	alg int boxI = RectRectColl((Const.Sensors.RightBlockBounds[x],
-	 						    Const.Sensors.RightBlockBounds[y],
-	  							Const.Sensors.RightBlockBounds[width],
-	   							Const.Sensors.RightBlockBounds[height]), BoxUpdater.data);
-	alg bool isActive =  (boxI != -1) and Separator.Right;
-end
-
-/*automaton Timer:
-    cont t = 0 der -1;
-    disc dist real timeDelay = normal(25,15);
-    location:
-        initial;
-        edge ProductCounter.prodLeave! when t < 0 do (t, timeDelay) := sample timeDelay;
-end*/
-
-
 automaton ProductCounter:
     disc int rightMostProdX = 681;
     event void prodEnter, prodLeave;
