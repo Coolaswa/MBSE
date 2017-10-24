@@ -1,7 +1,11 @@
 import "T_plant_BFT.cif";
 import "B_plant_BFT.cif";
 
-event box1Clicked, box2Clicked, box3Clicked, box4Clicked, box5Clicked, box6Clicked, box7Clicked, box8Clicked,box9Clicked, box10Clicked;
+// Events for deleting the box when you click on it
+event box1Clicked, box2Clicked, box3Clicked, box4Clicked, box5Clicked,
+      box6Clicked, box7Clicked, box8Clicked,box9Clicked, box10Clicked;
+
+// Creation of the boxes and SVG of the boxes
 box1: Box(box1Clicked);
 box2: Box(box2Clicked);
 box3: Box(box3Clicked);
@@ -13,45 +17,49 @@ box8: Box(box8Clicked);
 box9: Box(box9Clicked);
 box10:Box(box10Clicked);
 
-button1_svg: Create_Box_svg(1, BoxUpdater.data[0], 1, box1Clicked);
-button2_svg: Create_Box_svg(2, BoxUpdater.data[1], 1, box2Clicked);
-button3_svg: Create_Box_svg(3, BoxUpdater.data[2], 1, box3Clicked);
-button4_svg: Create_Box_svg(4, BoxUpdater.data[3], 1, box4Clicked);
-button5_svg: Create_Box_svg(5, BoxUpdater.data[4], 1, box5Clicked);
-button6_svg: Create_Box_svg(6, BoxUpdater.data[5], 1, box6Clicked);
-button7_svg: Create_Box_svg(7, BoxUpdater.data[6], 1, box7Clicked);
-button8_svg: Create_Box_svg(8, BoxUpdater.data[7], 1, box8Clicked);
-button9_svg: Create_Box_svg(9, BoxUpdater.data[8], 1, box9Clicked);
-button10_svg: Create_Box_svg(10, BoxUpdater.data[9], 1,box10Clicked);
+box1_svg: Create_Box_svg(1, BoxUpdater.data[0], box1Clicked);
+box2_svg: Create_Box_svg(2, BoxUpdater.data[1], box2Clicked);
+box3_svg: Create_Box_svg(3, BoxUpdater.data[2], box3Clicked);
+box4_svg: Create_Box_svg(4, BoxUpdater.data[3], box4Clicked);
+box5_svg: Create_Box_svg(5, BoxUpdater.data[4], box5Clicked);
+box6_svg: Create_Box_svg(6, BoxUpdater.data[5], box6Clicked);
+box7_svg: Create_Box_svg(7, BoxUpdater.data[6], box7Clicked);
+box8_svg: Create_Box_svg(8, BoxUpdater.data[7], box8Clicked);
+box9_svg: Create_Box_svg(9, BoxUpdater.data[8], box9Clicked);
+box10_svg:Create_Box_svg(10,BoxUpdater.data[9], box10Clicked);
 
+// Speed of the box
 const real boxSpeed = 80;
+
+// Responsible for moving the box
 automaton def Box(event clickedEvent):
     monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, clickedEvent;
+    event void clicked;
 
-    const real timeOnAirslide = 0.2;
+    // Box properties
+    cont x = -200, y=-200;
     disc string color = "pink";
-    alg real slideAngle = (10)*3.141592654/180;
     disc bool isThick = false;
-    disc real opacityDer = 0;
+    cont rotation = 0 der rotDer;
     disc real rotDer = 0;
+    cont accelTimer = 1 der 1;
+    alg real acccelSpeed = min(accelTimer * 2000, 800000) + boxSpeed;
+
+    // Box Constants
+    const real timeOnAirslide = 0.2;
+    alg real slideAngle = (10)*3.141592654/180;
     disc int productRejectPosX = 1138;
     disc int bufferPos;
     const int productRejectStartX = 1178;
     const int productConstRejectX = 1138;
-    cont rotation = 0 der rotDer;
-    cont opacity der opacityDer;
-    cont x = -200, y=-200;
-    cont accelTimer = 1 der 1;
-    alg real acccelSpeed = min(accelTimer * 2000, 800000) + boxSpeed;
     alg real boxSpeedInArm = (2*3.1415*181/360*Arm.armSpeed);
+
     location Inactive:
         equation x' = 0, y' = 0;
         initial;
         edge spawn_new_block?
-             do (x,y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity:=1 goto Spawn;
-    location Spawn:
-        equation x' = 0, y' = 0;
-        edge when opacity > 0.995 do opacityDer := 0 goto InArm;
+             do (x,y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]),
+             productRejectPosX := productConstRejectX, rotation := 0 goto InArm;
     location InArm:
         equation x' = -boxSpeedInArm * cos(Arm.armRot/180*3.1415), y' = -boxSpeedInArm * sin(Arm.armRot/180*3.1415);
         edge when isThick and y > Const.Box.LiftPos[y]+23*0.2 do (x,y) := Const.Box.LiftPos goto InLift;
@@ -77,37 +85,45 @@ automaton def Box(event clickedEvent):
         equation x' = -boxSpeed*cos(slideAngle), y' = boxSpeed*sin(slideAngle);
         edge when rotation < -10 do rotDer := 0, accelTimer := 0 goto OnAirslide;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
     location OnAirslide:
         equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
         edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
     location SlideBufferTransit:
         equation x' = -boxSpeed, y' = 0;
         edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
 	location OnBufferMoving:											//Buffer before sep
 		equation x' = Belt.speed, y' = 0;
 		edge when x < bufferPos - (if a_separator: 22 else 0 end) goto OnBufferWaiting;
 		edge ProductCounter.prodLeave when  x > ProdBroadcast.lastXRemoved do  bufferPos := max(bufferPos - 40, 681);
 		edge clickedEvent goto Removed;
+		edge clicked? goto Removed;
 	location OnBufferWaiting:
         equation x' = 0, y' = 0;
         edge ProductCounter.prodLeave when bufferPos > 682 and x > ProdBroadcast.lastXRemoved do bufferPos := bufferPos - 40 goto OnBufferMoving;
         edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
         edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
     location ToSeperatorTransit:
         equation x' = Belt.speed, y' = 0;
         edge when x < 660 goto InSeperatorWaiting;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
     location InSeperatorWaiting:
         equation x' = 0, y' = 0;
         edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
     location BufferEndTransit:
         equation x' = -boxSpeed, y' = 0;
         edge when x < 0 goto Inactive;
         edge clickedEvent goto Removed;
+        edge clicked? goto Removed;
     location Removed:
         equation x'= 0, y'=0;
         edge ProdBroadcast.prodLeave!x do x:= -200 goto Inactive;

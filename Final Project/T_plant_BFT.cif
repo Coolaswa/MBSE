@@ -19,69 +19,62 @@ alg bool s_Tstartbutton = b_start.state;
 alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tresetbutton = b_reset.Pressed;
 alg bool s_optical = OpticalSensor.isActive;
-alg bool b_lift_upPressed = b_lift_up.Pressed;
-alg bool b_lift_upReleased = b_lift_up.Released;
-alg bool b_lift_downPressed = b_lift_down.Pressed;
-alg bool b_lift_downReleased = b_lift_down.Released;
-alg bool b_pusherReleased = b_pusher.Released;
-alg bool b_pusherPressed = b_pusher.Pressed;
+//alg bool b_lift_upPressed = b_lift_up.Pressed;
+//alg bool b_lift_upReleased = b_lift_up.Released;
+//alg bool b_lift_downPressed = b_lift_down.Pressed;
+//alg bool b_lift_downReleased = b_lift_down.Released;
+//alg bool b_pusherReleased = b_pusher.Released;
+//alg bool b_pusherPressed = b_pusher.Pressed;
 alg bool s_Bstartbutton  = b_start_B.Pressed;
 
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
 
-event startClicked, resetClicked, stopClicked;
-event lift_up_clicked, lift_down_clicked;
-event pusher_clicked;
-event spawn_clicked;
+
 event BoxData spawn_new_block;
-event colorClicked;
-event heightClicked;
 event productRejected;
-event autoManualClicked;
-event startBClicked;
 
-b_start_B: Button(startBClicked);
-b_start_B_svg: Button_svg(startBClicked, "start_B", "yellow", "grey",  b_start_B.state);
+b_start_B: Button(false);
+b_start_B_svg: Button_svg(b_start_B.clicked, "start_B", "yellow", "grey",  b_start_B.state);
 
-b_start: Button(startClicked);
-b_start_svg: Button_svg(startClicked, "start", "yellow", "grey",  b_start.state);
+b_start: Button(false);
+b_start_svg: Button_svg(b_start.clicked, "start", "yellow", "grey",  b_start.state);
 
-b_reset: Button(resetClicked);
-b_reset_svg: Button_svg(resetClicked, "b_reset", "yellow", "grey", b_reset.state);
+b_reset: Button(false);
+b_reset_svg: Button_svg(b_reset.clicked, "b_reset", "yellow", "grey", b_reset.state);
 
-b_stop: Button(stopClicked);
-stop_svg: Button_svg(stopClicked, "stop", "yellow", "grey",  b_stop.state);
+b_stop: Button(true);
+stop_svg: Button_svg(b_stop.clicked, "stop", "yellow", "grey",  b_stop.state);
 
 svg_s_lift_up: LED_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, LiftSensorUp.isActive);
 svg_s_lift_down: LED_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, LiftSensorDown.isActive);
 
-b_lift_up: Button(lift_up_clicked);
+/* b_lift_up: Button(lift_up_clicked, false);
 svg_a_lift_up: Button_svg(lift_up_clicked, "a_lift_up", "yellow", "grey", b_lift_up.state);
 
-b_lift_down: Button(lift_down_clicked);
+b_lift_down: Button(lift_down_clicked, false);
 svg_a_lift_down: Button_svg(lift_down_clicked, "a_lift_down", "yellow", "grey", b_lift_down.state);
 
-b_pusher: Button(pusher_clicked);
+b_pusher: Button(pusher_clicked, false);
 svg_b_pusher: Button_svg(pusher_clicked, "b_pusher", "yellow", "grey", b_pusher.state);
-svg_s_pusher: LED_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, PusherSensor.isActive);
+svg_s_pusher: LED_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, PusherSensor.isActive);*/
 
-b_color: Button(colorClicked);
-svg_b_color: Switch_svg(colorClicked, b_color.state);
+b_color: Button(false);
+svg_b_color: Switch_svg(b_color.clicked, b_color.state);
 
-b_height: Button(heightClicked);
-svg_b_height: Switch2_svg(heightClicked);
+b_height: Button(false);
+svg_b_height: Switch2_svg(b_height.clicked);
 
 svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
 svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, CapacitiveSensor.isActive);
 svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, ReflexiveSensor.isActive);
 svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, OpticalSensor.isActive);
 
-b_spawn: Button(spawn_clicked);
-svg_b_spawn: Button_svg(spawn_clicked, "b_spawn", "yellow", "grey", b_spawn.state);
+b_spawn: Button(false);
+svg_b_spawn: Button_svg(b_spawn.clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 
-b_autoManualSwitch: Button(autoManualClicked);
-svg_b_autoManualSwitch: Button_svg(autoManualClicked, "key", "yellow", "grey", b_autoManualSwitch.state);
+b_autoManualSwitch: Button(false);
+svg_b_autoManualSwitch: Button_svg(b_autoManualSwitch.clicked, "key", "yellow", "grey", b_autoManualSwitch.state);
 
 event void pusher_activated;
 
@@ -165,11 +158,11 @@ automaton Pusher:
     alg real speed;
     cont x der speed;
     location Extending:
-        equation speed = if not PusherSensor.isActive: -60 else 0 end;
+        equation speed = if not PusherSensor.isActive: -boxSpeed else 0 end;
         edge when not a_pusher goto Retracting;
     location Retracting:
         initial;
-        equation speed = if x < 0: 60 else 0 end;
+        equation speed = if x < 0: boxSpeed else 0 end;
         edge pusher_activated! when a_pusher goto Extending;
 end
 
@@ -227,6 +220,7 @@ automaton Arm:
 end
 
 automaton Factory:
+    monitor b_spawn.clicked;
     disc string boxColor;
     disc bool isBlack;
     disc bool isThick;
@@ -236,22 +230,21 @@ automaton Factory:
     alg bool isThickMan = svg_b_height.state = 0;
 
     disc dist bool thickDistrC1 = bernoulli(0);
-    disc dist bool thickDistrC2 = bernoulli(0.5);
+    disc dist bool thickDistrC2 = bernoulli(0.3);
     disc dist bool thickDistrC3 = bernoulli(0.05);
     disc dist bool blackDistrC1 = bernoulli(0);
-    disc dist bool blackDistrC2 = bernoulli(0.5);
+    disc dist bool blackDistrC2 = bernoulli(0.3);
     disc dist bool blackDistrC3 = bernoulli(0.05);
-    disc dist real timeDistr = normal(10,5);
 
     cont timer der -1;
     location Waiting:
         initial;
-        edge spawn_clicked when UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
-        edge when timer < 0 and UseCase.Case1
+        edge b_spawn.clicked when a_testingready and UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
+        edge when a_testingready and timer < 0 and UseCase.Case1
                 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
-        edge when timer < 0 and UseCase.Case2
+        edge when a_testingready and timer < 0 and UseCase.Case2
                 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
-        edge when timer < 0 and UseCase.Case3
+        edge when a_testingready and timer < 0 and UseCase.Case3
                 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
     location Inter:
         edge do boxColor := boxColorAuto goto SpawnBlock;
@@ -259,16 +252,15 @@ automaton Factory:
         edge spawn_new_block! (Const.Box.StartThickBounds, boxColor, isThick,0) when isThick goto Post;
         edge spawn_new_block! (Const.Box.StartBounds, boxColor, isThick,0) when not isThick goto Post;
     location Post:
-        edge do (timer, timeDistr) := sample timeDistr goto Waiting;
+        edge do timer := 3 goto Waiting;
 end
 
-event b_case1Pressed, b_case2Pressed, b_case3Pressed;
-b_case1: Button(b_case1Pressed);
-b_case1_svg: Button_svg(b_case1Pressed, "b_case1", "yellow", "grey", b_case1.state);
-b_case2: Button(b_case2Pressed);
-b_case2_svg: Button_svg(b_case2Pressed, "b_case2", "yellow", "grey", b_case2.state);
-b_case3: Button(b_case3Pressed);
-b_case3_svg: Button_svg(b_case3Pressed, "b_case3", "yellow", "grey", b_case3.state);
+b_case1: Button(false);
+b_case1_svg: Button_svg(b_case1.clicked, "b_case1", "yellow", "grey", b_case1.state);
+b_case2: Button(false);
+b_case2_svg: Button_svg(b_case2.clicked, "b_case2", "yellow", "grey", b_case2.state);
+b_case3: Button(false);
+b_case3_svg: Button_svg(b_case3.clicked, "b_case3", "yellow", "grey", b_case3.state);
 automaton UseCase:
     location Case1:
         initial;
@@ -283,6 +275,47 @@ automaton UseCase:
         edge when b_case3.Pressed goto Case3;
 end
 
+automaton Q1ResetPresser:
+    cont timer der 1;
+    location Init:
+        initial;
+        edge when not UseCase.NoCase and a_TledQ1 do timer := 0 goto Wait1;
+    location Wait1:
+        edge b_reset.toggle! when timer > 3 do timer := 0 goto Wait2;
+    location Wait2:
+        edge b_reset.toggle! when timer > 1 goto Init;
+end
 
-
+automaton ProdRemoval:
+    cont timer der -1;
+    location Init:
+        initial;
+        edge when UseCase.Case3 goto Stage1;
+    location Stage1:
+        edge when not UseCase.Case3 goto Init;
+        edge box1.clicked! when box1.OnAirslide do timer := 3 goto Stage2;
+        edge box2.clicked! when box2.OnAirslide do timer := 2 goto Stage2;
+        edge box3.clicked! when box3.OnAirslide do timer := 1 goto Stage2;
+        edge box4.clicked! when box4.OnAirslide do timer := 1 goto Stage2;
+        edge box5.clicked! when box5.OnAirslide do timer := 1 goto Stage2;
+        edge box6.clicked! when box6.OnAirslide do timer := 1 goto Stage2;
+        edge box7.clicked! when box7.OnAirslide do timer := 1 goto Stage2;
+        edge box8.clicked! when box8.OnAirslide do timer := 1 goto Stage2;
+        edge box9.clicked! when box9.OnAirslide do timer := 1 goto Stage2;
+        edge box10.clicked! when box10.OnAirslide do timer := 1 goto Stage2;
+    location Stage2:
+        edge when not UseCase.Case3 goto Init;
+        edge box1.clicked! when box1.OnBufferMoving and timer < 0 goto Stage3;
+        edge box2.clicked! when box2.OnBufferMoving and timer < 0 goto Stage3;
+        edge box3.clicked! when box3.OnBufferMoving and timer < 0 goto Stage3;
+        edge box4.clicked! when box4.OnBufferMoving and timer < 0 goto Stage3;
+        edge box5.clicked! when box5.OnBufferMoving and timer < 0 goto Stage3;
+    location Stage3:
+        edge when not UseCase.Case3 goto Init;
+        edge box1.clicked! when box1.InSeperatorWaiting goto Stage1;
+        edge box2.clicked! when box2.InSeperatorWaiting goto Stage1;
+        edge box3.clicked! when box3.InSeperatorWaiting goto Stage1;
+        edge box4.clicked! when box4.InSeperatorWaiting goto Stage1;
+        edge box5.clicked! when box5.InSeperatorWaiting goto Stage1;
+end
 

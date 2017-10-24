@@ -55,7 +55,10 @@ automaton Lift2:
     location Initializing:
         equation state = STOP;
         initial;
-        edge when SystemState.Running goto Waiting;
+        edge when SystemState.Running do timer:= 0 goto PreWaiting;
+    location PreWaiting:
+        equation state = STOP;
+        edge when timer > 1 do timer := 0 goto Waiting;
     location Waiting:
         equation state = STOP;
         edge when s_capacitive do timer := 0 goto WaitingForArm;
@@ -83,7 +86,7 @@ automaton Lift2:
     location VerifyBlock2:
         equation state = STOP;
         edge when not s_productheight goto GoingDownReject;
-        edge PusherContr.extent when s_productheight goto PushingBlockAtTop;
+        edge PusherContr.extent when s_productheight and not s_bufferingbusy goto PushingBlockAtTop;
     location GoingDownReject:
         equation state = DOWN;
         edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
@@ -108,14 +111,10 @@ end
 automaton PusherContr:
     event extent, retract;
     location Extending:
-    edge retract when s_pusher goto Retracting;
-    edge when s_bufferingbusy goto Lockdown;
+        edge retract when s_pusher goto Retracting;
     location Retracting:
         initial;
         edge extent goto Extending;
-        edge when s_bufferingbusy goto Lockdown;
-    location Lockdown:                              //Pusher will not push when the buffer is full
-        edge when not s_bufferingbusy goto Retracting;
 end
 
 automaton Airslide:

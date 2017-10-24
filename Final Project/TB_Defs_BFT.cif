@@ -22,14 +22,15 @@ func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
     return -1;
 end
 
-automaton def Button(event Clicked):
-    alg bool state;
-
+automaton def Button(alg bool initialState):
+    event clicked;
+    event void toggle;
+    disc bool state = initialState;
     location Released:
         initial;
-        equation state = false;
-        edge Clicked goto Pressed;
+        edge clicked do state := true goto Pressed;
+        edge toggle? do state := true goto Pressed;
     location Pressed:
-        equation state = true;
-        edge Clicked goto Released;
+        edge clicked do state := false goto Released;
+        edge toggle? do state := false goto Released;
 end

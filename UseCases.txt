@@ -1,6 +1,8 @@
+In all use cases, reset is automatically pressed when needed after 3 sec.
+
 Case 1:
 	Happy flow: only accepted products are generated, processing station never busy
 Case 2:
-	Thick and black products are generated (X%,Y% resp.). Processing station is busy every 10s for 3s
+	30% of the products are thick, 30% of the products are black products. Processing station is busy every 10s for 3s
 Case 3:
-	Thick and black products are generated (X%,Y% resp.). Processing station is busy every 10s for 3s. Products have a 	chance of X% to be removed.
+	5% of the products are thick, 5% of the products are black products. Processing station is busy every 10s for 3s. Products have a chance of X% to be removed.

@@ -5,7 +5,7 @@ const real TimeDiffEnterAndSep  = 3;
 const real TimeDiffSepAndExit = 0.2;
 const real TimeTillAtSep = 2;
 
-alg bool a_conveyer = ConveyerContr.On and not malfunction;// ConveyerContr.On; //ConveyerContr.Moving or ConveyerContr.Delay; // or ConveyerContr.Buffering or ConveyerContr.Delay;
+alg bool a_conveyer = ConveyerContr.On and not malfunction;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
 
 input bool s_product;
@@ -14,7 +14,7 @@ input bool s_atexit;
 input bool s_processingbusy;
 input bool s_Bautoswitch;
 
-alg bool actualBusy = /*s_processingbusy or*/ s_Bautoswitch;
+alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;

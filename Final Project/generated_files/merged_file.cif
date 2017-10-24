@@ -9,9 +9,9 @@ alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSe
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = b_BautoManualSwitch.Pressed;
+alg bool s_processingbusy = ProcessingBusySensor.On;
 alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
-alg bool actualBusy = s_Bautoswitch;
+alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
 alg bool a_TledQ2 = malfunction;
@@ -67,33 +67,9 @@ event box8Clicked;
 event box9Clicked;
 event box10Clicked;
 const real boxSpeed = 80.0;
-alg bool b_lift_upPressed = b_lift_up.Pressed;
-alg bool b_lift_upReleased = b_lift_up.Released;
-alg bool b_lift_downPressed = b_lift_down.Pressed;
-alg bool b_lift_downReleased = b_lift_down.Released;
-alg bool b_pusherReleased = b_pusher.Released;
-alg bool b_pusherPressed = b_pusher.Pressed;
-event startClicked;
-event resetClicked;
-event stopClicked;
-event lift_up_clicked;
-event lift_down_clicked;
-event pusher_clicked;
-event spawn_clicked;
 event BoxData spawn_new_block;
-event colorClicked;
-event heightClicked;
 event productRejected;
-event autoManualClicked;
-event startBClicked;
 event void pusher_activated;
-event b_case1Pressed;
-event b_case2Pressed;
-event b_case3Pressed;
-event ProcessingBusyClicked;
-event ConveyerClicked;
-event BS01Clicked;
-event b_BautoClicked;
 type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
   int i = 0;
@@ -872,7 +848,10 @@ automaton Lift2:
   location Initializing:
     initial;
     equation state = STOP;
-    edge when SystemState.Running goto Waiting;
+    edge when SystemState.Running do timer := 0.0 goto PreWaiting;
+  location PreWaiting:
+    equation state = STOP;
+    edge when timer > 1 do timer := 0.0 goto Waiting;
   location Waiting:
     equation state = STOP;
     edge when s_capacitive do timer := 0.0 goto WaitingForArm;
@@ -900,7 +879,7 @@ automaton Lift2:
   location VerifyBlock2:
     equation state = STOP;
     edge when not s_productheight goto GoingDownReject;
-    edge PusherContr.extent when s_productheight goto PushingBlockAtTop;
+    edge PusherContr.extent when s_productheight and not s_bufferingbusy goto PushingBlockAtTop;
   location GoingDownReject:
     equation state = DOWN;
     edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
@@ -925,13 +904,9 @@ automaton PusherContr:
   event retract;
   location Extending:
     edge retract when s_pusher goto Retracting;
-    edge when s_bufferingbusy goto Lockdown;
   location Retracting:
     initial;
     edge extent goto Extending;
-    edge when s_bufferingbusy goto Lockdown;
-  location Lockdown:
-    edge when not s_bufferingbusy goto Retracting;
 end
 automaton Airslide:
   monitor PusherContr.extent;
@@ -944,6 +919,7 @@ automaton Airslide:
 end
 automaton box1:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box1Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1002,22 +978,26 @@ automaton box1:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1025,21 +1005,25 @@ automaton box1:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box1Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1047,6 +1031,7 @@ automaton box1:
 end
 automaton box2:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box2Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1105,22 +1090,26 @@ automaton box2:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1128,21 +1117,25 @@ automaton box2:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box2Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1150,6 +1143,7 @@ automaton box2:
 end
 automaton box3:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box3Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1208,22 +1202,26 @@ automaton box3:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1231,21 +1229,25 @@ automaton box3:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box3Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1253,6 +1255,7 @@ automaton box3:
 end
 automaton box4:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box4Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1311,22 +1314,26 @@ automaton box4:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1334,21 +1341,25 @@ automaton box4:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box4Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1356,6 +1367,7 @@ automaton box4:
 end
 automaton box5:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box5Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1414,22 +1426,26 @@ automaton box5:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1437,21 +1453,25 @@ automaton box5:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box5Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1459,6 +1479,7 @@ automaton box5:
 end
 automaton box6:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box6Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1517,22 +1538,26 @@ automaton box6:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1540,21 +1565,25 @@ automaton box6:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box6Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1562,6 +1591,7 @@ automaton box6:
 end
 automaton box7:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box7Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1620,22 +1650,26 @@ automaton box7:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1643,21 +1677,25 @@ automaton box7:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box7Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1665,6 +1703,7 @@ automaton box7:
 end
 automaton box8:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box8Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1723,22 +1762,26 @@ automaton box8:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1746,21 +1789,25 @@ automaton box8:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box8Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1768,6 +1815,7 @@ automaton box8:
 end
 automaton box9:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box9Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1826,22 +1874,26 @@ automaton box9:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1849,21 +1901,25 @@ automaton box9:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box9Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -1871,6 +1927,7 @@ automaton box9:
 end
 automaton box10:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box10Clicked;
+  event void clicked;
   const real timeOnAirslide = 0.2;
   disc string color = "pink";
   alg real slideAngle = 10 * 3.141592654 / 180;
@@ -1929,22 +1986,26 @@ automaton box10:
              y' = boxSpeed * sin(slideAngle);
     edge when rotation < -10 do rotDer := 0.0, accelTimer := 0.0 goto OnAirslide;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnAirslide:
     equation x' = -acccelSpeed * cos(slideAngle),
              y' = acccelSpeed * sin(slideAngle);
     edge when y > Const.Box.BufferY do rotDer := boxSpeed goto SlideBufferTransit;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location SlideBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0.0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferMoving:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < bufferPos - if a_separator: 22 else 0 end goto OnBufferWaiting;
     edge ProductCounter.prodLeave when x > ProdBroadcast.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location OnBufferWaiting:
     equation x' = 0.0,
              y' = 0.0;
@@ -1952,21 +2013,25 @@ automaton box10:
     edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
     edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location ToSeperatorTransit:
     equation x' = Belt.speed,
              y' = 0.0;
     edge when x < 660 goto InSeperatorWaiting;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location InSeperatorWaiting:
     equation x' = 0.0,
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x when not a_separator goto BufferEndTransit;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
     edge when x < 0 goto Inactive;
     edge box10Clicked goto Removed;
+    edge clicked? goto Removed;
   location Removed:
     equation x' = 0.0,
              y' = 0.0;
@@ -2134,75 +2199,87 @@ automaton ProductCounter:
     edge prodLeave? do rightMostProdX := max(rightMostProdX - 40, 681);
 end
 automaton b_start_B:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge startBClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge startBClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group b_start_B_svg:
   alg string idfier = "start_B";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_start_B.state;
-  svgin id idfier event startBClicked file "../SystemSVG.svg";
+  svgin id idfier event b_start_B.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_start:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge startClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge startClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group b_start_svg:
   alg string idfier = "start";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_start.state;
-  svgin id idfier event startClicked file "../SystemSVG.svg";
+  svgin id idfier event b_start.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_reset:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge resetClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge resetClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group b_reset_svg:
   alg string idfier = "b_reset";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_reset.state;
-  svgin id idfier event resetClicked file "../SystemSVG.svg";
+  svgin id idfier event b_reset.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_stop:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = true;
   location Released:
     initial;
-    equation state = false;
-    edge stopClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge stopClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group stop_svg:
   alg string idfier = "stop";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_stop.state;
-  svgin id idfier event stopClicked file "../SystemSVG.svg";
+  svgin id idfier event b_stop.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_lift_up:
@@ -2219,101 +2296,46 @@ group svg_s_lift_down:
   alg bool state = LiftSensorDown.isActive;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
-automaton b_lift_up:
-  alg bool state;
-  location Released:
-    initial;
-    equation state = false;
-    edge lift_up_clicked goto Pressed;
-  location Pressed:
-    equation state = true;
-    edge lift_up_clicked goto Released;
-end
-group svg_a_lift_up:
-  alg string idfier = "a_lift_up";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
-  alg bool state = b_lift_up.state;
-  svgin id idfier event lift_up_clicked file "../SystemSVG.svg";
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-automaton b_lift_down:
-  alg bool state;
-  location Released:
-    initial;
-    equation state = false;
-    edge lift_down_clicked goto Pressed;
-  location Pressed:
-    equation state = true;
-    edge lift_down_clicked goto Released;
-end
-group svg_a_lift_down:
-  alg string idfier = "a_lift_down";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
-  alg bool state = b_lift_down.state;
-  svgin id idfier event lift_down_clicked file "../SystemSVG.svg";
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-automaton b_pusher:
-  alg bool state;
-  location Released:
-    initial;
-    equation state = false;
-    edge pusher_clicked goto Pressed;
-  location Pressed:
-    equation state = true;
-    edge pusher_clicked goto Released;
-end
-group svg_b_pusher:
-  alg string idfier = "b_pusher";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
-  alg bool state = b_pusher.state;
-  svgin id idfier event pusher_clicked file "../SystemSVG.svg";
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-group svg_s_pusher:
-  alg string idfier = "s_pusher";
-  alg string onColor = Const.Sensors.onColor;
-  alg string offColor = Const.Sensors.offColor;
-  alg bool state = PusherSensor.isActive;
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
 automaton b_color:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge colorClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge colorClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_color:
   alg bool state = b_color.state;
-  svgin id "b_colour" event colorClicked file "../SystemSVG.svg";
+  svgin id "b_colour" event b_color.clicked file "../SystemSVG.svg";
   svgout id "colour_knob" attr "transform" value if state: "rotate(180,4.5,4.5)" else "" end file "../SystemSVG.svg";
 end
 automaton b_height:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge heightClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge heightClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 automaton svg_b_height:
   const list real SwitchHeightHeights = [0.5, 3.25, 6.25];
   disc int state = 0;
-  svgin id "b_height" event heightClicked file "../SystemSVG.svg";
+  svgin id "b_height" event b_height.clicked file "../SystemSVG.svg";
   svgout id "height_bar" attr "transform" value fmt("translate(0, %f)", SwitchHeightHeights[state]) file "../SystemSVG.svg";
   svgout id "height_pole" attr "transform" value fmt("rotate(%d,0.5,2.5)", 90 * state) file "../SystemSVG.svg";
   location:
     initial;
-    edge heightClicked do state := (state + 1) mod 3;
+    edge b_height.clicked do state := (state + 1) mod 3;
 end
 group svg_s_height:
   alg string idfier = "s_height";
@@ -2344,39 +2366,45 @@ group svg_s_optical:
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_spawn:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge spawn_clicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge spawn_clicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_spawn:
   alg string idfier = "b_spawn";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_spawn.state;
-  svgin id idfier event spawn_clicked file "../SystemSVG.svg";
+  svgin id idfier event b_spawn.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_autoManualSwitch:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge autoManualClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge autoManualClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_autoManualSwitch:
   alg string idfier = "key";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_autoManualSwitch.state;
-  svgin id idfier event autoManualClicked file "../SystemSVG.svg";
+  svgin id idfier event b_autoManualSwitch.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton SysState:
@@ -2435,11 +2463,11 @@ automaton Pusher:
   alg real speed;
   cont x der speed;
   location Extending:
-    equation speed = if not PusherSensor.isActive: -60.0 else 0.0 end;
+    equation speed = if not PusherSensor.isActive: -boxSpeed else 0.0 end;
     edge when not a_pusher goto Retracting;
   location Retracting:
     initial;
-    equation speed = if x < 0: 20.0 else 0.0 end;
+    equation speed = if x < 0: boxSpeed else 0.0 end;
     edge pusher_activated! when a_pusher goto Extending;
 end
 group LiftSensorUp:
@@ -2482,6 +2510,7 @@ automaton Arm:
     edge when armRot < 99 do armSpeed := 100.0 goto Returning;
 end
 automaton Factory:
+  monitor b_spawn.clicked;
   disc string boxColor;
   disc bool isBlack;
   disc bool isThick;
@@ -2489,79 +2518,87 @@ automaton Factory:
   alg string boxColorAuto = if isBlack: "black" else "red" end;
   alg bool isThickMan = svg_b_height.state = 0;
   disc dist bool thickDistrC1 = bernoulli(0.0);
-  disc dist bool thickDistrC2 = bernoulli(0.5);
+  disc dist bool thickDistrC2 = bernoulli(0.3);
   disc dist bool thickDistrC3 = bernoulli(0.05);
   disc dist bool blackDistrC1 = bernoulli(0.0);
-  disc dist bool blackDistrC2 = bernoulli(0.5);
+  disc dist bool blackDistrC2 = bernoulli(0.3);
   disc dist bool blackDistrC3 = bernoulli(0.05);
-  disc dist real timeDistr = normal(10.0, 5.0);
   cont timer der -1.0;
   location Waiting:
     initial;
-    edge spawn_clicked when UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
-    edge when timer < 0 and UseCase.Case1 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
-    edge when timer < 0 and UseCase.Case2 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
-    edge when timer < 0 and UseCase.Case3 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
+    edge b_spawn.clicked when a_testingready and UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
+    edge when a_testingready and timer < 0 and UseCase.Case1 do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
+    edge when a_testingready and timer < 0 and UseCase.Case2 do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
+    edge when a_testingready and timer < 0 and UseCase.Case3 do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
   location Inter:
     edge do boxColor := boxColorAuto goto SpawnBlock;
   location SpawnBlock:
     edge spawn_new_block!(Const.Box.StartThickBounds, boxColor, isThick, 0.0) when isThick goto Post;
     edge spawn_new_block!(Const.Box.StartBounds, boxColor, isThick, 0.0) when not isThick goto Post;
   location Post:
-    edge do (timer, timeDistr) := sample timeDistr goto Waiting;
+    edge do timer := 3.0 goto Waiting;
 end
 automaton b_case1:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge b_case1Pressed goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge b_case1Pressed goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group b_case1_svg:
   alg string idfier = "b_case1";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_case1.state;
-  svgin id idfier event b_case1Pressed file "../SystemSVG.svg";
+  svgin id idfier event b_case1.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_case2:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge b_case2Pressed goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge b_case2Pressed goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group b_case2_svg:
   alg string idfier = "b_case2";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_case2.state;
-  svgin id idfier event b_case2Pressed file "../SystemSVG.svg";
+  svgin id idfier event b_case2.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_case3:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge b_case3Pressed goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge b_case3Pressed goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group b_case3_svg:
   alg string idfier = "b_case3";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_case3.state;
-  svgin id idfier event b_case3Pressed file "../SystemSVG.svg";
+  svgin id idfier event b_case3.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton UseCase:
@@ -2577,22 +2614,67 @@ automaton UseCase:
     edge when b_case2.Pressed goto Case2;
     edge when b_case3.Pressed goto Case3;
 end
+automaton Q1ResetPresser:
+  cont timer der 1.0;
+  location Init:
+    initial;
+    edge when not UseCase.NoCase and a_TledQ1 do timer := 0.0 goto Wait1;
+  location Wait1:
+    edge b_reset.toggle! when timer > 3 do timer := 0.0 goto Wait2;
+  location Wait2:
+    edge b_reset.toggle! when timer > 1 goto Init;
+end
+automaton ProdRemoval:
+  cont timer der -1.0;
+  location Init:
+    initial;
+    edge when UseCase.Case3 goto Stage1;
+  location Stage1:
+    edge when not UseCase.Case3 goto Init;
+    edge box1.clicked! when box1.OnAirslide do timer := 3.0 goto Stage2;
+    edge box2.clicked! when box2.OnAirslide do timer := 2.0 goto Stage2;
+    edge box3.clicked! when box3.OnAirslide do timer := 1.0 goto Stage2;
+    edge box4.clicked! when box4.OnAirslide do timer := 1.0 goto Stage2;
+    edge box5.clicked! when box5.OnAirslide do timer := 1.0 goto Stage2;
+    edge box6.clicked! when box6.OnAirslide do timer := 1.0 goto Stage2;
+    edge box7.clicked! when box7.OnAirslide do timer := 1.0 goto Stage2;
+    edge box8.clicked! when box8.OnAirslide do timer := 1.0 goto Stage2;
+    edge box9.clicked! when box9.OnAirslide do timer := 1.0 goto Stage2;
+    edge box10.clicked! when box10.OnAirslide do timer := 1.0 goto Stage2;
+  location Stage2:
+    edge when not UseCase.Case3 goto Init;
+    edge box1.clicked! when box1.OnBufferMoving and timer < 0 goto Stage3;
+    edge box2.clicked! when box2.OnBufferMoving and timer < 0 goto Stage3;
+    edge box3.clicked! when box3.OnBufferMoving and timer < 0 goto Stage3;
+    edge box4.clicked! when box4.OnBufferMoving and timer < 0 goto Stage3;
+    edge box5.clicked! when box5.OnBufferMoving and timer < 0 goto Stage3;
+  location Stage3:
+    edge when not UseCase.Case3 goto Init;
+    edge box1.clicked! when box1.InSeperatorWaiting goto Stage1;
+    edge box2.clicked! when box2.InSeperatorWaiting goto Stage1;
+    edge box3.clicked! when box3.InSeperatorWaiting goto Stage1;
+    edge box4.clicked! when box4.InSeperatorWaiting goto Stage1;
+    edge box5.clicked! when box5.InSeperatorWaiting goto Stage1;
+end
 automaton b_BS01:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge BS01Clicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge BS01Clicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_BS01:
   alg string idfier = "BS01";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_BS01.Pressed;
-  svgin id idfier event BS01Clicked file "../SystemSVG.svg";
+  svgin id idfier event b_BS01.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_b_i_BS01:
@@ -2600,7 +2682,7 @@ group svg_b_i_BS01:
   alg string onColor = "red";
   alg string offColor = "grey";
   alg bool state = s_product;
-  svgin id idfier event BS01Clicked file "../SystemSVG.svg";
+  svgin id idfier event b_BS01.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_product:
@@ -2653,39 +2735,45 @@ group svg_s_Q2B:
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_processing:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge ProcessingBusyClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge ProcessingBusyClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_processing:
   alg string idfier = "s_processing_busy";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = ProcessingBusySensor.On;
-  svgin id idfier event ProcessingBusyClicked file "../SystemSVG.svg";
+  svgin id idfier event b_processing.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_conveyer:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge ConveyerClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge ConveyerClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_conveyer:
   alg string idfier = "b_conveyor";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_conveyer.state;
-  svgin id idfier event ConveyerClicked file "../SystemSVG.svg";
+  svgin id idfier event b_conveyer.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_conv:
@@ -2695,21 +2783,24 @@ group svg_conv:
   svgout id fmt("Conv%d_Wheel2", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360) file "../SystemSVG.svg";
 end
 automaton b_BautoManualSwitch:
-  alg bool state;
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
   location Released:
     initial;
-    equation state = false;
-    edge b_BautoClicked goto Pressed;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
   location Pressed:
-    equation state = true;
-    edge b_BautoClicked goto Released;
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_b_BautoManualSwitch:
   alg string idfier = "key-2";
   alg string onColor = "yellow";
   alg string offColor = "grey";
   alg bool state = b_autoManualSwitch.state;
-  svgin id idfier event b_BautoClicked file "../SystemSVG.svg";
+  svgin id idfier event b_BautoManualSwitch.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group AtSepSensor:
@@ -2725,21 +2816,24 @@ group ExitSensor:
   alg bool isActive = boxI != -1;
 end
 automaton ProcessingBusySensor:
-  cont timer der 1.0;
+  cont timer der -1.0;
   location On:
-    edge when not s_Tautoswitch and b_processing.Released goto Off;
-    edge when s_Tautoswitch and timer > 20 do timer := 0.0 goto Off;
+    edge when UseCase.NoCase goto Off;
+    edge when UseCase.Case1 and timer < 0 do timer := 3.0 goto Off;
+    edge when UseCase.Case2 and timer < 0 do timer := 3.0 goto Off;
+    edge when UseCase.Case3 and timer < 0 do timer := 3.0 goto Off;
   location Off:
     initial;
-    edge when not s_Tautoswitch and b_processing.Pressed goto On;
-    edge when s_Tautoswitch and timer > 3 do timer := 0.0 goto On;
+    edge when UseCase.Case1 and timer < 0 do timer := 10.0 goto On;
+    edge when UseCase.Case2 and timer < 0 do timer := 3.0 goto On;
+    edge when UseCase.Case3 and timer < 0 do timer := 3.0 goto On;
 end
 automaton Belt:
   cont wheelRotation der 3.0 * speed;
   alg real speed;
   cont x der speed;
   location Moving:
-    equation speed = -60.0;
+    equation speed = -80.0;
     edge when not a_conveyer goto Standstill;
   location Standstill:
     initial;
@@ -2752,6 +2846,16 @@ automaton Separator:
   location Left:
     initial;
     edge when a_separator goto Right;
+end
+automaton Q2ResetPresser:
+  cont timer der 1.0;
+  location Init:
+    initial;
+    edge when not UseCase.NoCase and a_TledQ2 do timer := 0.0 goto Wait1;
+  location Wait1:
+    edge b_reset.toggle! when timer > 3 do timer := 0.0 goto Wait2;
+  location Wait2:
+    edge b_reset.toggle! when timer > 1 goto Init;
 end
 group Const:
   group Box:
