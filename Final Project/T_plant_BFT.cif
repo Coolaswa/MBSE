@@ -169,7 +169,7 @@ automaton Pusher:
         edge when not a_pusher goto Retracting;
     location Retracting:
         initial;
-        equation speed = if x < 0: 20 else 0 end;
+        equation speed = if x < 0: 60 else 0 end;
         edge pusher_activated! when a_pusher goto Extending;
 end
 
