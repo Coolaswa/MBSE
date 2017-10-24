@@ -2,7 +2,7 @@ import "T_ctrl_BFT.cif";
 
 const real TimeOnAirslide = 0.2;
 const real TimeDiffEnterAndSep  = 3;
-const real TimeDiffSepAndExit = 0.2;
+const real TimeDiffSepAndExit = 1;
 const real TimeTillAtSep = 2;
 
 alg bool a_conveyer = ConveyerContr.On and not malfunction;
@@ -156,7 +156,7 @@ type Point = tuple(real x, y);
 const Point LiftTop = (1182.9, 228);
 automaton def BoxModel():
     monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
-    cont x;
+    cont x = -200;
     cont y;
     cont confTimer der 1;
     cont accelTimer der 1;
@@ -198,10 +198,12 @@ automaton def BoxModel():
     location AwaitConfSep:
         equation x' = 0, y' = 0;
         edge atSepConf? do x := x - boxSpeed*? goto OnBufferMoving;
+        edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do  bufferPos := max(bufferPos - 40, 681);
         edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200 goto DecreaseCount;
     location AwaitConfEntry:
         equation x' = 0, y' = 0;
         edge atEntryConf? do x := x - boxSpeed*? goto OnBufferMoving;
+        edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do  bufferPos := max(bufferPos - 40, 681);
         edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200 goto Waiting;
     location DecreaseCount:
         equation x' = 0, y' = 0;
