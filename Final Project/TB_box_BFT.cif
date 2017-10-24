@@ -121,7 +121,7 @@ automaton def Box(event clickedEvent):
         edge clicked? goto Removed;
     location BufferEndTransit:
         equation x' = -boxSpeed, y' = 0;
-        edge when x < 0 goto Inactive;
+        edge when x < 546 goto Inactive;
         edge clickedEvent goto Removed;
         edge clicked? goto Removed;
     location Removed:

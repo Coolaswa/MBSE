@@ -11,11 +11,13 @@ alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = ProcessingBusySensor.On;
+alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
 
 b_BS01: Button(false);
 svg_b_BS01: Button_svg(b_BS01.clicked, "BS01", "yellow", "grey", b_BS01.Pressed);
 svg_b_i_BS01: Button_svg(b_BS01.clicked, "i_BS01", "red", "grey", s_product);
+svg_b_i_BS02: LED_svg("i_BS02", "red", "grey", s_atseparator);
+svg_b_i_BS03: LED_svg("i_BS03", "red", "grey", s_atexit);
 
 svg_s_product: LED_svg("s_product_entry", Const.Sensors.onColor, Const.Sensors.offColor, EntrySensor.isActive);
 svg_s_atseparator: LED_svg("s_product_separator", Const.Sensors.onColor, Const.Sensors.offColor, AtSepSensor.isActive);
@@ -26,7 +28,7 @@ svg_s_Q1B: LED_svg("s_q1-7", "yellow", "grey", a_BledQ1);
 svg_s_Q2B: LED_svg("s_q2-5", "yellow", "grey", a_BledQ2);
 
 b_processing: Button(false);
-svg_b_processing: Button_svg(b_processing.clicked, "s_processing_busy", "yellow", "grey", ProcessingBusySensor.On);
+svg_b_processing: Button_svg(b_processing.clicked, "s_processing_busy", "yellow", "grey", s_processingbusy);
 
 b_conveyer: Button(false);
 svg_b_conveyer: Button_svg(b_conveyer.clicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
@@ -96,7 +98,7 @@ automaton Separator:	//Separator needs to turn/rotate when going from left to ri
         edge when a_separator goto Right;
 end
 
-automaton Q2ResetPresser:
+/*automaton Q2ResetPresser:
     cont timer der 1;
     location Init:
         initial;
@@ -105,5 +107,5 @@ automaton Q2ResetPresser:
         edge b_reset.toggle! when timer > 3 do timer := 0 goto Wait2;
     location Wait2:
         edge b_reset.toggle! when timer > 1 goto Init;
-end
+end*/
 

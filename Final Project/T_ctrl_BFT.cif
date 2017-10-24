@@ -27,6 +27,7 @@ alg bool systemReady = s_Tinitialized and s_Binitialized;
 
 enum LiftState = UP, STOP, DOWN;
 
+// Keeps track if the system is on or off
 automaton SystemState:
     location Waiting:
         initial;
@@ -39,6 +40,7 @@ automaton SystemState:
         edge when s_Tstopbutton goto Waiting;
 end
 
+// Used to send an event when the start button is pressed
 automaton BStart:
     event void toggle;
     location Off:
@@ -48,6 +50,7 @@ automaton BStart:
         edge toggle! when not s_Bstartbutton goto Off;
 end
 
+// Controller for the lift
 automaton Lift2:
     alg LiftState state;
     event rejProduct;
@@ -98,6 +101,7 @@ automaton Lift2:
         edge when s_elevator_down goto Initializing;
 end
 
+//
 automaton RejectBufferContr:
     disc int count;
     location Waiting:

@@ -66,6 +66,7 @@ b_height: Button(false);
 svg_b_height: Switch2_svg(b_height.clicked);
 
 svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
+svg_s_height2: LED_svg("s_height2", "red", "grey", HeightSensor.isActive);
 svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, CapacitiveSensor.isActive);
 svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, ReflexiveSensor.isActive);
 svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, OpticalSensor.isActive);

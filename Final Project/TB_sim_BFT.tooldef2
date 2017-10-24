@@ -19,6 +19,8 @@ cif3sim(
     "--stateviz=1",
     "--speed=1",
     "--env-events=svg",
+    //"--stateviz-filter=m_box1,m_box1.x,m_box2,m_box2.x,m_box3,m_box3.x,m_box4,m_box4.x,m_box5,m_box5.x",
     "-i svg",
-    "--auto-choose=tau",
+    "--auto-choose=Pusher*,push*,tau",
 );
+//, m_box2.x, m_box2, m_box3.x, m_box3, m_box4.x, m_box4, m_box5.x, m_box5

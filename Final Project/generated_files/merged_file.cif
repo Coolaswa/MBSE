@@ -2,14 +2,14 @@ const real box_opacity = 0.3;
 const string box_color = "blue";
 const real TimeOnAirslide = 0.2;
 const real TimeDiffEnterAndSep = 3.0;
-const real TimeDiffSepAndExit = 0.2;
+const real TimeDiffSepAndExit = 1.0;
 const real TimeTillAtSep = 2.0;
 alg bool a_conveyer = ConveyerContr.On and not malfunction;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
 alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
 alg bool s_atseparator = AtSepSensor.isActive;
 alg bool s_atexit = ExitSensor.isActive;
-alg bool s_processingbusy = ProcessingBusySensor.On;
+alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
 alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
@@ -86,8 +86,9 @@ func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
   end
   return -1;
 end
-group box1_svg:
+group box1_svg2:
   alg string name = "Product_" + <string>idfier;
+  alg string myState = if m_box1.OnBufferMoving: "moving" elif m_box1.DoDelete: "delete" elif m_box1.AwaitConfSep: "sepconf" elif m_box1.DecreaseCount: "deccount" elif m_box1.OnBufferWaiting: "wait" elif m_box1.ToSeperatorTransit: "tosep" elif m_box1.InSeperatorWaiting: "insep" else "idk" end;
   alg int idfier = 11;
   alg string color = box_color;
   alg real x = m_box1.x;
@@ -95,12 +96,13 @@ group box1_svg:
   alg real rot = m_box1.rotation;
   alg real opacity = box_opacity;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
-  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y - 5.0, rot) file "../SystemSVG.svg";
+  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rot) file "../SystemSVG.svg";
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
 end
-group box2_svg:
+group box2_svg2:
   alg string name = "Product_" + <string>idfier;
+  alg string myState = if m_box2.OnBufferMoving: "moving" elif m_box2.DoDelete: "delete" elif m_box2.AwaitConfSep: "sepconf" elif m_box2.DecreaseCount: "deccount" elif m_box2.OnBufferWaiting: "wait" elif m_box2.ToSeperatorTransit: "tosep" elif m_box2.InSeperatorWaiting: "insep" else "idk" end;
   alg int idfier = 12;
   alg string color = box_color;
   alg real x = m_box2.x;
@@ -108,12 +110,13 @@ group box2_svg:
   alg real rot = m_box2.rotation;
   alg real opacity = box_opacity;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
-  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y - 5.0, rot) file "../SystemSVG.svg";
+  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rot) file "../SystemSVG.svg";
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
 end
-group box3_svg:
+group box3_svg2:
   alg string name = "Product_" + <string>idfier;
+  alg string myState = if m_box3.OnBufferMoving: "moving" elif m_box3.DoDelete: "delete" elif m_box3.AwaitConfSep: "sepconf" elif m_box3.DecreaseCount: "deccount" elif m_box3.OnBufferWaiting: "wait" elif m_box3.ToSeperatorTransit: "tosep" elif m_box3.InSeperatorWaiting: "insep" else "idk" end;
   alg int idfier = 13;
   alg string color = box_color;
   alg real x = m_box3.x;
@@ -121,12 +124,13 @@ group box3_svg:
   alg real rot = m_box3.rotation;
   alg real opacity = box_opacity;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
-  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y - 5.0, rot) file "../SystemSVG.svg";
+  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rot) file "../SystemSVG.svg";
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
 end
-group box4_svg:
+group box4_svg2:
   alg string name = "Product_" + <string>idfier;
+  alg string myState = if m_box4.OnBufferMoving: "moving" elif m_box4.DoDelete: "delete" elif m_box4.AwaitConfSep: "sepconf" elif m_box4.DecreaseCount: "deccount" elif m_box4.OnBufferWaiting: "wait" elif m_box4.ToSeperatorTransit: "tosep" elif m_box4.InSeperatorWaiting: "insep" else "idk" end;
   alg int idfier = 14;
   alg string color = box_color;
   alg real x = m_box4.x;
@@ -134,12 +138,13 @@ group box4_svg:
   alg real rot = m_box4.rotation;
   alg real opacity = box_opacity;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
-  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y - 5.0, rot) file "../SystemSVG.svg";
+  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rot) file "../SystemSVG.svg";
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
 end
-group box5_svg:
+group box5_svg2:
   alg string name = "Product_" + <string>idfier;
+  alg string myState = if m_box5.OnBufferMoving: "moving" elif m_box5.DoDelete: "delete" elif m_box5.AwaitConfSep: "sepconf" elif m_box5.DecreaseCount: "deccount" elif m_box5.OnBufferWaiting: "wait" elif m_box5.ToSeperatorTransit: "tosep" elif m_box5.InSeperatorWaiting: "insep" else "idk" end;
   alg int idfier = 15;
   alg string color = box_color;
   alg real x = m_box5.x;
@@ -147,7 +152,7 @@ group box5_svg:
   alg real rot = m_box5.rotation;
   alg real opacity = box_opacity;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
-  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y - 5.0, rot) file "../SystemSVG.svg";
+  svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", x, y, rot) file "../SystemSVG.svg";
   svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value color file "../SystemSVG.svg";
 end
@@ -301,7 +306,7 @@ automaton exitListener:
 end
 automaton m_box1:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
-  cont x;
+  cont x = -200.0;
   cont y;
   cont confTimer der 1.0;
   cont accelTimer der 1.0;
@@ -350,11 +355,13 @@ automaton m_box1:
     equation x' = 0.0,
              y' = 0.0;
     edge atSepConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto DecreaseCount;
   location AwaitConfEntry:
     equation x' = 0.0,
              y' = 0.0;
     edge atEntryConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto Waiting;
   location DecreaseCount:
     equation x' = 0.0,
@@ -387,7 +394,7 @@ automaton m_box1:
 end
 automaton m_box2:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
-  cont x;
+  cont x = -200.0;
   cont y;
   cont confTimer der 1.0;
   cont accelTimer der 1.0;
@@ -436,11 +443,13 @@ automaton m_box2:
     equation x' = 0.0,
              y' = 0.0;
     edge atSepConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto DecreaseCount;
   location AwaitConfEntry:
     equation x' = 0.0,
              y' = 0.0;
     edge atEntryConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto Waiting;
   location DecreaseCount:
     equation x' = 0.0,
@@ -473,7 +482,7 @@ automaton m_box2:
 end
 automaton m_box3:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
-  cont x;
+  cont x = -200.0;
   cont y;
   cont confTimer der 1.0;
   cont accelTimer der 1.0;
@@ -522,11 +531,13 @@ automaton m_box3:
     equation x' = 0.0,
              y' = 0.0;
     edge atSepConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto DecreaseCount;
   location AwaitConfEntry:
     equation x' = 0.0,
              y' = 0.0;
     edge atEntryConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto Waiting;
   location DecreaseCount:
     equation x' = 0.0,
@@ -559,7 +570,7 @@ automaton m_box3:
 end
 automaton m_box4:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
-  cont x;
+  cont x = -200.0;
   cont y;
   cont confTimer der 1.0;
   cont accelTimer der 1.0;
@@ -608,11 +619,13 @@ automaton m_box4:
     equation x' = 0.0,
              y' = 0.0;
     edge atSepConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto DecreaseCount;
   location AwaitConfEntry:
     equation x' = 0.0,
              y' = 0.0;
     edge atEntryConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto Waiting;
   location DecreaseCount:
     equation x' = 0.0,
@@ -645,7 +658,7 @@ automaton m_box4:
 end
 automaton m_box5:
   monitor ProductCounter2.prodLeave, ProdBroadcast2.prodDoUpdate;
-  cont x;
+  cont x = -200.0;
   cont y;
   cont confTimer der 1.0;
   cont accelTimer der 1.0;
@@ -694,11 +707,13 @@ automaton m_box5:
     equation x' = 0.0,
              y' = 0.0;
     edge atSepConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto DecreaseCount;
   location AwaitConfEntry:
     equation x' = 0.0,
              y' = 0.0;
     edge atEntryConf? do x := x - boxSpeed * ? goto OnBufferMoving;
+    edge ProductCounter2.prodLeave when x > ProdBroadcast2.lastXRemoved do bufferPos := max(bufferPos - 40, 681);
     edge ProdBroadcast2.prodLeave!x when confTimer > confTime do x := -200.0 goto Waiting;
   location DecreaseCount:
     equation x' = 0.0,
@@ -920,32 +935,26 @@ end
 automaton box1:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box1Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1021,7 +1030,7 @@ automaton box1:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box1Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1032,32 +1041,26 @@ end
 automaton box2:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box2Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1133,7 +1136,7 @@ automaton box2:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box2Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1144,32 +1147,26 @@ end
 automaton box3:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box3Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1245,7 +1242,7 @@ automaton box3:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box3Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1256,32 +1253,26 @@ end
 automaton box4:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box4Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1357,7 +1348,7 @@ automaton box4:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box4Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1368,32 +1359,26 @@ end
 automaton box5:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box5Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1469,7 +1454,7 @@ automaton box5:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box5Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1480,32 +1465,26 @@ end
 automaton box6:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box6Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1581,7 +1560,7 @@ automaton box6:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box6Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1592,32 +1571,26 @@ end
 automaton box7:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box7Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1693,7 +1666,7 @@ automaton box7:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box7Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1704,32 +1677,26 @@ end
 automaton box8:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box8Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1805,7 +1772,7 @@ automaton box8:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box8Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1816,32 +1783,26 @@ end
 automaton box9:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box9Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1917,7 +1878,7 @@ automaton box9:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box9Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -1928,32 +1889,26 @@ end
 automaton box10:
   monitor productRejected, ProductCounter.prodLeave, ProdBroadcast.prodDoUpdate, box10Clicked;
   event void clicked;
-  const real timeOnAirslide = 0.2;
+  cont x = -200.0;
+  cont y = -200.0;
   disc string color = "pink";
-  alg real slideAngle = 10 * 3.141592654 / 180;
   disc bool isThick = false;
-  disc real opacityDer = 0.0;
+  cont rotation = 0.0 der rotDer;
   disc real rotDer = 0.0;
+  cont accelTimer = 1.0 der 1.0;
+  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
+  const real timeOnAirslide = 0.2;
+  alg real slideAngle = 10 * 3.141592654 / 180;
   disc int productRejectPosX = 1138;
   disc int bufferPos;
   const int[1178..1178] productRejectStartX = 1178;
   const int[1138..1138] productConstRejectX = 1138;
-  cont rotation = 0.0 der rotDer;
-  cont opacity der opacityDer;
-  cont x = -200.0;
-  cont y = -200.0;
-  cont accelTimer = 1.0 der 1.0;
-  alg real acccelSpeed = min(accelTimer * 2000.0, 800000.0) + boxSpeed;
   alg real boxSpeedInArm = 2 * 3.1415 * 181 / 360 * Arm.armSpeed;
   location Inactive:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick, productRejectPosX) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick], productConstRejectX), opacity := 1.0 goto Spawn;
-  location Spawn:
-    equation x' = 0.0,
-             y' = 0.0;
-    edge when opacity > 0.995 do opacityDer := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -2029,7 +1984,7 @@ automaton box10:
   location BufferEndTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
-    edge when x < 0 goto Inactive;
+    edge when x < 546 goto Inactive;
     edge box10Clicked goto Removed;
     edge clicked? goto Removed;
   location Removed:
@@ -2037,133 +1992,113 @@ automaton box10:
              y' = 0.0;
     edge ProdBroadcast.prodLeave!x do x := -200.0 goto Inactive;
 end
-group button1_svg:
+group box1_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 1;
   alg BoxData data = BoxUpdater.data[0];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box1Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button2_svg:
+group box2_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 2;
   alg BoxData data = BoxUpdater.data[1];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box2Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button3_svg:
+group box3_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 3;
   alg BoxData data = BoxUpdater.data[2];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box3Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button4_svg:
+group box4_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 4;
   alg BoxData data = BoxUpdater.data[3];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box4Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button5_svg:
+group box5_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 5;
   alg BoxData data = BoxUpdater.data[4];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box5Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button6_svg:
+group box6_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 6;
   alg BoxData data = BoxUpdater.data[5];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box6Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button7_svg:
+group box7_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 7;
   alg BoxData data = BoxUpdater.data[6];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box7Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button8_svg:
+group box8_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 8;
   alg BoxData data = BoxUpdater.data[7];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box8Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button9_svg:
+group box9_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 9;
   alg BoxData data = BoxUpdater.data[8];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box9Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
-group button10_svg:
+group box10_svg:
   alg string name = "Product_" + <string>idfier;
   alg real heightScale = if data[thick]: 1.2 else 1.0 end;
   alg int idfier = 10;
   alg BoxData data = BoxUpdater.data[9];
-  alg real opacity = 1.0;
   svgcopy id "Product" post "_" + <string>idfier file "../SystemSVG.svg";
   svgin id name event box10Clicked file "../SystemSVG.svg";
   svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]) file "../SystemSVG.svg";
-  svgout id name attr "opacity" value opacity file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color] file "../SystemSVG.svg";
   svgout id "ProductGraphics_" + <string>idfier attr "transform" value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1.0) * 23) file "../SystemSVG.svg";
 end
@@ -2180,14 +2115,6 @@ automaton ProdBroadcast:
     edge ProductCounter.prodLeave! goto Await;
   location Send2:
     edge prodDoUpdate goto Await;
-end
-group LeftBlockCheck:
-  alg int boxI = RectRectColl((Const.Sensors.LeftBlockBounds[x], Const.Sensors.LeftBlockBounds[y], Const.Sensors.LeftBlockBounds[width], Const.Sensors.LeftBlockBounds[height]), BoxUpdater.data);
-  alg bool isActive = boxI != -1 and Separator.Left;
-end
-group RightBlockCheck:
-  alg int boxI = RectRectColl((Const.Sensors.RightBlockBounds[x], Const.Sensors.RightBlockBounds[y], Const.Sensors.RightBlockBounds[width], Const.Sensors.RightBlockBounds[height]), BoxUpdater.data);
-  alg bool isActive = boxI != -1 and Separator.Right;
 end
 automaton ProductCounter:
   disc int rightMostProdX = 681;
@@ -2341,6 +2268,13 @@ group svg_s_height:
   alg string idfier = "s_height";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
+  alg bool state = HeightSensor.isActive;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_s_height2:
+  alg string idfier = "s_height2";
+  alg string onColor = "red";
+  alg string offColor = "grey";
   alg bool state = HeightSensor.isActive;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
@@ -2685,6 +2619,20 @@ group svg_b_i_BS01:
   svgin id idfier event b_BS01.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+group svg_b_i_BS02:
+  alg string idfier = "i_BS02";
+  alg string onColor = "red";
+  alg string offColor = "grey";
+  alg bool state = s_atseparator;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_b_i_BS03:
+  alg string idfier = "i_BS03";
+  alg string onColor = "red";
+  alg string offColor = "grey";
+  alg bool state = s_atexit;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
 group svg_s_product:
   alg string idfier = "s_product_entry";
   alg string onColor = Const.Sensors.onColor;
@@ -2751,7 +2699,7 @@ group svg_b_processing:
   alg string idfier = "s_processing_busy";
   alg string onColor = "yellow";
   alg string offColor = "grey";
-  alg bool state = ProcessingBusySensor.On;
+  alg bool state = s_processingbusy;
   svgin id idfier event b_processing.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
@@ -2846,16 +2794,6 @@ automaton Separator:
   location Left:
     initial;
     edge when a_separator goto Right;
-end
-automaton Q2ResetPresser:
-  cont timer der 1.0;
-  location Init:
-    initial;
-    edge when not UseCase.NoCase and a_TledQ2 do timer := 0.0 goto Wait1;
-  location Wait1:
-    edge b_reset.toggle! when timer > 3 do timer := 0.0 goto Wait2;
-  location Wait2:
-    edge b_reset.toggle! when timer > 1 goto Init;
 end
 group Const:
   group Box:

@@ -8,7 +8,7 @@
       <feGaussianBlur id="feGaussianBlur7413" inkscape:collect="always" stdDeviation="9.6999794"/>
     </filter>
   </defs>
-  <sodipodi:namedview objecttolerance="1" bordercolor="#666666" inkscape:window-height="1001" inkscape:zoom="0.99239658" id="base" inkscape:current-layer="layer1" inkscape:window-y="-9" inkscape:cy="240.2916" inkscape:window-x="-9" inkscape:cx="861.02923" showgrid="false" guidetolerance="1" inkscape:pageopacity="0.0" inkscape:document-units="mm" units="px" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-maximized="1" borderopacity="1.0" pagecolor="#ffffff"/>
+  <sodipodi:namedview objecttolerance="1" bordercolor="#666666" inkscape:window-height="1017" inkscape:zoom="3.9695863" id="base" inkscape:current-layer="layer1" inkscape:window-y="-8" inkscape:cy="97.538532" inkscape:window-x="-8" inkscape:cx="1192.9018" showgrid="false" guidetolerance="1" inkscape:pageopacity="0.0" inkscape:document-units="mm" units="px" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-maximized="1" borderopacity="1.0" pagecolor="#ffffff"/>
   <metadata id="metadata5">
     <rdf:RDF>
       <cc:Work rdf:about="">
@@ -19,30 +19,52 @@
     </rdf:RDF>
   </metadata>
   <g inkscape:groupmode="layer" id="layer1" inkscape:label="Layer 1">
+    <g id="Peripherals">
+      <g id="g400-0" transform="translate(894.18113,326.26734)">
+        <rect x="0" y="0" width="30" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="100" id="rect397-1"/>
+        <rect x="10" y="0" width="10" style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect404-6" height="100"/>
+      </g>
+      <g id="g400-0-5" transform="matrix(0.99511562,0,0,1.4513339,1056.2177,280.08479)">
+        <rect x="0" y="0" width="30" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="100" id="rect397-1-6"/>
+        <rect x="10" y="0" width="10" style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect404-6-2" height="100"/>
+      </g>
+      <g id="g400-0-8" transform="matrix(1,0,0,0.77941189,1368.5195,351.3809)">
+        <rect x="0" y="0" width="30" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="100" id="rect397-1-8"/>
+        <rect x="10" y="0" width="10" style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect404-6-28" height="100"/>
+      </g>
+      <g id="g400" transform="translate(632.72167,326.33618)">
+        <rect x="0" y="0" width="30" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="100" id="rect397"/>
+        <rect x="10" y="0" width="10" style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect404" height="100"/>
+      </g>
+      <rect x="531.82941" y="297.63138" width="70" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect369" height="31"/>
+      <rect x="524.99176" y="422.65155" width="889.76526" style="opacity:1;fill:#333333;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="10.076616" id="rect387"/>
+    </g>
     <g id="Vertical rails" transform="translate(1264.5167,170.71578)">
       <rect x="0" y="0" width="2.5" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.72058535;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="250" id="rails"/>
     </g>
     <g id="Discarded" transform="translate(973.0724,387.40221)">
-      <rect x="-9.0655708" y="-1.5733287" width="211" style="opacity:1;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="20" id="rect4526-9"/>
+      <rect x="-9.0655708" y="-1.5733287" width="211" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="20" id="rect4526-9"/>
     </g>
-    <g id="Platform" transform="translate(0, 0.000000)">
+    <g id="Platform" transform="translate(0, -133.000000)">
       <rect x="1202.9086" y="370.92603" width="38.863682" style="opacity:1;fill:#ff0101;fill-opacity:1;stroke:none;stroke-width:3.92839575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.1913373" id="rect2291" height="2.3826747"/>
-      <rect x="1182.9086" y="383.92603" width="110" style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect1497" height="18"/>
-      <g id="a_pusher" transform="translate(0.000003, 0)">
-        <rect x="1222.9086" y="359.92603" width="6" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="24" id="rect1389"/>
-        <rect x="1222.9086" y="367.92603" width="80" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="8" id="rect4530"/>
+      <rect x="1182.9086" y="383.92603" width="110" style="opacity:1;fill:#808080;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect1497" height="18"/>
+      <g id="a_pusher" transform="translate(0.000010, 0)">
+        <rect x="1222.9086" y="367.92603" width="80" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="8" id="rect4530"/>
+        <rect x="1222.9086" y="359.92603" width="6" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="24" id="rect1389"/>
       </g>
-      <rect x="1242.9086" y="359.42603" width="50" style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect4528" height="25"/>
+      <rect x="1242.9086" y="359" width="50" style="opacity:1;fill:#808080;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect4528" height="25"/>
+      <rect x="1243.6434" y="379.76294" width="48.367771" style="opacity:1;fill:#808080;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" ry="0" id="rect371" height="9.4468365"/>
     </g>
     <g id="height_sensor" transform="translate(1187.1818,171.42391)">
-      <g id="a_height_head" transform="translate(0, 0.000011)">
-        <rect x="4" y="60" width="25" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.92217016;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect1389-7" height="6"/>
-        <rect x="10" y="10" width="13.313107" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.43428373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="rect4530-4" height="54.139351"/>
+      <g id="a_height_head" transform="translate(0, -9.999996)">
+        <rect x="10" y="10" width="13.313107" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect4530-4" height="54.139351"/>
+        <rect x="4" y="60" width="25" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect1389-7" height="6"/>
       </g>
-      <rect x="0" y="0" width="33.282772" style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.92202401;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="38.514103" id="rect4528-0"/>
-      <circle r="1.5178572" id="s_height2" style="opacity:1;fill:#ff0000;stroke:#333333;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="28" cy="32"/>
+      <rect x="0" y="0" width="33.282772" style="opacity:1;fill:#808080;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="38.514103" id="rect4528-0"/>
+      <circle r="1.5178572" id="s_height2" style="opacity: 1;&#10;fill: red;&#10;stroke: rgb(51, 51, 51);&#10;stroke-width: 0.25;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="28" cy="32"/>
     </g>
-    <g id="Control panel" transform="matrix(1.5,0,0,1.5,352.99453,104.1906)">
+    <g id="Control panel" transform="matrix(1.5,0,0,1.5,193.90175,56.541072)">
+      <text x="6" xml:space="preserve" y="-5" id="text1165" style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="6" y="-5" id="tspan1163" sodipodi:role="line">Testing station</tspan></text>
       <rect x="0" y="0" width="70" style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="110" id="rect2263"/>
       <g id="startbutton" transform="translate(10,20)">
         <rect x="0" y="0" width="20" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 2.6101885;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="5.5" id="start" height="20"/>
@@ -72,11 +94,11 @@
       </g>
       <g id="q2button" transform="translate(40,80)">
         <text xml:space="preserve" x="6.5" id="text819-1-3-6" y="25" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"><tspan x="6.5" id="tspan817-07-6-0" y="25" sodipodi:role="line" style="stroke-width:0.23602927">Q2</tspan></text>
-        <rect x="0" y="0" width="20" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 2.6101885;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="5.5" height="20" id="s_q2"/>
+        <rect x="0" y="0" width="20" style="opacity: 1;&#10;fill: yellow;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 2.6101885;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="5.5" height="20" id="s_q2"/>
       </g>
       <text x="37" xml:space="preserve" y="14" id="text336" style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0088aa;fill-opacity:1;stroke:none"><tspan x="37" y="14" id="tspan334" style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa" sodipodi:role="line">FESTO</tspan></text>
     </g>
-    <g id="Sensor panel" transform="translate(114.65232,139.40105)">
+    <g id="Sensor panel" transform="translate(191.60496,277.63079)">
       <g id="g528" transform="scale(3)">
         <rect x="0" y="0" width="50" style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:2.17715502;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="105" id="rect2263-3"/>
         <rect x="7.4835467" y="13.363477" width="35.529762" style="opacity:1;fill:#e1e1e1;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="0.75595713" id="rect1214"/>
@@ -96,7 +118,7 @@
           </g>
           <g id="g192">
             <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect2286-8-5-3"/>
-            <circle id="s_capacitive" r="3" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+            <circle id="s_capacitive" r="3" style="opacity: 1;&#10;fill: rgb(0, 255, 204);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
           </g>
         </g>
         <g id="optical" transform="translate(5.5,51)">
@@ -104,19 +126,19 @@
             <text xml:space="preserve" id="text991-2-4-7" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="0" y="0" id="tspan989-3-6-6" style="stroke-width:0.26458332" sodipodi:role="line">Optical</tspan></text>
           </g>
           <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect2286-8-9-8"/>
-          <circle r="3" id="s_optical" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+          <circle r="3" id="s_optical" style="opacity: 1;&#10;fill: rgb(0, 255, 204);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
         </g>
         <g id="Elevator down sensor" transform="translate(20.5,34)">
           <text xml:space="preserve" id="text991-2" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-1.75,12)"><tspan x="0" y="0" transform="matrix(0.61635319,0,0,1,66.890844,-4.0168095e-6)" sodipodi:role="line" style="stroke-width:0.26458332" id="tspan989-3">Elevator</tspan></text>
           <text xml:space="preserve" id="text995-3" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(0.25,15)"><tspan x="0" id="tspan993-6" y="0" sodipodi:role="line" style="stroke-width:0.26458332">down</tspan></text>
           <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect2286-8-7-8"/>
-          <circle r="3" id="s_lift_down" style="opacity: 1;&#10;fill: rgb(0, 255, 204);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+          <circle r="3" id="s_lift_down" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
         </g>
         <g id="product entry" transform="translate(5.5,68)">
           <text xml:space="preserve" id="text4226" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-1.5,12)"><tspan x="0" id="tspan4224" y="0" sodipodi:role="line" style="stroke-width:0.26458332">Product</tspan></text>
           <text xml:space="preserve" id="text4230" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(0.25,15)"><tspan x="0" y="0" id="tspan4228" style="stroke-width:0.26458332" sodipodi:role="line">entry</tspan></text>
           <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect4232"/>
-          <circle id="s_product_entry" r="3" style="opacity: 1;&#10;fill: rgb(0, 255, 204);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+          <circle id="s_product_entry" r="3" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
         </g>
         <g id="product at separator" transform="translate(20.5,68)">
           <g id="g4310" transform="matrix(0.76738713,0,0,1,1.2691972,0)">
@@ -159,7 +181,7 @@
             <text xml:space="preserve" id="text991-2-4" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-0.8,12)"><tspan x="0" y="0" id="tspan989-3-6" style="stroke-width:0.26458332" sodipodi:role="line">Pusher</tspan></text>
           </g>
           <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect2286-8-31"/>
-          <circle r="3" id="s_pusher" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+          <circle r="3" id="s_pusher" style="opacity:1;fill:#004455;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="4.5" cy="4.5"/>
         </g>
         <g id="Elevator up sensor" transform="translate(5.5,34)">
           <g id="g1001">
@@ -167,7 +189,7 @@
             <text xml:space="preserve" id="text995" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(2.5,15)"><tspan x="0" y="0" id="tspan993" style="stroke-width:0.26458332" sodipodi:role="line">up</tspan></text>
           </g>
           <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect2286-8-3"/>
-          <circle r="3" id="s_lift_up" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+          <circle r="3" id="s_lift_up" style="opacity: 1;&#10;fill: rgb(0, 255, 204);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
         </g>
         <g id="buffering busy" transform="translate(35.5,17)">
           <g id="g1001-3-1">
@@ -183,7 +205,7 @@
             <text xml:space="preserve" id="text995-2" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-0.25,15)"><tspan x="0" id="tspan993-7" y="0" sodipodi:role="line" style="stroke-width:0.26458332">height</tspan></text>
           </g>
           <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="rect2286-8-7"/>
-          <circle r="3" id="s_height" style="opacity: 1;&#10;fill: rgb(0, 68, 85);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
+          <circle r="3" id="s_height" style="opacity: 1;&#10;fill: rgb(0, 255, 204);&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" cx="4.5" cy="4.5"/>
         </g>
         <g id="init" transform="translate(5.5,17)">
           <text xml:space="preserve" id="text991-0-59" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(2,12)"><tspan x="0" id="tspan989-39-1" y="0" sodipodi:role="line" style="stroke-width:0.21975574">Init</tspan></text>
@@ -192,14 +214,17 @@
         </g>
       </g>
     </g>
-    <text x="846.59064" xml:space="preserve" id="time" y="55.991013" style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="846.59064" y="55.991013" id="tspan1572" style="stroke-width:0.26458332" sodipodi:role="line">53</tspan></text>
+    <g id="Time indicator" transform="translate(-58.444377,91.697212)">
+      <text x="798.02734" xml:space="preserve" id="text365" y="57.412666" style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="798.02734" y="57.412666" id="tspan363" sodipodi:role="line">Time:</tspan></text>
+      <text xml:space="preserve" x="828.065" id="time" y="57.416061" style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"><tspan x="828.065" id="tspan1572" y="57.416061" sodipodi:role="line" style="stroke-width:0.26458332">161</tspan></text>
+    </g>
     <g id="Slider" transform="translate(954.97216,294.64213)">
-      <rect x="0" y="0" transform="rotate(-100)" width="10" style="opacity: 1;&#10;fill: rgb(170, 204, 255);&#10;fill-opacity: 1;&#10;stroke-width: 0.26458332;&#10;filter: url(#filter7411);&#10;" ry="20" height="228" id="Air"/>
+      <rect x="0" y="0" transform="rotate(-100)" width="10" style="opacity: 0;&#10;fill: rgb(170, 204, 255);&#10;fill-opacity: 1;&#10;stroke-width: 0.26458332;&#10;filter: url(#filter7411);&#10;" ry="20" height="228" id="Air"/>
       <g id="g7416">
-        <rect x="0" y="0" transform="rotate(-10)" width="228" style="fill:#c8beb7;stroke-width:0.26458332" height="15" id="slider"/>
+        <rect x="0" y="0" transform="rotate(-10)" width="228" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" height="15" id="slider"/>
       </g>
     </g>
-    <g id="Actuator panel" transform="translate(357.594,281.83256)">
+    <g id="Actuator panel" transform="translate(359.43642,322.15132)">
       <g id="g388" transform="scale(3)">
         <rect x="0" y="0" width="50" style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:2.17715502;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="90" id="rect2263-3-5"/>
         <rect x="7.4835467" y="13.363477" width="35.529762" style="opacity:1;fill:#e1e1e1;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="0.75595713" id="rect1214-24"/>
@@ -246,20 +271,20 @@
         <g id="elevator down" transform="translate(20.5,34)">
           <text xml:space="preserve" id="text991-2-9" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-1.75,12)"><tspan x="0" y="0" id="tspan989-3-8" style="stroke-width:0.26458332" sodipodi:role="line">Elevator</tspan></text>
           <text xml:space="preserve" id="text995-3-8" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(0.25,15)"><tspan x="0" id="tspan993-6-3" y="0" sodipodi:role="line" style="stroke-width:0.26458332">down</tspan></text>
-          <rect x="0" y="0" width="9" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="1.5" height="9" id="a_lift_down"/>
+          <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="a_lift_down"/>
         </g>
         <g id="pusher" transform="translate(35.5,34)">
           <g id="g1001-0-4-4">
             <text xml:space="preserve" id="text991-2-4-8" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-0.8,12)"><tspan x="0" y="0" id="tspan989-3-6-8" style="stroke-width:0.26458332" sodipodi:role="line">Pusher</tspan></text>
           </g>
-          <rect x="0" y="0" width="9" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="1.5" height="9" id="b_pusher"/>
+          <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="b_pusher"/>
         </g>
         <g id="elevator up" transform="translate(5.5,34)">
           <g id="g1001-9">
             <text xml:space="preserve" id="text991-09" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(-1.5,12)"><tspan x="0" id="tspan989-1" y="0" style="stroke-width:0.26458332" sodipodi:role="line">Elevator</tspan></text>
             <text xml:space="preserve" id="text995-1" style="font-style:normal;font-weight:normal;font-size:3px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332" transform="translate(2.5,15)"><tspan x="0" y="0" id="tspan993-4" style="stroke-width:0.26458332" sodipodi:role="line">up</tspan></text>
           </g>
-          <rect x="0" y="0" width="9" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: rgb(115, 115, 115);&#10;stroke-width: 0.5;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="1.5" height="9" id="a_lift_up"/>
+          <rect x="0" y="0" width="9" style="opacity:1;fill:#939393;fill-opacity:1;stroke:#737373;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="1.5" height="9" id="a_lift_up"/>
         </g>
         <g id="air slide" transform="translate(35.5,17)">
           <g id="g1001-3-1-1">
@@ -304,55 +329,93 @@
     </g>
     <g id="Arm" transform="translate(1368.6307,352.41696)">
       <g id="Rotator" transform="rotate(180.000000,12.5,0)">
-        <rect x="0" y="0" width="20" style="fill:#b3b3b3;paint-order:fill markers stroke" id="rect4341" height="181"/>
+        <rect x="0" y="0" width="20" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect4341" height="181"/>
         <rect x="-6" y="0" width="32" style="fill:#333333;paint-order:fill markers stroke" height="30" id="rect4331"/>
         <circle r="16" id="path4326" style="fill:#333333;paint-order:fill markers stroke" cx="10" cy="0"/>
         <g id="g1234556" transform="translate(6.25,181)">
           <g id="Holder" transform="rotate(-180.000000,6.25,0)">
-            <rect x="2.25" y="0" width="12.5" style="fill:#0066ff;paint-order:fill markers stroke" id="rect4347" height="40"/>
+            <rect x="2.25" y="0" width="12.5" style="fill:#0066ff;stroke:#2a7fff;stroke-width:0.5;paint-order:fill markers stroke" id="rect4347" height="40"/>
           </g>
         </g>
         <circle r="16" id="path4344" style="fill:#333333;paint-order:fill markers stroke" cx="10" cy="181"/>
         <rect x="-5.25" y="-15" width="30.5" style="opacity:1;fill:none;stroke:#333333;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" ry="16" id="rect327" height="211"/>
       </g>
     </g>
-    <g id="Product_11" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(881.720659, 268.000000) rotate(0.000000)">
+    <g id="Product_11" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(699.000000, 268.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_11" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_11" sodipodi:role="line">wait</tspan></text>
       <rect x="0" y="0" width="40" style="opacity: 1;&#10;fill: blue;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_11"/>
-    </g><g id="Product_12" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(-1331.929929, 268.000000) rotate(0.000000)">
+    </g><g id="Product_12" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(739.000000, 268.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_12" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_12" sodipodi:role="line">wait</tspan></text>
       <rect x="0" y="0" width="40" style="opacity: 1;&#10;fill: blue;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_12"/>
-    </g><g id="Product_13" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(-653.746236, 268.000000) rotate(0.000000)">
+    </g><g id="Product_13" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(699.000000, 268.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_13" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_13" sodipodi:role="line">wait</tspan></text>
       <rect x="0" y="0" width="40" style="opacity: 1;&#10;fill: blue;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_13"/>
-    </g><g id="Product_14" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(-3156.000000, -5.000000) rotate(0.000000)">
+    </g><g id="Product_14" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(-8797.717200, 268.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_14" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_14" sodipodi:role="line">idk</tspan></text>
       <rect x="0" y="0" width="40" style="opacity: 1;&#10;fill: blue;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_14"/>
-    </g><g id="Product_15" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(-3156.000000, -5.000000) rotate(0.000000)">
+    </g><g id="Product_15" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 0.3;&#10;" transform="translate(-8057.600000, 268.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_15" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_15" sodipodi:role="line">idk</tspan></text>
       <rect x="0" y="0" width="40" style="opacity: 1;&#10;fill: blue;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_15"/>
-    </g><g id="Product_1" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+    </g><g id="Product_1" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_1" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_1" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_1"/>
-    </g><g id="Product_2" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(31.338352, 273.000000) rotate(0.000000)">
+    </g><g id="Product_2" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(1182.900000, 228.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_2" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_2" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_2"/>
-    </g><g id="Product_3" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
-      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_3"/>
-    </g><g id="Product_4" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
-      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_4"/>
-    </g><g id="Product_5" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+    </g><g id="Product_3" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_3" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_3" sodipodi:role="line">s
+
+</tspan></text>
+      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_3"/>
+    </g><g id="Product_4" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_4" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_4" sodipodi:role="line">s
+
+</tspan></text>
+      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_4"/>
+    </g><g id="Product_5" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_5" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_5" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_5"/>
-    </g><g id="Product_6" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(885.571371, 273.000000) rotate(0.000000)">
+    </g><g id="Product_6" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_6" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_6" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_6"/>
-    </g><g id="Product_7" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+    </g><g id="Product_7" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_7" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_7" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_7"/>
-    </g><g id="Product_8" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
-      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_8"/>
-    </g><g id="Product_9" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
+    </g><g id="Product_8" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_8" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_8" sodipodi:role="line">s
+
+</tspan></text>
+      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_8"/>
+    </g><g id="Product_9" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_9" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_9" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_9"/>
-    </g><g id="Product_10" style="stroke: rgb(0, 0, 0);&#10;stroke-width: 3.7795277;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;opacity: 1;&#10;" transform="translate(-200.000000, -200.000000) rotate(0.000000)">
-      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: pink;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_10"/>
-    </g><g id="Product" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(1195.7463,467.21729)">
+    </g><g id="Product_10" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(-0.000000, 273.000000) rotate(0.000000)">
+      <text x="5.5317197" xml:space="preserve" id="state_10" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140_10" sodipodi:role="line">s
+
+</tspan></text>
+      <rect x="0" y="0" transform="matrix(1,0,0,1.000000,0,0.000000)" width="40" style="opacity: 1;&#10;fill: red;&#10;fill-opacity: 1;&#10;stroke: rgb(0, 0, 0);&#10;stroke-width: 0.5;&#10;stroke-linejoin: miter;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" height="23" id="ProductGraphics_10"/>
+    </g><g id="Product" style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" transform="translate(1210.8118,492.76944)">
+      <text x="5.5317197" xml:space="preserve" id="state" y="-1.0180843" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="5.5317197" y="-1.0180843" id="tspan2140" sodipodi:role="line">s
+
+</tspan></text>
       <rect x="0" y="0" width="40" style="opacity:1;fill:#940606;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" height="23" id="ProductGraphics"/>
     </g>
     <g id="Conveyor" transform="translate(606.96665,298.29586)">
       <rect x="0" y="0" width="347" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="10" height="20" id="rect4526"/>
       <g id="Roller" transform="translate(10,10)">
-        <g id="Conv1_Wheel" transform="rotate(-96)">
+        <g id="Conv1_Wheel" transform="rotate(-192)">
           <circle r="8" id="path1421" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="0" cy="0"/>
           <rect width="5" x="-2.5" id="rect7457" height="5" y="-2.5"/>
           <rect x="-6" y="-0.75" width="12" style="fill:#000000" id="rect422" height="1.5"/>
@@ -360,7 +423,7 @@
         </g>
       </g>
       <g id="Roller-0" transform="translate(337,10)">
-        <g id="Conv1_Wheel2" transform="rotate(-96)">
+        <g id="Conv1_Wheel2" transform="rotate(-192)">
           <circle r="8" id="path1421-2" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.67623758;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="0" cy="0"/>
           <rect width="5" x="-2.5" id="rect7457-6" height="5" y="-2.5"/>
           <rect x="-6" y="-0.75" width="12" style="fill:#000000" id="rect422-4" height="1.5"/>
@@ -368,29 +431,28 @@
         </g>
       </g>
       <g id="Sensors">
-        <g id="BS01" style="fill: grey;&#10;" transform="translate(310,-40)">
-          <rect x="0" y="0" width="10" style="fill:#666666;paint-order:fill markers stroke" ry="5" height="50" id="rect284-2"/>
-          <circle id="i_BS01" r="2" style="fill: red;&#10;" cx="4.5" cy="5"/>
+        <g id="BS01" style="fill: grey;&#10;" transform="translate(310,-25)">
+          <rect x="0" y="0" width="10" style="fill:#666666;stroke:#4d4d4d;stroke-width:1;paint-order:fill markers stroke" ry="5" height="50" id="rect284-2"/>
+          <circle id="i_BS01" r="2" style="fill: grey;&#10;" cx="5" cy="5"/>
         </g>
-        <g id="BS02" transform="translate(110,-40)">
-          <rect x="0" y="0" width="10" style="fill:#666666;paint-order:fill markers stroke" ry="5" height="50" id="rect284-7"/>
-          <circle id="i_BS02" r="2" style="fill:#ff0000;paint-order:fill markers stroke" cx="4.5" cy="5"/>
+        <g id="BS02" transform="translate(110,-25)">
+          <rect x="0" y="0" width="10" style="fill:#666666;stroke:#4d4d4d;stroke-width:1;paint-order:fill markers stroke" ry="5" height="50" id="rect284-7"/>
+          <circle id="i_BS02" r="2" style="fill: grey;&#10;" cx="5" cy="5"/>
         </g>
         <g id="Separator" style="fill:#6c6753" transform="translate(64.5,-35)">
-          <rect x="0" y="5" transform="translate(10.000000,0)" width="50" style="fill:#ac9393;paint-order:fill markers stroke" ry="4.5" id="a_separator" height="10"/>
-          <rect x="0" y="5" width="10" style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke" height="45" id="rect282"/>
+          <rect x="0" y="6" width="10" style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke" height="45" id="rect282"/>
+          <rect x="0" y="5" transform="translate(-10.000000,0)" width="50" style="fill:#ac9393;paint-order:fill markers stroke" ry="4.5" id="a_separator" height="10"/>
         </g>
-        <g id="BS03" transform="translate(25,-40)">
-          <rect x="0" y="0" width="10" style="fill:#666666;paint-order:fill markers stroke" ry="5" height="50" id="rect284"/>
-          <circle id="i_BS03" r="2" style="fill:#ff0000;paint-order:fill markers stroke" cx="4.5" cy="5"/>
+        <g id="BS03" transform="translate(25,-25)">
+          <rect x="0" y="0" width="10" style="fill:#666666;stroke:#4d4d4d;stroke-width:1;paint-order:fill markers stroke" ry="5" height="50" id="rect284"/>
+          <circle id="i_BS03" r="2" style="fill: grey;&#10;" cx="5" cy="5"/>
         </g>
-        <rect x="15" y="3" width="317" style="fill:#c8beb7;paint-order:fill markers stroke" id="rect295" height="30"/>
+        <rect x="15" y="3" width="317" style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect295" height="30"/>
       </g>
     </g>
-    <rect x="1195.7681" y="213.86919" width="25.506351" style="fill:none" id="rect4383" height="28.031733"/>
-    <text x="130.39197" xml:space="preserve" id="s_systemMode" y="36.393196" style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="130.39197" y="36.393196" id="tspan1144" sodipodi:role="line">System State: Auto</tspan></text>
-    <text x="386.18823" xml:space="preserve" id="text1165" y="98.38282" style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="386.18823" y="98.38282" id="tspan1163" sodipodi:role="line">T</tspan></text>
-    <g id="Control panel-4" transform="matrix(1.5,0,0,1.5,474.76806,103.52332)">
+    <text x="707.80585" xml:space="preserve" id="s_systemMode" y="117.59641" style="font-style:normal;font-weight:normal;font-size:20px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="707.80585" y="117.59641" id="tspan1144" sodipodi:role="line">System State: Auto</tspan></text>
+    <g id="Control panel-4" transform="matrix(1.5,0,0,1.5,317.38468,55.873793)">
+      <text x="1.5" xml:space="preserve" y="-5" id="text1298" style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="1.5" y="-5" id="tspan1296" sodipodi:role="line">Buffering station</tspan></text>
       <rect x="0" y="0" width="70" style="opacity:1;fill:#f3f3f3;fill-opacity:1;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" height="110" id="rect2263-2"/>
       <g id="startbutton-0" transform="translate(10,20)">
         <rect x="0" y="0" width="20" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 2.6101885;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="5.5" id="start_B" height="20"/>
@@ -409,21 +471,42 @@
         <rect x="0" y="0" width="20" style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="5.5" height="20" id="rect322-4"/>
         <circle r="8" id="path326-4" style="fill:#cccccc;paint-order:fill markers stroke" cx="10" cy="10"/>
         <circle r="7" id="path329-4" style="opacity:1;fill:none;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="10" cy="10"/>
-        <g id="key-2" style="fill: yellow;&#10;" transform="rotate(90.000000,10,10)">
+        <g id="key-2" style="fill: yellow;&#10;" transform="rotate(0.000000,10,10)">
           <rect x="8" y="7" width="4" style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" id="rect1140-8" height="6"/>
           <rect x="8.5" y="2.5" width="3" style="opacity:1;fill:#4d4d4d" height="15" id="rect1137-6"/>
         </g>
       </g>
       <g id="q1button-0" transform="translate(10,80)">
         <text xml:space="preserve" x="6.5" id="text819-1-3-9" y="25" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"><tspan x="6.5" id="tspan817-07-6-3" y="25" sodipodi:role="line" style="stroke-width:0.23602927">Q1</tspan></text>
-        <rect x="0" y="0" width="20" style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="5.5" height="20" id="s_q1-7"/>
+        <rect x="0" y="0" width="20" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 2.6101885;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="5.5" height="20" id="s_q1-7"/>
       </g>
       <g id="q2button-6" transform="translate(40,80)">
         <text xml:space="preserve" x="6.5" id="text819-1-3-6-4" y="25" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23602927"><tspan x="6.5" id="tspan817-07-6-0-6" y="25" sodipodi:role="line" style="stroke-width:0.23602927">Q2</tspan></text>
-        <rect x="0" y="0" width="20" style="opacity:1;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:2.61018848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ry="5.5" height="20" id="s_q2-5"/>
+        <rect x="0" y="0" width="20" style="opacity: 1;&#10;fill: grey;&#10;fill-opacity: 1;&#10;stroke: none;&#10;stroke-width: 2.6101885;&#10;stroke-miterlimit: 4;&#10;stroke-dasharray: none;&#10;stroke-opacity: 1;&#10;" ry="5.5" height="20" id="s_q2-5"/>
       </g>
       <text x="37" xml:space="preserve" y="14" id="text336-4" style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#0088aa;fill-opacity:1;stroke:none"><tspan x="37" y="14" id="tspan334-8" style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa" sodipodi:role="line">FESTO</tspan></text>
     </g>
-    <text x="517.29272" xml:space="preserve" id="text1298" y="97.670296" style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><tspan x="517.29272" y="97.670296" id="tspan1296" sodipodi:role="line">B</tspan></text>
+    <g id="Bolts">
+      <g id="Bolt-4" transform="translate(160.98347,71.929471)">
+        <circle id="path482-0" r="4" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="910.16089" cy="326.03436"/>
+        <path sodipodi:arg1="1.0714496" inkscape:flatsided="true" inkscape:randomized="0" sodipodi:type="star" d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" id="path484-0" inkscape:rounded="0" style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" sodipodi:sides="6" sodipodi:r1="2.231976" sodipodi:cx="910.13855" sodipodi:cy="326.03436" sodipodi:arg2="1.5950483" sodipodi:r2="2.6926682"/>
+      </g>
+      <g id="Bolt-1" transform="translate(160.73156,-41.936299)">
+        <circle id="path482-9" r="4" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="910.16089" cy="326.03436"/>
+        <path sodipodi:arg1="1.0714496" inkscape:flatsided="true" inkscape:randomized="0" sodipodi:type="star" d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" id="path484-82" inkscape:rounded="0" style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" sodipodi:sides="6" sodipodi:r1="2.231976" sodipodi:cx="910.13855" sodipodi:cy="326.03436" sodipodi:arg2="1.5950483" sodipodi:r2="2.6926682"/>
+      </g>
+      <g id="Bolt-89" transform="translate(473.20525,27.343127)">
+        <circle id="path482-56" r="4" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="910.16089" cy="326.03436"/>
+        <path sodipodi:arg1="1.0714496" inkscape:flatsided="true" inkscape:randomized="0" sodipodi:type="star" d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" id="path484-8" inkscape:rounded="0" style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" sodipodi:sides="6" sodipodi:r1="2.231976" sodipodi:cx="910.13855" sodipodi:cy="326.03436" sodipodi:arg2="1.5950483" sodipodi:r2="2.6926682"/>
+      </g>
+      <g id="Bolt-8" transform="translate(-262.83246,-0.71252056)">
+        <circle id="path482-5" r="4" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="910.16089" cy="326.03436"/>
+        <path sodipodi:arg1="1.0714496" inkscape:flatsided="true" inkscape:randomized="0" sodipodi:type="star" d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" id="path484-2" inkscape:rounded="0" style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" sodipodi:sides="6" sodipodi:r1="2.231976" sodipodi:cx="910.13855" sodipodi:cy="326.03436" sodipodi:arg2="1.5950483" sodipodi:r2="2.6926682"/>
+      </g>
+      <g id="Bolt" transform="translate(-1.0706405,0.06297885)">
+        <circle r="4" id="path482" style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" cx="910.16089" cy="326.03436"/>
+        <path sodipodi:arg1="1.0714496" inkscape:flatsided="true" inkscape:randomized="0" sodipodi:type="star" id="path484" d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" inkscape:rounded="0" sodipodi:sides="6" sodipodi:r1="2.231976" sodipodi:cx="910.13855" sodipodi:cy="326.03436" sodipodi:arg2="1.5950483" sodipodi:r2="2.6926682"/>
+      </g>
+    </g>
   </g>
 </svg>
