@@ -53,8 +53,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.99239658"
-     inkscape:cx="861.02923"
-     inkscape:cy="240.2916"
+     inkscape:cx="932.65188"
+     inkscape:cy="302.24952"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -83,6 +83,95 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
+       id="Peripherals">
+      <g
+         id="g400-0"
+         transform="translate(894.18113,326.26734)">
+        <rect
+           height="100"
+           width="30"
+           id="rect397-1"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           y="0"
+           x="0" />
+        <rect
+           style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="rect404-6"
+           width="10"
+           height="100"
+           y="0"
+           x="10" />
+      </g>
+      <g
+         id="g400-0-5"
+         transform="matrix(0.99511562,0,0,1.4513339,1056.2177,280.08479)">
+        <rect
+           height="100"
+           width="30"
+           id="rect397-1-6"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           y="0"
+           x="0" />
+        <rect
+           style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="rect404-6-2"
+           width="10"
+           height="100"
+           y="0"
+           x="10" />
+      </g>
+      <g
+         id="g400-0-8"
+         transform="matrix(1,0,0,0.77941189,1368.5195,351.3809)">
+        <rect
+           height="100"
+           width="30"
+           id="rect397-1-8"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           y="0"
+           x="0" />
+        <rect
+           style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="rect404-6-28"
+           width="10"
+           height="100"
+           y="0"
+           x="10" />
+      </g>
+      <g
+         id="g400"
+         transform="translate(632.72167,326.33618)">
+        <rect
+           height="100"
+           width="30"
+           id="rect397"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           y="0"
+           x="0" />
+        <rect
+           style="opacity:1;fill:#666666;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="rect404"
+           width="10"
+           height="100"
+           y="0"
+           x="10" />
+      </g>
+      <rect
+         style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+         id="rect369"
+         width="70"
+         height="31"
+         x="531.82941"
+         y="297.63138" />
+      <rect
+         y="422.65155"
+         x="524.99176"
+         height="10.076616"
+         width="889.76526"
+         id="rect387"
+         style="opacity:1;fill:#333333;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
+    </g>
+    <g
        id="Vertical rails"
        transform="translate(1264.5167,170.71578)">
       <rect
@@ -100,7 +189,7 @@
          height="20"
          width="211"
          id="rect4526-9"
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:3.80083561;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
          x="-9.0655708"
          y="-1.5733287" />
     </g>
@@ -115,7 +204,7 @@
          y="370.92603"
          x="1202.9086" />
       <rect
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.62598157;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect1497"
          width="110"
          height="18"
@@ -124,27 +213,35 @@
       <g
          id="a_pusher">
         <rect
-           height="24"
-           width="6"
-           id="rect1389"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.79373527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           y="359.92603"
-           x="1222.9086" />
-        <rect
            height="8"
            width="80"
            id="rect4530"
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.72222209;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
            y="367.92603"
+           x="1222.9086" />
+        <rect
+           height="24"
+           width="6"
+           id="rect1389"
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           y="359.92603"
            x="1222.9086" />
       </g>
       <rect
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:5.08964968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect4528"
          width="50"
          height="25"
-         y="359.42603"
+         y="359"
          x="1242.9086" />
+      <rect
+         style="opacity:1;fill:#808080;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+         id="rect371"
+         width="48.367771"
+         height="9.4468365"
+         x="1243.6434"
+         y="379.76294"
+         ry="0" />
     </g>
     <g
        id="height_sensor"
@@ -152,25 +249,25 @@
       <g
          id="a_height_head">
         <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:2.92217016;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect1389-7"
-           width="25"
-           height="6"
-           y="60"
-           x="4" />
-        <rect
-           style="opacity:1;fill:#a8a8a8;fill-opacity:1;stroke:none;stroke-width:3.43428373;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
            id="rect4530-4"
            width="13.313107"
            height="54.139351"
            y="10"
            x="10" />
+        <rect
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="rect1389-7"
+           width="25"
+           height="6"
+           y="60"
+           x="4" />
       </g>
       <rect
          height="38.514103"
          width="33.282772"
          id="rect4528-0"
-         style="opacity:1;fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.92202401;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:#4d4d4d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          x="0"
          y="0" />
       <circle
@@ -182,7 +279,17 @@
     </g>
     <g
        id="Control panel"
-       transform="matrix(1.5,0,0,1.5,352.99453,104.1906)">
+       transform="matrix(1.5,0,0,1.5,193.90175,56.541072)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         id="text1165"
+         x="6"
+         y="-5"><tspan
+           sodipodi:role="line"
+           id="tspan1163"
+           x="6"
+           y="-5">Testing station</tspan></text>
       <rect
          height="110"
          width="70"
@@ -295,7 +402,7 @@
            r="7" />
         <g
            id="key"
-           transform="rotate(-30,10,10)">
+           transform="rotate(90,10,10)">
           <rect
              style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
              id="rect1140"
@@ -372,7 +479,7 @@
     </g>
     <g
        id="Sensor panel"
-       transform="translate(114.65232,139.40105)">
+       transform="translate(191.60496,277.63079)">
       <g
          id="g528"
          transform="scale(3)">
@@ -963,17 +1070,31 @@
         </g>
       </g>
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="846.59064"
-       y="55.991013"
-       id="time"><tspan
-         sodipodi:role="line"
-         id="tspan1572"
-         x="846.59064"
-         y="55.991013"
-         style="stroke-width:0.26458332">10</tspan></text>
+    <g
+       id="Time indicator"
+       transform="translate(-58.444377,91.697212)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         x="798.02734"
+         y="57.412666"
+         id="text365"><tspan
+           sodipodi:role="line"
+           id="tspan363"
+           x="798.02734"
+           y="57.412666">Time:</tspan></text>
+      <text
+         id="time"
+         y="57.416061"
+         x="828.065"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="57.416061"
+           x="828.065"
+           id="tspan1572"
+           sodipodi:role="line">10</tspan></text>
+    </g>
     <g
        id="Slider"
        transform="translate(954.97216,294.64213)">
@@ -992,7 +1113,7 @@
            y="0"
            x="0"
            transform="rotate(-10)"
-           style="fill:#c8beb7;stroke-width:0.26458332"
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
            id="slider"
            width="228"
            height="15" />
@@ -1000,7 +1121,7 @@
     </g>
     <g
        id="Actuator panel"
-       transform="translate(357.594,281.83256)">
+       transform="translate(359.43642,322.15132)">
       <g
          id="g388"
          transform="scale(3)">
@@ -1505,7 +1626,7 @@
          id="Rotator"
          transform="rotate(180,12.5,0)">
         <rect
-           style="fill:#b3b3b3;paint-order:fill markers stroke"
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
            id="rect4341"
            width="20"
            height="181"
@@ -1531,7 +1652,7 @@
              id="Holder"
              transform="rotate(-180,6.25,0)">
             <rect
-               style="fill:#0066ff;paint-order:fill markers stroke"
+               style="fill:#0066ff;stroke:#2a7fff;stroke-width:0.5;paint-order:fill markers stroke"
                id="rect4347"
                width="12.5"
                height="40"
@@ -1557,7 +1678,7 @@
     </g>
     <g
        id="Product"
-       transform="translate(1195.7463,467.21729)"
+       transform="translate(1175.7956,452.9668)"
        style="stroke:#000000;stroke-width:3.77952766;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke">
       <rect
          height="23"
@@ -1650,11 +1771,11 @@
          id="Sensors">
         <g
            id="BS01"
-           transform="translate(310,-40)">
+           transform="translate(310,-25)">
           <rect
              y="0"
              x="0"
-             style="fill:#666666;paint-order:fill markers stroke"
+             style="fill:#666666;stroke:#4d4d4d;stroke-width:1;paint-order:fill markers stroke"
              id="rect284-2"
              width="10"
              height="50"
@@ -1662,17 +1783,17 @@
           <circle
              r="2"
              cy="5"
-             cx="4.5"
+             cx="5"
              id="i_BS01"
              style="fill:#ff0000;paint-order:fill markers stroke" />
         </g>
         <g
            id="BS02"
-           transform="translate(110,-40)">
+           transform="translate(110,-25)">
           <rect
              y="0"
              x="0"
-             style="fill:#666666;paint-order:fill markers stroke"
+             style="fill:#666666;stroke:#4d4d4d;stroke-width:1;paint-order:fill markers stroke"
              id="rect284-7"
              width="10"
              height="50"
@@ -1680,7 +1801,7 @@
           <circle
              r="2"
              cy="5"
-             cx="4.5"
+             cx="5"
              id="i_BS02"
              style="fill:#ff0000;paint-order:fill markers stroke" />
         </g>
@@ -1689,6 +1810,13 @@
            style="fill:#6c6753"
            transform="translate(64.5,-35)">
           <rect
+             height="45"
+             width="10"
+             id="rect282"
+             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke"
+             y="6"
+             x="0" />
+          <rect
              style="fill:#ac9393;paint-order:fill markers stroke"
              id="a_separator"
              width="50"
@@ -1696,22 +1824,15 @@
              ry="4.5"
              x="0"
              y="5"
-             transform="translate(-25)" />
-          <rect
-             height="45"
-             width="10"
-             id="rect282"
-             style="fill:#6c6753;stroke-width:0.52295756;paint-order:fill markers stroke"
-             y="5"
-             x="0" />
+             transform="translate(-10)" />
         </g>
         <g
            id="BS03"
-           transform="translate(25,-40)">
+           transform="translate(25,-25)">
           <rect
              y="0"
              x="0"
-             style="fill:#666666;paint-order:fill markers stroke"
+             style="fill:#666666;stroke:#4d4d4d;stroke-width:1;paint-order:fill markers stroke"
              id="rect284"
              width="10"
              height="50"
@@ -1719,12 +1840,12 @@
           <circle
              r="2"
              cy="5"
-             cx="4.5"
+             cx="5"
              id="i_BS03"
              style="fill:#ff0000;paint-order:fill markers stroke" />
         </g>
         <rect
-           style="fill:#c8beb7;paint-order:fill markers stroke"
+           style="opacity:1;fill:#b3b3b3;stroke:#737373;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
            id="rect295"
            width="317"
            height="30"
@@ -1732,36 +1853,29 @@
            x="15" />
       </g>
     </g>
-    <rect
-       id="rect4383"
-       width="25.506351"
-       height="28.031733"
-       x="1195.7681"
-       y="213.86919"
-       style="fill:none" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="130.39197"
-       y="36.393196"
+       style="font-style:normal;font-weight:normal;font-size:20px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="707.80585"
+       y="117.59641"
        id="s_systemMode"><tspan
          sodipodi:role="line"
          id="tspan1144"
-         x="130.39197"
-         y="36.393196">System mode: </tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="386.18823"
-       y="98.38282"
-       id="text1165"><tspan
-         sodipodi:role="line"
-         id="tspan1163"
-         x="386.18823"
-         y="98.38282">T</tspan></text>
+         x="707.80585"
+         y="117.59641">System state: </tspan></text>
     <g
        id="Control panel-4"
-       transform="matrix(1.5,0,0,1.5,474.76806,103.52332)">
+       transform="matrix(1.5,0,0,1.5,317.38468,55.873793)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:8px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         id="text1298"
+         x="1.5"
+         y="-5"><tspan
+           sodipodi:role="line"
+           id="tspan1296"
+           x="1.5"
+           y="-5">Buffering station</tspan></text>
       <rect
          height="110"
          width="70"
@@ -1874,7 +1988,7 @@
            r="7" />
         <g
            id="key-2"
-           transform="rotate(-30,10,10)">
+           transform="rotate(90,10,10)">
           <rect
              style="opacity:1;fill:#1a1a1a;stroke:#737373;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
              id="rect1140-8"
@@ -1949,15 +2063,133 @@
            y="14"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Marlett;-inkscape-font-specification:'Marlett Bold';fill:#0088aa">FESTO</tspan></text>
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="517.29272"
-       y="97.670296"
-       id="text1298"><tspan
-         sodipodi:role="line"
-         id="tspan1296"
-         x="517.29272"
-         y="97.670296">B</tspan></text>
+    <g
+       id="Bolts">
+      <g
+         id="Bolt-4"
+         transform="translate(160.98347,71.929471)">
+        <circle
+           r="4"
+           cy="326.03436"
+           cx="910.16089"
+           id="path482-0"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
+        <path
+           sodipodi:type="star"
+           style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path484-0"
+           sodipodi:sides="6"
+           sodipodi:cx="910.13855"
+           sodipodi:cy="326.03436"
+           sodipodi:r1="2.231976"
+           sodipodi:r2="2.6926682"
+           sodipodi:arg1="1.0714496"
+           sodipodi:arg2="1.5950483"
+           inkscape:flatsided="true"
+           inkscape:rounded="0"
+           inkscape:randomized="0"
+           d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" />
+      </g>
+      <g
+         id="Bolt-1"
+         transform="translate(160.73156,-41.936299)">
+        <circle
+           r="4"
+           cy="326.03436"
+           cx="910.16089"
+           id="path482-9"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
+        <path
+           sodipodi:type="star"
+           style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path484-82"
+           sodipodi:sides="6"
+           sodipodi:cx="910.13855"
+           sodipodi:cy="326.03436"
+           sodipodi:r1="2.231976"
+           sodipodi:r2="2.6926682"
+           sodipodi:arg1="1.0714496"
+           sodipodi:arg2="1.5950483"
+           inkscape:flatsided="true"
+           inkscape:rounded="0"
+           inkscape:randomized="0"
+           d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" />
+      </g>
+      <g
+         id="Bolt-89"
+         transform="translate(473.20525,27.343127)">
+        <circle
+           r="4"
+           cy="326.03436"
+           cx="910.16089"
+           id="path482-56"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
+        <path
+           sodipodi:type="star"
+           style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path484-8"
+           sodipodi:sides="6"
+           sodipodi:cx="910.13855"
+           sodipodi:cy="326.03436"
+           sodipodi:r1="2.231976"
+           sodipodi:r2="2.6926682"
+           sodipodi:arg1="1.0714496"
+           sodipodi:arg2="1.5950483"
+           inkscape:flatsided="true"
+           inkscape:rounded="0"
+           inkscape:randomized="0"
+           d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" />
+      </g>
+      <g
+         id="Bolt-8"
+         transform="translate(-262.83246,-0.71252056)">
+        <circle
+           r="4"
+           cy="326.03436"
+           cx="910.16089"
+           id="path482-5"
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
+        <path
+           sodipodi:type="star"
+           style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path484-2"
+           sodipodi:sides="6"
+           sodipodi:cx="910.13855"
+           sodipodi:cy="326.03436"
+           sodipodi:r1="2.231976"
+           sodipodi:r2="2.6926682"
+           sodipodi:arg1="1.0714496"
+           sodipodi:arg2="1.5950483"
+           inkscape:flatsided="true"
+           inkscape:rounded="0"
+           inkscape:randomized="0"
+           d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z" />
+      </g>
+      <g
+         transform="translate(-1.0706405,0.06297885)"
+         id="Bolt">
+        <circle
+           style="opacity:1;fill:#cccccc;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           id="path482"
+           cx="910.16089"
+           cy="326.03436"
+           r="4" />
+        <path
+           d="m 911.20734,327.9938 -2.23132,-0.0541 -1.06879,-1.95944 1.16253,-1.90532 2.23132,0.0541 1.06879,1.95944 z"
+           inkscape:randomized="0"
+           inkscape:rounded="0"
+           inkscape:flatsided="true"
+           sodipodi:arg2="1.5950483"
+           sodipodi:arg1="1.0714496"
+           sodipodi:r2="2.6926682"
+           sodipodi:r1="2.231976"
+           sodipodi:cy="326.03436"
+           sodipodi:cx="910.13855"
+           sodipodi:sides="6"
+           id="path484"
+           style="opacity:1;fill:#4d4d4d;stroke:#737373;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           sodipodi:type="star" />
+      </g>
+    </g>
   </g>
 </svg>
