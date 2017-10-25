@@ -27,6 +27,11 @@ group def LED_svg( alg string idfier, onColor, offColor; alg bool state):
     svgout id idfier attr "fill" value if state: onColor else offColor end;
 end
 
+group def ClickLed_svg(alg string idfier, onColor, offColor; alg bool state; Button butt):
+    svgin id idfier event butt.clicked;
+    svgout id idfier attr "fill" value if butt.Pressed: "orange" elif state: onColor else offColor end;
+end
+
 group def Switch_svg(event action; alg bool state):
     svgin id "b_colour" event action;
     svgout id "colour_knob" attr "transform" value if state: "rotate(180,4.5,4.5)" else "" end;

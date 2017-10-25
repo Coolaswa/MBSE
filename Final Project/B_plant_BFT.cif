@@ -12,14 +12,13 @@ alg bool s_product = boxIAtEntry != -1;
 alg bool s_atseparator = boxIAtSep != -1;
 alg bool s_atexit = boxIAtExit != -1;
 alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
+alg bool s_Bresetbutton = b_reset_B.Pressed;
 
 alg int boxIAtSep = RectRectColl(Const.Sensors.AtSepSensorBounds, BoxUpdater.data);
 alg int boxIAtExit = RectRectColl(Const.Sensors.ExitSensorBounds, BoxUpdater.data);
 alg int boxIAtEntry = RectRectColl(Const.Sensors.EntrySensorBounds, BoxUpdater.data);
 
-b_BS01: Button(false);
-svg_b_BS01: Button_svg(b_BS01.clicked, "BS01", "yellow", "grey", b_BS01.Pressed);
-svg_b_i_BS01: Button_svg(b_BS01.clicked, "i_BS01", "red", "grey", s_product);
+svg_b_i_BS01: LED_svg("i_BS01", "red", "grey", s_product);
 svg_b_i_BS02: LED_svg("i_BS02", "red", "grey", s_atseparator);
 svg_b_i_BS03: LED_svg("i_BS03", "red", "grey", s_atexit);
 
@@ -31,13 +30,15 @@ svg_s_separator_closed: LED_svg("s_separator_closed", Const.Sensors.onColor, Con
 svg_s_Q1B: LED_svg("s_q1-7", "yellow", "grey", a_BledQ1);
 svg_s_Q2B: LED_svg("s_q2-5", "yellow", "grey", a_BledQ2);
 
-b_processing: Button(false);
-svg_b_processing: Button_svg(b_processing.clicked, "s_processing_busy", "yellow", "grey", s_processingbusy);
+svg_b_processing: LED_svg("s_processing_busy", Const.Sensors.onColor, Const.Sensors.offColor, s_processingbusy);
 
 b_conveyer: Button(false);
 svg_b_conveyer: Button_svg(b_conveyer.clicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
 
 svg_conv: Conveyer_svg(1, Belt.wheelRotation);
+
+b_reset_B: Button(false);
+svg_b_reset_B: Button_svg(b_reset_B.clicked, "reset_B", "yellow", "grey", b_reset_B.state);
 
 b_BautoManualSwitch: Button(false);
 svg_b_BautoManualSwitch: Button_svg(b_BautoManualSwitch.clicked, "key-2", "yellow", "grey", b_autoManualSwitch.state);
@@ -85,10 +86,10 @@ automaton Q2ResetPresser:
     cont timer der 1;
     location Init:
         initial;
-        edge when not UseCase.NoCase and a_TledQ2 do timer := 0 goto Wait1;
+        edge when not UseCase.NoCase and a_BledQ1 do timer := 0 goto Wait1;
     location Wait1:
-        edge b_reset.toggle! when timer > 3 do timer := 0 goto Wait2;
+        edge b_reset_B.toggle! when timer > 3 do timer := 0 goto Wait2;
     location Wait2:
-        edge b_reset.toggle! when timer > 1 goto Init;
+        edge b_reset_B.toggle! when timer > 1 goto Init;
 end
 

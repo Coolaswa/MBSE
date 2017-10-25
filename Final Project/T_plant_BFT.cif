@@ -9,9 +9,9 @@ input bool a_pusher;
 input bool a_testingready;
 
 alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
-alg bool s_pusher = Pusher.Extending and Pusher.x < -35;
-alg bool s_elevator_up = Lift.y <= -Const.Lift.MaxHeight;
-alg bool s_elevator_down = Lift.y >= 0;
+alg bool s_pusher = Pusher.Extending and Pusher.x < -35 and not b_s_pusher.Pressed;
+alg bool s_elevator_up = Lift.y <= -Const.Lift.MaxHeight and not b_s_lift_up.Pressed;
+alg bool s_elevator_down = Lift.y >= 0 and not b_s_lift_down.Pressed;
 alg bool s_capacitive = CapacitiveSensor.isActive;
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_productheight = HeightSensor.isActive;
@@ -39,8 +39,11 @@ b_reset_svg: Button_svg(b_reset.clicked, "b_reset", "yellow", "grey", b_reset.st
 b_stop: Button(true);
 stop_svg: Button_svg(b_stop.clicked, "stop", "yellow", "grey",  b_stop.state);
 
-svg_s_lift_up: LED_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_up);
-svg_s_lift_down: LED_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_down);
+b_s_lift_up: Button(false);
+svg_s_lift_up: ClickLed_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_up, b_s_lift_up);
+
+b_s_lift_down: Button(false);
+svg_s_lift_down: ClickLed_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_down, b_s_lift_down);
 
 b_color: Button(false);
 svg_b_color: Switch_svg(b_color.clicked, b_color.state);
@@ -59,6 +62,9 @@ svg_b_spawn: Button_svg(b_spawn.clicked, "b_spawn", "yellow", "grey", b_spawn.st
 
 b_autoManualSwitch: Button(false);
 svg_b_autoManualSwitch: Button_svg(b_autoManualSwitch.clicked, "key", "yellow", "grey", b_autoManualSwitch.state);
+
+b_s_pusher: Button(false);
+svg_s_pusher: ClickLed_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, s_pusher, b_s_pusher);
 
 event void pusher_activated;
 
@@ -125,29 +131,30 @@ automaton Lift:
     const real maxSpeed = 80;
     alg real speed;
     cont y der speed;
+    alg bool liftAtTop = Lift.y <= -Const.Lift.MaxHeight;
+    alg bool liftAtBot = Lift.y >= 0;
     location Up:
         equation speed = -maxSpeed;
         edge when not a_elevator_up goto Stop;
-        edge when a_elevator_down goto Down;
-        edge when s_elevator_up goto Stop;
+        edge when liftAtTop goto Stop;
     location Stop:
         initial;
         equation speed = 0;
-        edge when a_elevator_up and not s_elevator_up goto Up;
-        edge when a_elevator_down and not s_elevator_down  goto Down;
+        edge when a_elevator_up and not liftAtTop goto Up;
+        edge when a_elevator_down and not liftAtBot  goto Down;
     location Down:
         equation speed = maxSpeed;
         edge when not a_elevator_down goto Stop;
-        edge when a_elevator_up goto Up;
-        edge when s_elevator_down goto Stop;
+        edge when liftAtBot goto Stop;
 end
 
 // Responsible for controlling the pusher based on the state of the actuators
 automaton Pusher:
     alg real speed;
     cont x der speed;
+    alg bool pusherExtend = Pusher.Extending and Pusher.x < -35;
     location Extending:
-        equation speed = if not s_pusher: -boxSpeed else 0 end;
+        equation speed = if not pusherExtend: -boxSpeed else 0 end;
         edge when not a_pusher goto Retracting;
     location Retracting:
         initial;
@@ -296,3 +303,35 @@ automaton ProdRemoval:
         edge box5.clicked! when box5.InSeperatorWaiting goto Stage1;
 end
 
+automaton SensorMalfunctioner:
+    cont timer der -1;
+    location Init:
+        initial;
+        edge when UseCase.Case3 goto Stage1;
+    location Stage1:
+        edge when not UseCase.Case3 goto Init;
+        edge b_s_lift_up.toggle! when Lift.Up do timer := 8 goto Stage2;
+    location Stage2:
+        edge b_s_lift_up.toggle! when timer < 0 goto Stage3;
+    location Stage3:
+        edge b_s_lift_down.toggle! when Lift.Down do timer := 8 goto Stage4;
+    location Stage4:
+        edge b_s_lift_down.toggle! when timer < 0 do timer := 12 goto Stage5;
+    location Stage5:
+        edge b_s_pusher.toggle! when timer < 0 do timer := 10 goto Stage6;
+    location Stage6:
+        edge b_s_pusher.toggle! when timer < 0 do timer := 25 goto Delay;
+    location Delay:
+        edge when timer < 0 goto Init;
+end
+
+automaton StartAutoPresser:
+    cont timer der -1;
+    location Init:
+        initial;
+        edge when a_TledQ2 and not UseCase.NoCase do timer := 2 goto PressStart;
+    location PressStart:
+        edge b_start.toggle! when timer < 0 do timer := 0.5 goto ReleaseStart;
+    location ReleaseStart:
+        edge b_start.toggle! when timer < 0 goto Init;
+end

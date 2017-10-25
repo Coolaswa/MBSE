@@ -6,16 +6,16 @@ const real TimeDiffSepAndExit = 1.0;
 const real TimeTillAtSep = 2.0;
 alg bool a_conveyer = ConveyerContr.On and not malfunction;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
-alg bool s_product = EntrySensor.isActive or b_BS01.Pressed;
-alg bool s_atseparator = AtSepSensor.isActive;
-alg bool s_atexit = ExitSensor.isActive;
+alg bool s_product = boxIAtEntry != -1;
+alg bool s_atseparator = boxIAtSep != -1;
+alg bool s_atexit = boxIAtExit != -1;
 alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
 alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
+alg bool s_Bresetbutton = b_reset_B.Pressed;
 alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
-alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
-alg bool a_TledQ2 = malfunction;
-alg bool a_BledQ1 = false;
+alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
+alg bool a_BledQ1 = malfunction;
 alg bool a_BledQ2 = false;
 event void atEntry;
 event void atSep;
@@ -36,11 +36,11 @@ func bool RectRectColl2(Rectangle rect; Rectangle other):
 end
 alg bool s_reflective = ReflexiveSensor.isActive;
 alg bool s_capacitive = CapacitiveSensor.isActive;
-alg bool s_elevator_up = LiftSensorUp.isActive;
+alg bool s_elevator_up = Lift.y <= -Const.Lift.MaxHeight and not b_s_lift_up.Pressed;
 alg bool s_productheight = HeightSensor.isActive;
-alg bool s_elevator_down = LiftSensorDown.isActive;
+alg bool s_elevator_down = Lift.y >= 0 and not b_s_lift_down.Pressed;
 alg bool s_Tresetbutton = b_reset.Pressed;
-alg bool s_pusher = PusherSensor.isActive;
+alg bool s_pusher = Pusher.Extending and Pusher.x < -35 and not b_s_pusher.Pressed;
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
 alg bool s_Tstartbutton = b_start.state;
@@ -51,9 +51,10 @@ alg bool s_optical = OpticalSensor.isActive;
 alg bool a_elevator_up = Lift2.state = UP;
 alg bool a_elevator_down = Lift2.state = DOWN;
 alg bool a_testingready = Lift2.Waiting;
-alg bool a_pusher = PusherContr.Extending;
+alg bool a_pusher = PusherContr.Extending or PusherContr.Malfunction;
 alg bool a_airslide = Airslide.Active;
 alg bool a_TledQ1 = RejectBufferContr.count >= 5;
+alg bool a_TledQ2 = Lift2.malfunction or PusherContr.Malfunction;
 alg bool systemReady = s_Tinitialized and s_Binitialized;
 enum LiftState = UP, STOP, DOWN;
 event box1Clicked;
@@ -70,6 +71,9 @@ const real boxSpeed = 80.0;
 event BoxData spawn_new_block;
 event productRejected;
 event void pusher_activated;
+alg int boxIAtSep = RectRectColl(Const.Sensors.AtSepSensorBounds, BoxUpdater.data);
+alg int boxIAtExit = RectRectColl(Const.Sensors.ExitSensorBounds, BoxUpdater.data);
+alg int boxIAtEntry = RectRectColl(Const.Sensors.EntrySensorBounds, BoxUpdater.data);
 type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
   int i = 0;
@@ -685,7 +689,7 @@ automaton entryListener:
   location AwaitSRelease:
     edge when not sensor goto Init;
   location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
+    edge when s_Bresetbutton goto AwaitSRelease;
 end
 automaton separatorListener:
   cont t der 1.0;
@@ -706,7 +710,7 @@ automaton separatorListener:
   location AwaitSRelease:
     edge when not sensor goto Init;
   location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
+    edge when s_Bresetbutton goto AwaitSRelease;
 end
 automaton exitListener:
   cont t der 1.0;
@@ -727,7 +731,7 @@ automaton exitListener:
   location AwaitSRelease:
     edge when not sensor goto Init;
   location Malfunction:
-    edge when s_Tresetbutton goto AwaitSRelease;
+    edge when s_Bresetbutton goto AwaitSRelease;
 end
 automaton SeparatorContr:
   cont t der 1.0;
@@ -845,6 +849,8 @@ automaton Lift2:
   alg LiftState state;
   event rejProduct;
   cont timer der 1.0;
+  const int[5..5] travelTime = 5;
+  disc bool malfunction;
   location Initializing:
     initial;
     equation state = STOP;
@@ -862,7 +868,7 @@ automaton Lift2:
   location VerifyBlock1:
     equation state = STOP;
     edge PusherContr.extent when not s_optical and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-    edge when s_optical goto GoingUp;
+    edge when s_optical do timer := 0.0 goto GoingUp;
   location PushingBlockAtBot:
     equation state = STOP;
     edge PusherContr.retract goto ProductFullyRedjected;
@@ -873,22 +879,34 @@ automaton Lift2:
     equation state = UP;
     edge BStart.toggle? when not s_Tautoswitch and s_elevator_up do timer := 0.0 goto Delay2;
     edge when s_Tautoswitch and s_elevator_up do timer := 0.0 goto Delay2;
+    edge when timer > travelTime do malfunction := true goto UpMalfunct;
+  location UpMalfunct:
+    equation state = STOP;
+    edge when s_Tstartbutton do malfunction := false, timer := 0.0 goto GoingUp;
   location Delay2:
     equation state = STOP;
     edge when timer > 1 goto VerifyBlock2;
   location VerifyBlock2:
     equation state = STOP;
-    edge when not s_productheight goto GoingDownReject;
+    edge when not s_productheight do timer := 0.0 goto GoingDownReject;
     edge PusherContr.extent when s_productheight and not s_bufferingbusy goto PushingBlockAtTop;
   location GoingDownReject:
     equation state = DOWN;
     edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+    edge when timer > travelTime do malfunction := true goto DownRejectMalf;
+  location DownRejectMalf:
+    equation state = STOP;
+    edge when s_Tstartbutton do malfunction := false, timer := 0.0 goto GoingDownReject;
   location PushingBlockAtTop:
     equation state = STOP;
-    edge PusherContr.retract goto GoingDownEmpty;
+    edge PusherContr.retract do timer := 0.0 goto GoingDownEmpty;
   location GoingDownEmpty:
     equation state = DOWN;
     edge when s_elevator_down goto Initializing;
+    edge when timer > travelTime do malfunction := true goto DownEmptyMalf;
+  location DownEmptyMalf:
+    equation state = STOP;
+    edge when s_Tstartbutton do malfunction := false, timer := 0.0 goto GoingDownEmpty;
 end
 automaton RejectBufferContr:
   disc int count;
@@ -902,17 +920,21 @@ end
 automaton PusherContr:
   event extent;
   event retract;
+  cont timer der 1.0;
   location Extending:
     edge retract when s_pusher goto Retracting;
+    edge when timer > 5 goto Malfunction;
   location Retracting:
     initial;
-    edge extent goto Extending;
+    edge extent do timer := 0.0 goto Extending;
+  location Malfunction:
+    edge when s_Tstartbutton do timer := 0.0 goto Extending;
 end
 automaton Airslide:
   monitor PusherContr.extent;
   cont t der 1.0;
   location Active:
-    edge when t > 5 goto InActive;
+    edge when t > 2 goto InActive;
   location InActive:
     initial;
     edge PusherContr.extent when s_elevator_up do t := 0.0 goto Active;
@@ -948,8 +970,8 @@ automaton box1:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1054,8 +1076,8 @@ automaton box2:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1160,8 +1182,8 @@ automaton box3:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1266,8 +1288,8 @@ automaton box4:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1372,8 +1394,8 @@ automaton box5:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1478,8 +1500,8 @@ automaton box6:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1584,8 +1606,8 @@ automaton box7:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1690,8 +1712,8 @@ automaton box8:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1796,8 +1818,8 @@ automaton box9:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -1902,8 +1924,8 @@ automaton box10:
   location InLift:
     equation x' = 0.0,
              y' = Lift.speed;
-    edge pusher_activated? when LiftSensorUp.isActive do rotDer := -30.0 goto LiftSlideTransit;
-    edge pusher_activated? when LiftSensorDown.isActive goto PreRejectBufferTransit;
+    edge pusher_activated? when s_elevator_up do rotDer := -30.0 goto LiftSlideTransit;
+    edge pusher_activated? when s_elevator_down goto PreRejectBufferTransit;
   location PreRejectBufferTransit:
     equation x' = -boxSpeed,
              y' = 0.0;
@@ -2194,19 +2216,47 @@ group stop_svg:
   svgin id idfier event b_stop.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_s_lift_up:
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
+  location Released:
+    initial;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
+  location Pressed:
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
+end
 group svg_s_lift_up:
   alg string idfier = "s_lift_up";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = LiftSensorUp.isActive;
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+  alg bool state = s_elevator_up;
+  svgin id idfier event b_s_lift_up.clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if b_s_lift_up.Pressed: "orange" elif state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_s_lift_down:
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
+  location Released:
+    initial;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
+  location Pressed:
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
 end
 group svg_s_lift_down:
   alg string idfier = "s_lift_down";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = LiftSensorDown.isActive;
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+  alg bool state = s_elevator_down;
+  svgin id idfier event b_s_lift_down.clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if b_s_lift_down.Pressed: "orange" elif state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_color:
   event clicked;
@@ -2326,6 +2376,27 @@ group svg_b_autoManualSwitch:
   svgin id idfier event b_autoManualSwitch.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_s_pusher:
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
+  location Released:
+    initial;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
+  location Pressed:
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
+end
+group svg_s_pusher:
+  alg string idfier = "s_pusher";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
+  alg bool state = s_pusher;
+  svgin id idfier event b_s_pusher.clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if b_s_pusher.Pressed: "orange" elif state: onColor else offColor end file "../SystemSVG.svg";
+end
 automaton SysState:
   alg string state;
   location Off:
@@ -2362,41 +2433,33 @@ automaton Lift:
   const real maxSpeed = 80.0;
   alg real speed;
   cont y der speed;
+  alg bool liftAtTop = y <= -Const.Lift.MaxHeight;
+  alg bool liftAtBot = y >= 0;
   location Up:
     equation speed = -maxSpeed;
     edge when not a_elevator_up goto Stop;
-    edge when a_elevator_down goto Down;
-    edge when LiftSensorUp.isActive goto Stop;
+    edge when liftAtTop goto Stop;
   location Stop:
     initial;
     equation speed = 0.0;
-    edge when a_elevator_up and not LiftSensorUp.isActive goto Up;
-    edge when a_elevator_down and not LiftSensorDown.isActive goto Down;
+    edge when a_elevator_up and not liftAtTop goto Up;
+    edge when a_elevator_down and not liftAtBot goto Down;
   location Down:
     equation speed = maxSpeed;
     edge when not a_elevator_down goto Stop;
-    edge when a_elevator_up goto Up;
-    edge when LiftSensorDown.isActive goto Stop;
+    edge when liftAtBot goto Stop;
 end
 automaton Pusher:
   alg real speed;
   cont x der speed;
+  alg bool pusherExtend = Extending and x < -35;
   location Extending:
-    equation speed = if not PusherSensor.isActive: -boxSpeed else 0.0 end;
+    equation speed = if not pusherExtend: -boxSpeed else 0.0 end;
     edge when not a_pusher goto Retracting;
   location Retracting:
     initial;
     equation speed = if x < 0: boxSpeed else 0.0 end;
     edge pusher_activated! when a_pusher goto Extending;
-end
-group LiftSensorUp:
-  alg bool isActive = Lift.y <= -Const.Lift.MaxHeight;
-end
-group LiftSensorDown:
-  alg bool isActive = Lift.y >= 0;
-end
-group PusherSensor:
-  alg bool isActive = Pusher.Extending and Pusher.x < -35;
 end
 automaton HeightSensor:
   alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
@@ -2575,33 +2638,42 @@ automaton ProdRemoval:
     edge box4.clicked! when box4.InSeperatorWaiting goto Stage1;
     edge box5.clicked! when box5.InSeperatorWaiting goto Stage1;
 end
-automaton b_BS01:
-  event clicked;
-  event void toggle;
-  disc bool state = initialState;
-  alg bool initialState = false;
-  location Released:
+automaton SensorMalfunctioner:
+  cont timer der -1.0;
+  location Init:
     initial;
-    edge clicked do state := true goto Pressed;
-    edge toggle? do state := true goto Pressed;
-  location Pressed:
-    edge clicked do state := false goto Released;
-    edge toggle? do state := false goto Released;
+    edge when UseCase.Case3 goto Stage1;
+  location Stage1:
+    edge when not UseCase.Case3 goto Init;
+    edge b_s_lift_up.toggle! when Lift.Up do timer := 8.0 goto Stage2;
+  location Stage2:
+    edge b_s_lift_up.toggle! when timer < 0 goto Stage3;
+  location Stage3:
+    edge b_s_lift_down.toggle! when Lift.Down do timer := 8.0 goto Stage4;
+  location Stage4:
+    edge b_s_lift_down.toggle! when timer < 0 do timer := 12.0 goto Stage5;
+  location Stage5:
+    edge b_s_pusher.toggle! when timer < 0 do timer := 10.0 goto Stage6;
+  location Stage6:
+    edge b_s_pusher.toggle! when timer < 0 do timer := 25.0 goto Delay;
+  location Delay:
+    edge when timer < 0 goto Init;
 end
-group svg_b_BS01:
-  alg string idfier = "BS01";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
-  alg bool state = b_BS01.Pressed;
-  svgin id idfier event b_BS01.clicked file "../SystemSVG.svg";
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+automaton StartAutoPresser:
+  cont timer der -1.0;
+  location Init:
+    initial;
+    edge when a_TledQ2 and not UseCase.NoCase do timer := 2.0 goto PressStart;
+  location PressStart:
+    edge b_start.toggle! when timer < 0 do timer := 0.5 goto ReleaseStart;
+  location ReleaseStart:
+    edge b_start.toggle! when timer < 0 goto Init;
 end
 group svg_b_i_BS01:
   alg string idfier = "i_BS01";
   alg string onColor = "red";
   alg string offColor = "grey";
   alg bool state = s_product;
-  svgin id idfier event b_BS01.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_b_i_BS02:
@@ -2622,21 +2694,21 @@ group svg_s_product:
   alg string idfier = "s_product_entry";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = EntrySensor.isActive;
+  alg bool state = s_product;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_atseparator:
   alg string idfier = "s_product_separator";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = AtSepSensor.isActive;
+  alg bool state = s_atseparator;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_atexit:
   alg string idfier = "s_product_exit";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = ExitSensor.isActive;
+  alg bool state = s_atexit;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_separator_opened:
@@ -2667,25 +2739,11 @@ group svg_s_Q2B:
   alg bool state = a_BledQ2;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
-automaton b_processing:
-  event clicked;
-  event void toggle;
-  disc bool state = initialState;
-  alg bool initialState = false;
-  location Released:
-    initial;
-    edge clicked do state := true goto Pressed;
-    edge toggle? do state := true goto Pressed;
-  location Pressed:
-    edge clicked do state := false goto Released;
-    edge toggle? do state := false goto Released;
-end
 group svg_b_processing:
   alg string idfier = "s_processing_busy";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string onColor = Const.Sensors.onColor;
+  alg string offColor = Const.Sensors.offColor;
   alg bool state = s_processingbusy;
-  svgin id idfier event b_processing.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_conveyer:
@@ -2715,6 +2773,27 @@ group svg_conv:
   svgout id fmt("Conv%d_Wheel", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360) file "../SystemSVG.svg";
   svgout id fmt("Conv%d_Wheel2", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360) file "../SystemSVG.svg";
 end
+automaton b_reset_B:
+  event clicked;
+  event void toggle;
+  disc bool state = initialState;
+  alg bool initialState = false;
+  location Released:
+    initial;
+    edge clicked do state := true goto Pressed;
+    edge toggle? do state := true goto Pressed;
+  location Pressed:
+    edge clicked do state := false goto Released;
+    edge toggle? do state := false goto Released;
+end
+group svg_b_reset_B:
+  alg string idfier = "reset_B";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = b_reset_B.state;
+  svgin id idfier event b_reset_B.clicked file "../SystemSVG.svg";
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
 automaton b_BautoManualSwitch:
   event clicked;
   event void toggle;
@@ -2735,18 +2814,6 @@ group svg_b_BautoManualSwitch:
   alg bool state = b_autoManualSwitch.state;
   svgin id idfier event b_BautoManualSwitch.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-group AtSepSensor:
-  alg int boxI = RectRectColl(Const.Sensors.AtSepSensorBounds, BoxUpdater.data);
-  alg bool isActive = boxI != -1;
-end
-group EntrySensor:
-  alg int boxI = RectRectColl(Const.Sensors.EntrySensorBounds, BoxUpdater.data);
-  alg bool isActive = boxI != -1;
-end
-group ExitSensor:
-  alg int boxI = RectRectColl(Const.Sensors.ExitSensorBounds, BoxUpdater.data);
-  alg bool isActive = boxI != -1;
 end
 automaton ProcessingBusySensor:
   cont timer der -1.0;
@@ -2784,11 +2851,11 @@ automaton Q2ResetPresser:
   cont timer der 1.0;
   location Init:
     initial;
-    edge when not UseCase.NoCase and a_TledQ2 do timer := 0.0 goto Wait1;
+    edge when not UseCase.NoCase and a_BledQ1 do timer := 0.0 goto Wait1;
   location Wait1:
-    edge b_reset.toggle! when timer > 3 do timer := 0.0 goto Wait2;
+    edge b_reset_B.toggle! when timer > 3 do timer := 0.0 goto Wait2;
   location Wait2:
-    edge b_reset.toggle! when timer > 1 goto Init;
+    edge b_reset_B.toggle! when timer > 1 goto Init;
 end
 group Const:
   group Box:

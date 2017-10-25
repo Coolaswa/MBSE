@@ -13,12 +13,13 @@ input bool s_atseparator;
 input bool s_atexit;
 input bool s_processingbusy;
 input bool s_Bautoswitch;
+input bool s_Bresetbutton;
 
 alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
-alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction;
-alg bool a_TledQ2 = malfunction;
-alg bool a_BledQ1 = false, a_BledQ2 = false;
+alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
+alg bool a_BledQ1 = malfunction;
+alg bool a_BledQ2 = false;
 
 event void atEntry, atSep, atExit;
 event real atEntryConf, atSepConf, atExitConf;
@@ -148,7 +149,7 @@ automaton def SensorListener(event void atActivation; event real atActivConf; al
     location AwaitSRelease:
         edge when not sensor goto Init;
     location Malfunction:
-        edge when s_Tresetbutton goto AwaitSRelease;
+        edge when s_Bresetbutton goto AwaitSRelease;
 end
 
 // Model of the box as simulated by the controller

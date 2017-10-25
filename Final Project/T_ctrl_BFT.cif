@@ -19,9 +19,10 @@ input bool s_optical;
 alg bool a_elevator_up = Lift2.state = UP;
 alg bool a_elevator_down = Lift2.state = DOWN;
 alg bool a_testingready = Lift2.Waiting;
-alg bool a_pusher = PusherContr.Extending;
+alg bool a_pusher = PusherContr.Extending or PusherContr.Malfunction;
 alg bool a_airslide = Airslide.Active;
 alg bool a_TledQ1 = RejectBufferContr.count >=5;
+alg bool a_TledQ2 = Lift2.malfunction or PusherContr.Malfunction;
 
 alg bool systemReady = s_Tinitialized and s_Binitialized;
 
@@ -55,6 +56,8 @@ automaton Lift2:
     alg LiftState state;
     event rejProduct;
     cont timer der 1;
+    const int travelTime = 5;
+    disc bool malfunction;
     location Initializing:
         equation state = STOP;
         initial;
@@ -72,7 +75,7 @@ automaton Lift2:
     location VerifyBlock1:
         equation state = STOP;
         edge PusherContr.extent when not s_optical and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-        edge when s_optical goto GoingUp;
+        edge when s_optical do timer :=0 goto GoingUp;
     location PushingBlockAtBot:
         equation state = STOP;
         edge PusherContr.retract goto ProductFullyRedjected;
@@ -83,22 +86,34 @@ automaton Lift2:
         equation state = UP;
         edge BStart.toggle? when not s_Tautoswitch and s_elevator_up do timer:= 0 goto Delay2;
         edge when s_Tautoswitch and s_elevator_up do timer:= 0 goto Delay2;
+        edge when timer > travelTime do malfunction := true goto UpMalfunct;
+    location UpMalfunct:
+        equation state = STOP;
+        edge when s_Tstartbutton do malfunction := false, timer := 0 goto GoingUp;
     location Delay2:
         equation state = STOP;
         edge when timer > 1 goto VerifyBlock2;
     location VerifyBlock2:
         equation state = STOP;
-        edge when not s_productheight goto GoingDownReject;
+        edge when not s_productheight do timer := 0 goto GoingDownReject;
         edge PusherContr.extent when s_productheight and not s_bufferingbusy goto PushingBlockAtTop;
     location GoingDownReject:
         equation state = DOWN;
         edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
+        edge when timer > travelTime do malfunction := true goto DownRejectMalf;
+    location DownRejectMalf:
+        equation state = STOP;
+        edge when s_Tstartbutton do malfunction := false, timer := 0 goto GoingDownReject;
     location PushingBlockAtTop:
         equation state = STOP;
-        edge PusherContr.retract goto GoingDownEmpty;
+        edge PusherContr.retract do timer := 0 goto GoingDownEmpty;
     location GoingDownEmpty:
         equation state = DOWN;
         edge when s_elevator_down goto Initializing;
+        edge when timer > travelTime do malfunction := true goto DownEmptyMalf;
+    location DownEmptyMalf:
+        equation state = STOP;
+        edge when s_Tstartbutton do malfunction := false, timer := 0 goto GoingDownEmpty;
 end
 
 // Keeps track of how many products are on the reject buffer
@@ -115,11 +130,15 @@ end
 // Responsible for controlling the pusher
 automaton PusherContr:
     event extent, retract;
+    cont timer der 1;
     location Extending:
         edge retract when s_pusher goto Retracting;
+        edge when timer > 5 goto Malfunction;
     location Retracting:
         initial;
-        edge extent goto Extending;
+        edge extent do timer := 0 goto Extending;
+    location Malfunction:
+        edge when s_Tstartbutton do timer:=0 goto Extending;
 end
 
 // Responsible for controlling the air slide
