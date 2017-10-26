@@ -59,7 +59,7 @@ automaton def Box(event clickedEvent):
         initial;
         edge spawn_new_block?
              do (x,y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]),
-             productRejectPosX := productConstRejectX, rotation := 0 goto InArm;
+             productRejectPosX := productConstRejectX, rotation := 0, rotDer := 0 goto InArm;
     location InArm:
         equation x' = -boxSpeedInArm * cos(Arm.armRot/180*3.1415), y' = -boxSpeedInArm * sin(Arm.armRot/180*3.1415);
         edge when isThick and y > Const.Box.LiftPos[y]+23*0.2 do (x,y) := Const.Box.LiftPos goto InLift;

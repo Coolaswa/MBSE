@@ -12,11 +12,11 @@ alg bool s_atexit = boxIAtExit != -1;
 alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
 alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 alg bool s_Bresetbutton = b_reset_B.Pressed;
-alg bool actualBusy = s_processingbusy or s_Bautoswitch;
+alg bool actualBusy = s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
 alg bool a_BledQ1 = malfunction;
-alg bool a_BledQ2 = false;
+alg bool a_BledQ2 = actualBusy;
 event void atEntry;
 event void atSep;
 event void atExit;
@@ -749,7 +749,9 @@ automaton SeparatorContr:
     edge close? goto AwaitProduct;
   location AwaitLeave:
     edge when not s_atexit goto TurnOffConv;
-    edge close? goto TurnOffConv;
+    edge close? do t := 0.0 goto Delay;
+  location Delay:
+    edge when t > 0.5 goto TurnOffConv;
   location TurnOffConv:
     edge ConveyerContr.turnOff! goto AwaitProduct;
 end
@@ -757,14 +759,16 @@ automaton ConveyerContr:
   event void turnOn;
   event void turnOff;
   disc int onReqs = 0;
+  cont timer der 1.0;
   location Off:
     initial;
-    edge turnOn? do onReqs := onReqs + 1 goto On;
-    edge turnOff? do onReqs := onReqs - 1 goto On;
+    edge turnOn? do timer := 0.0, onReqs := onReqs + 1 goto On;
+    edge turnOff? do timer := 0.0, onReqs := onReqs - 1 goto On;
     edge when onReqs > 0 goto On;
   location On:
-    edge turnOn? do onReqs := onReqs + 1 goto On;
-    edge turnOff? do onReqs := onReqs - 1 goto On;
+    edge turnOn? do timer := 0.0, onReqs := onReqs + 1 goto On;
+    edge turnOff? do timer := 0.0, onReqs := onReqs - 1 goto On;
+    edge when timer > 10 do onReqs := onReqs - 1;
     edge when onReqs <= 0 goto Off;
 end
 automaton EntryController:
@@ -961,7 +965,7 @@ automaton box1:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1067,7 +1071,7 @@ automaton box2:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1173,7 +1177,7 @@ automaton box3:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1279,7 +1283,7 @@ automaton box4:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1385,7 +1389,7 @@ automaton box5:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1491,7 +1495,7 @@ automaton box6:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1597,7 +1601,7 @@ automaton box7:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1703,7 +1707,7 @@ automaton box8:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1809,7 +1813,7 @@ automaton box9:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);
@@ -1915,7 +1919,7 @@ automaton box10:
     initial;
     equation x' = 0.0,
              y' = 0.0;
-    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0 goto InArm;
+    edge spawn_new_block? do (x, y, color, isThick) := (?[bounds][x], ?[bounds][y], ?[color], ?[thick]), productRejectPosX := productConstRejectX, rotation := 0.0, rotDer := 0.0 goto InArm;
   location InArm:
     equation x' = -boxSpeedInArm * cos(Arm.armRot / 180 * 3.1415),
              y' = -boxSpeedInArm * sin(Arm.armRot / 180 * 3.1415);

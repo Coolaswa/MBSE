@@ -19,7 +19,7 @@ alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
 alg bool a_BledQ1 = malfunction;
-alg bool a_BledQ2 = false;
+alg bool a_BledQ2 = actualBusy;
 
 event void atEntry, atSep, atExit;
 event real atEntryConf, atSepConf, atExitConf;
@@ -64,10 +64,12 @@ automaton SeparatorContr:
         edge ConveyerContr.turnOn! goto Opening;
     location Opening:
         edge when s_atexit goto AwaitLeave;
-        edge close? goto AwaitProduct;
+        edge close? goto Delay;
     location AwaitLeave:
-        edge when not s_atexit goto TurnOffConv;
-        edge close? goto TurnOffConv;
+        edge when not s_atexit goto Delay;
+        edge close? do t:= 0 goto Delay;
+    location Delay:
+        edge when t > 0.5 goto TurnOffConv;
     location TurnOffConv:
         edge ConveyerContr.turnOff! goto AwaitProduct;
 end
@@ -77,14 +79,16 @@ automaton ConveyerContr:
     event void turnOn; // Request a turn on
     event void turnOff; // Request a turn off
     disc int onReqs = 0; // If onReqs > 0, then apparently someone still wants the conveyer on
+    cont timer der 1;
 	location Off:
 		initial;
-		edge turnOn ? do onReqs := onReqs + 1 goto On;
-		edge turnOff ? do onReqs := onReqs - 1 goto On;
+		edge turnOn ? do timer := 0, onReqs := onReqs + 1 goto On;
+		edge turnOff ? do timer := 0, onReqs := onReqs - 1 goto On;
 		edge when onReqs > 0 goto On;
 	location On:
-		edge turnOn ? do onReqs := onReqs + 1 goto On;
-        edge turnOff ? do onReqs := onReqs - 1 goto On;
+		edge turnOn ? do timer:=0, onReqs := onReqs + 1 goto On;
+        edge turnOff ? do timer :=0, onReqs := onReqs - 1 goto On;
+        edge when timer > 15 do onReqs := onReqs - 1;
         edge when onReqs <= 0 goto Off;
 end
 
