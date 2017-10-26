@@ -12,7 +12,7 @@ alg bool s_atexit = boxIAtExit != -1;
 alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
 alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 alg bool s_Bresetbutton = b_reset_B.Pressed;
-alg bool actualBusy = s_Bautoswitch;
+alg bool actualBusy = s_processingbusy or s_Bautoswitch;
 alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
 alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
 alg bool a_BledQ1 = malfunction;
@@ -746,9 +746,9 @@ automaton SeparatorContr:
     edge ConveyerContr.turnOn! goto Opening;
   location Opening:
     edge when s_atexit goto AwaitLeave;
-    edge close? goto AwaitProduct;
+    edge close? goto Delay;
   location AwaitLeave:
-    edge when not s_atexit goto TurnOffConv;
+    edge when not s_atexit goto Delay;
     edge close? do t := 0.0 goto Delay;
   location Delay:
     edge when t > 0.5 goto TurnOffConv;
@@ -768,7 +768,7 @@ automaton ConveyerContr:
   location On:
     edge turnOn? do timer := 0.0, onReqs := onReqs + 1 goto On;
     edge turnOff? do timer := 0.0, onReqs := onReqs - 1 goto On;
-    edge when timer > 10 do onReqs := onReqs - 1;
+    edge when timer > 15 do onReqs := onReqs - 1;
     edge when onReqs <= 0 goto Off;
 end
 automaton EntryController:
@@ -2504,11 +2504,11 @@ automaton Factory:
   alg string boxColorAuto = if isBlack: "black" else "red" end;
   alg bool isThickMan = svg_b_height.state = 0;
   disc dist bool thickDistrC1 = bernoulli(0.0);
-  disc dist bool thickDistrC2 = bernoulli(0.3);
-  disc dist bool thickDistrC3 = bernoulli(0.05);
+  disc dist bool thickDistrC2 = bernoulli(0.4);
+  disc dist bool thickDistrC3 = bernoulli(0.1);
   disc dist bool blackDistrC1 = bernoulli(0.0);
-  disc dist bool blackDistrC2 = bernoulli(0.3);
-  disc dist bool blackDistrC3 = bernoulli(0.05);
+  disc dist bool blackDistrC2 = bernoulli(0.4);
+  disc dist bool blackDistrC3 = bernoulli(0.1);
   cont timer der -1.0;
   location Waiting:
     initial;

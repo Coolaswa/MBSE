@@ -214,11 +214,11 @@ automaton Factory:
     alg bool isThickMan = svg_b_height.state = 0;
 
     disc dist bool thickDistrC1 = bernoulli(0);
-    disc dist bool thickDistrC2 = bernoulli(0.3);
-    disc dist bool thickDistrC3 = bernoulli(0.05);
+    disc dist bool thickDistrC2 = bernoulli(0.4);
+    disc dist bool thickDistrC3 = bernoulli(0.1);
     disc dist bool blackDistrC1 = bernoulli(0);
-    disc dist bool blackDistrC2 = bernoulli(0.3);
-    disc dist bool blackDistrC3 = bernoulli(0.05);
+    disc dist bool blackDistrC2 = bernoulli(0.4);
+    disc dist bool blackDistrC3 = bernoulli(0.1);
 
     cont timer der -1;
     location Waiting:
