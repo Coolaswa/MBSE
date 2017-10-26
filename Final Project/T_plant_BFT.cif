@@ -30,12 +30,12 @@ alg int boxInLift = RectRectColl((Const.Sensors.CapSensorBounds[x],
                         Const.Sensors.CapSensorBounds[width],
                         Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
 
-
 // Events
 event BoxData spawn_new_block;
 event productRejected;
 event void pusher_activated;
 
+// Button definitions
 b_start_B: Button(false);
 b_start_B_svg: Button_svg(b_start_B.clicked, "start_B", "green", "grey",  b_start_B.state);
 b_startB_list: Listener(b_start_B);
@@ -57,7 +57,7 @@ svg_s_lift_up: ClickLed_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.of
 b_liftup_list: Listener(b_s_lift_up);
 
 b_s_lift_down: Button(false);
-svg_s_lift_down: ClickLed_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_down, b_s_lift_down);
+svg_s_lift_down:ClickLed_svg("s_lift_down",Const.Sensors.onColor,Const.Sensors.offColor,s_elevator_down,b_s_lift_down);
 b_liftdown_list: Listener(b_s_lift_down);
 
 b_color: Button(false);
@@ -67,19 +67,6 @@ b_color_list: Listener(b_color);
 b_height: Button(false);
 svg_b_height: Switch2_svg(b_height.clicked);
 b_height_list: Listener(b_height);
-
-svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
-svg_s_height2: LED_svg("s_height2", "red", "grey", HeightSensor.isActive);
-svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, s_capacitive);
-svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, s_reflective);
-svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, s_optical);
-
-svg_a_conv: LED_svg("b_conveyor", "yellow", "grey", a_conveyer);
-svg_a_testingrdy: LED_svg("b_testingready", "yellow", "grey", a_testingready);
-svg_a_elvup: LED_svg("a_lift_up", "yellow", "grey", a_elevator_up);
-svg_a_elvdown: LED_svg("a_lift_down", "yellow", "grey", a_elevator_down);
-svg_a_push: LED_svg("b_pusher", "yellow", "grey", a_pusher);
-svg_a_air: LED_svg("b_airslide", "yellow", "grey", a_airslide);
 
 b_spawn: Button(false);
 svg_b_spawn: Button_svg(b_spawn.clicked, "b_spawn", "yellow", "grey", b_spawn.state);
@@ -93,6 +80,29 @@ b_s_pusher: Button(false);
 svg_s_pusher: ClickLed_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, s_pusher, b_s_pusher);
 b_pusher_list: Listener(b_s_pusher);
 
+b_case1: Button(false);
+b_case1_svg: Button_svg(b_case1.clicked, "b_case1", "yellow", "grey", b_case1.state);
+b_case1_list: Listener(b_case1);
+b_case2: Button(false);
+b_case2_svg: Button_svg(b_case2.clicked, "b_case2", "yellow", "grey", b_case2.state);
+b_case2_list: Listener(b_case2);
+b_case3: Button(false);
+b_case3_svg: Button_svg(b_case3.clicked, "b_case3", "yellow", "grey", b_case3.state);
+b_case3_list: Listener(b_case3);
+
+// Svg related variables
+svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
+svg_s_height2: LED_svg("s_height2", "red", "grey", HeightSensor.isActive);
+svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, s_capacitive);
+svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, s_reflective);
+svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, s_optical);
+
+svg_a_conv: LED_svg("b_conveyor", "yellow", "grey", a_conveyer);
+svg_a_testingrdy: LED_svg("b_testingready", "yellow", "grey", a_testingready);
+svg_a_elvup: LED_svg("a_lift_up", "yellow", "grey", a_elevator_up);
+svg_a_elvdown: LED_svg("a_lift_down", "yellow", "grey", a_elevator_down);
+svg_a_push: LED_svg("b_pusher", "yellow", "grey", a_pusher);
+svg_a_air: LED_svg("b_airslide", "yellow", "grey", a_airslide);
 
 // Responsible for keeping track of the state of the system
 automaton SysState:
@@ -191,7 +201,7 @@ end
 // Responsible for controlling the height sensor
 automaton HeightSensor:
     alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
-    alg bool isActive =  (boxI != -1) and not BoxUpdater.data[boxI][thick];
+    alg bool isActive =  not ((boxI != -1) and BoxUpdater.data[boxI][thick]);
     cont y;
     location:
         equation y' = if boxI != -1: Lift.speed elif y < 0: 10 else 0 end;
@@ -247,16 +257,6 @@ automaton Factory:
     location Post:
         edge do timer := 3 goto Waiting;
 end
-
-b_case1: Button(false);
-b_case1_svg: Button_svg(b_case1.clicked, "b_case1", "yellow", "grey", b_case1.state);
-b_case1_list: Listener(b_case1);
-b_case2: Button(false);
-b_case2_svg: Button_svg(b_case2.clicked, "b_case2", "yellow", "grey", b_case2.state);
-b_case2_list: Listener(b_case2);
-b_case3: Button(false);
-b_case3_svg: Button_svg(b_case3.clicked, "b_case3", "yellow", "grey", b_case3.state);
-b_case3_list: Listener(b_case3);
 
 // Responsible for keeping track which use case is active
 automaton UseCase:

@@ -1,6 +1,7 @@
 import "B_ctrl_BFT.cif";
 svgfile "SystemSVG.svg";
 
+// Group def for creating a box in the svg
 group def Create_Box_svg(BoxModel box; alg int idfier; alg string color; alg real x,y, rot, opacity):
      alg string name = "Product_" + <string>idfier;
      svgcopy id "Product" post "_" + <string>idfier;
@@ -13,11 +14,7 @@ group def Create_Box_svg(BoxModel box; alg int idfier; alg string color; alg rea
                     elif box.InSeperatorWaiting: "insep" else "idk" end;
 end
 
-automaton def test():
-    location Init:
-        initial;
-end
-
+// Instantiating the svg boxes
 const real box_opacity = 0.3;
 const string box_color = "blue";
 box1_svg2: Create_Box_svg(m_box1, 11, box_color, m_box1.x, m_box1.y, m_box1.rotation, box_opacity);

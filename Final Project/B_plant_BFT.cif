@@ -3,21 +3,25 @@ import "TB_Defs_BFT.cif";
 import "TB_SVGConstants_BFT.cif";
 import "TB_box_BFT.cif";
 
+// Actuators
 input bool a_conveyer;
 input bool a_separator;
 input bool a_BledQ1, a_BledQ2;
-alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 
+// Sensors
+alg bool s_Bautoswitch = b_BautoManualSwitch.Pressed;
 alg bool s_product = boxIAtEntry != -1;
 alg bool s_atseparator = boxIAtSep != -1;
 alg bool s_atexit = boxIAtExit != -1;
 alg bool s_processingbusy = ProcessingBusySensor.On or s_Bautoswitch;
 alg bool s_Bresetbutton = b_reset_B.Pressed;
 
+// Variables used to check the box ID at sep, exit and entry resp.
 alg int boxIAtSep = RectRectColl(Const.Sensors.AtSepSensorBounds, BoxUpdater.data);
 alg int boxIAtExit = RectRectColl(Const.Sensors.ExitSensorBounds, BoxUpdater.data);
 alg int boxIAtEntry = RectRectColl(Const.Sensors.EntrySensorBounds, BoxUpdater.data);
 
+// Variables used for visualisation
 svg_b_i_BS01: LED_svg("i_BS01", "grey", "red", s_product);
 svg_b_i_BS02: LED_svg("i_BS02", "grey", "red", s_atseparator);
 svg_b_i_BS03: LED_svg("i_BS03", "grey", "red", s_atexit);
@@ -29,15 +33,15 @@ svg_s_separator_opened: LED_svg("s_separator_opened", Const.Sensors.onColor, Con
 svg_s_separator_closed: LED_svg("s_separator_closed", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Right);
 svg_s_Q1B: LED_svg("s_q1-7", "yellow", "#f9f9f9", a_BledQ1);
 svg_s_Q2B: LED_svg("s_q2-5", "yellow", "#f9f9f9", a_BledQ2);
-
 svg_b_processing: LED_svg("s_processing_busy", Const.Sensors.onColor, Const.Sensors.offColor, s_processingbusy);
-
 svg_conv: Conveyer_svg(1, Belt.wheelRotation);
 
+// Variables used to make the reset button work
 b_reset_B: Button(false);
 svg_b_reset_B: Button_svg(b_reset_B.clicked, "reset_B", "yellow", "grey", b_reset_B.state);
 b_resetB_list: Listener(b_reset_B);
 
+// Variables used to make the automanual switch work
 b_BautoManualSwitch: Button(false);
 svg_b_BautoManualSwitch: Button_svg(b_BautoManualSwitch.clicked, "key-2", "yellow", "grey", b_autoManualSwitch.state);
 b_bauto_list: Listener(b_BautoManualSwitch);
@@ -46,13 +50,11 @@ b_bauto_list: Listener(b_BautoManualSwitch);
 automaton ProcessingBusySensor:
     cont timer der -1;
 	location On:
-		edge when UseCase.NoCase goto Off;
-        edge when UseCase.Case1 and timer < 0 do timer := 3 goto Off;
+		edge when UseCase.NoCase or UseCase.Case1  goto Off;
         edge when UseCase.Case2 and timer < 0 do timer := 3 goto Off;
         edge when UseCase.Case3 and timer < 0 do timer := 3 goto Off;
 	location Off:
         initial;
-        edge when UseCase.Case1 and timer < 0 do timer := 10 goto On;
         edge when UseCase.Case2 and timer < 0 do timer := 3 goto On;
         edge when UseCase.Case3 and timer < 0 do timer := 3 goto On;
 end

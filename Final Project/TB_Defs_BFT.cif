@@ -30,9 +30,11 @@ automaton def Button(alg bool initialState):
         initial;
         edge clicked do state := true goto Pressed;
         edge toggle? do state := true goto Pressed;
+        edge when state = true goto Pressed;
     location Pressed:
         edge clicked do state := false goto Released;
         edge toggle? do state := false goto Released;
+        edge when state = false goto Released;
 end
 
 automaton def Listener(Button butt):

@@ -2,8 +2,8 @@ import "TB_Defs_BFT.cif";
 
 group Const:
 
+    // Constants related to the box
     group Box:
-        //This needs to be updated manually in test_buffering_station_plant :(
         alg int Size = 40;
         const Point StartPos = (1360, 211);
         const Point LiftPos = (1182.9, 361);
@@ -11,9 +11,13 @@ group Const:
         const Rectangle StartThickBounds = (StartPos[x], StartPos[y] + 23*0.2, 40, 23*1.2);
         const int BufferY = 273;
     end
+
+    // Constants related to the lift
     group Lift:
         const int MaxHeight = 133;
     end
+
+    // Constants related to the sensors
     group Sensors:
         const Rectangle HeightBounds = (1187,210,36,28);
         const Rectangle CapSensorBounds = (1184,358,39,26);
@@ -24,8 +28,5 @@ group Const:
 		const Rectangle RightBlockBounds = (620,275,1,50);
 		const string offColor = "#004455";
 		const string onColor = "#00ffcc";
-    end
-    group Buttons:
-
     end
 end

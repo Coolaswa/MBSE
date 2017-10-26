@@ -6,6 +6,7 @@ input bool a_airslide;
 input bool a_TledQ1;
 input bool a_TledQ2;
 
+// For creating the SVG of the products
 group def Create_Box_svg(alg int idfier; alg BoxData data; event clicked):
      alg string name = "Product_" + <string>idfier;
      svgcopy id "Product" post "_" + <string>idfier;
@@ -18,25 +19,30 @@ group def Create_Box_svg(alg int idfier; alg BoxData data; event clicked):
          value fmt("matrix(1,0,0,%f,0,%f)", heightScale, -(heightScale - 1) * 23);
 end
 
+// For linking buttons and svg
 group def Button_svg(event action; alg string idfier, onColor, offColor; alg bool state):
 	svgin id idfier event action;
 	svgout id idfier attr "fill" value if state: onColor else offColor end;
 end
 
+// For showing non clickable leds
 group def LED_svg( alg string idfier, onColor, offColor; alg bool state):
     svgout id idfier attr "fill" value if state: onColor else offColor end;
 end
 
+// For showing clickable leds
 group def ClickLed_svg(alg string idfier, onColor, offColor; alg bool state; Button butt):
     svgin id idfier event butt.clicked;
     svgout id idfier attr "fill" value if butt.Pressed: "orange" elif state: onColor else offColor end;
 end
 
+// For visualizing the color switch
 group def Switch_svg(event action; alg bool state):
     svgin id "b_colour" event action;
     svgout id "colour_knob" attr "transform" value if state: "rotate(180,4.5,4.5)" else "" end;
 end
 
+// For visualizing the height switch
 automaton def Switch2_svg(event action):
     const list real SwitchHeightHeights = [0.5, 3.25, 6.25];
     disc int state = 0;
@@ -48,11 +54,13 @@ automaton def Switch2_svg(event action):
         edge action do state := (state+1) mod 3;
 end
 
+// For visualizing the rotating wheels of the conveyor
 group def Conveyer_svg(alg int idfier; alg real wheelRotation):
     svgout id fmt("Conv%d_Wheel", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360);
     svgout id fmt("Conv%d_Wheel2", idfier) attr "transform" value fmt("rotate(%d)", round(wheelRotation) mod 360);
 end
 
+// Misc. visualisation settings
 svgout id "Platform" attr "transform" value fmt("translate(0, %f)", Lift.y);
 
 svgout id "a_pusher" attr "transform" value fmt("translate(%f, 0)", Pusher.x);

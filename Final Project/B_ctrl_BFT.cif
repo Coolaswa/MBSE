@@ -1,53 +1,62 @@
 import "T_ctrl_BFT.cif";
 
+// Variables used for estimating the time the product takes to complete certain actions
 const real TimeOnAirslide = 0.2;
 const real TimeDiffEnterAndSep  = 3;
 const real TimeDiffSepAndExit = 1;
 const real TimeTillAtSep = 2;
 
-alg bool a_conveyer = ConveyerContr.On and not malfunction;
+// Actuators
+alg bool a_conveyer = ConveyerContr.On and not malfunction and SystemState.Running;
 alg bool a_separator = SeparatorContr.AwaitProduct or SeparatorContr.ProductInSep;
+alg bool a_BledQ1 = malfunction;
+alg bool a_BledQ2 = actualBusy;
+alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
 
+// Sensors
 input bool s_product;
 input bool s_atseparator;
 input bool s_atexit;
 input bool s_processingbusy;
 input bool s_Bautoswitch;
 input bool s_Bresetbutton;
-
 alg bool actualBusy = s_processingbusy or s_Bautoswitch;
-alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
-alg bool s_bufferingbusy = CountFive.count >= 5 or malfunction or entryListener.AwaitSensor or entryListener.AwaitEvent;
-alg bool a_BledQ1 = malfunction;
-alg bool a_BledQ2 = actualBusy;
 
+// True if there is a malfunction
+alg bool malfunction = entryListener.Malfunction or separatorListener.Malfunction or exitListener.Malfunction;
+
+// Channel for communicating when the controller thinks a product is at the entry, separator or exit
 event void atEntry, atSep, atExit;
+// Channel for communicating the time difference between model and actual product
 event real atEntryConf, atSepConf, atExitConf;
 
 // Maximum mismatch time between the model of the box and the sensors
 const real confTime = 5;
 
-
+// Variables for the products
 m_box1: BoxModel();
 m_box2: BoxModel();
 m_box3: BoxModel();
 m_box4: BoxModel();
 m_box5: BoxModel();
 
+// Used for checking for a mismatch between model and reality
 errorChecker1: ErrorChecker(m_box1);
 errorChecker2: ErrorChecker(m_box2);
 errorChecker3: ErrorChecker(m_box3);
 errorChecker4: ErrorChecker(m_box4);
 errorChecker5: ErrorChecker(m_box5);
 
+// Variables for linking model and reality
 entryListener: SensorListener(atEntry, atEntryConf, s_product);
 separatorListener: SensorListener(atSep, atSepConf, s_atseparator);
 exitListener: SensorListener(atExit, atExitConf, s_atexit);
 
+// Some useful type definitions
 type Point = tuple(real x, y);
-const Point LiftTop = (1182.9, 228);
-
 type Rectangle = tuple(real x, y, width, height);
+
+// Location of the separator
 const Rectangle AtSepSensorBounds = (717,260,10,41);
 
 // Responsible for controlling the separator
@@ -66,10 +75,10 @@ automaton SeparatorContr:
         edge when s_atexit goto AwaitLeave;
         edge close? goto Delay;
     location AwaitLeave:
-        edge when not s_atexit goto Delay;
+        edge when not s_atexit do t:= 0 goto Delay;
         edge close? do t:= 0 goto Delay;
     location Delay:
-        edge when t > 0.5 goto TurnOffConv;
+        edge when t > 1 goto TurnOffConv;
     location TurnOffConv:
         edge ConveyerContr.turnOff! goto AwaitProduct;
 end
@@ -90,6 +99,9 @@ automaton ConveyerContr:
         edge turnOff ? do timer :=0, onReqs := onReqs - 1 goto On;
         edge when timer > 15 do onReqs := onReqs - 1;
         edge when onReqs <= 0 goto Off;
+        edge when not SystemState.Running goto AwaitRunning;
+    location AwaitRunning:
+        edge when SystemState.Running do timer := 0 goto On;
 end
 
 // Responsible for turning on the conveyer when a new product enters the buffering station
@@ -102,7 +114,10 @@ automaton EntryController:
         edge ConveyerContr.turnOn! do timer := 0 goto AwaitProdAtSep;
     location AwaitProdAtSep:
         edge when timer > 5 goto TurnOffConv;
+        edge when not SystemState.Running goto AwaitSystemRunning;
         edge atSepConf do timer := 0 goto Delay;
+    location AwaitSystemRunning:
+        edge when SystemState.Running do timer := 0 goto AwaitProdAtSep;
     location Delay:
         edge when timer > TimeTillAtSep goto TurnOffConv;
     location TurnOffConv:
@@ -167,8 +182,8 @@ automaton def BoxModel():
     const real boxSpeed = 60;
     const real beltSpeed1 = 250 / TimeDiffEnterAndSep;
     const real beltSpeed2 = 50 / TimeDiffSepAndExit;
+    const Point LiftTop = (1182.9, 228);
     disc int bufferPos;
-    //alg real acccelSpeed = min(accelTimer * 100, 100) + boxSpeed;
     alg real acccelSpeed = 228 / TimeOnAirslide;
     cont rotation der rotDer;
     disc real rotDer;
@@ -224,7 +239,7 @@ automaton def BoxModel():
         equation x' = 0, y' = 0;
         edge ProdBroadcast2.prodLeave!x when not a_separator goto Leaving;
     location Leaving:
-        equation x' = -beltSpeed2, y' = 0;
+        equation x' = if a_conveyer: -beltSpeed2 else 0 end, y' = 0;
         edge atExit! when x < 642 do confTimer := 0 goto AwaitConfExit;
     location AwaitConfExit:
         equation x' = 0, y' = 0;

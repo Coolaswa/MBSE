@@ -120,7 +120,7 @@ automaton def Box(event clickedEvent):
         edge clickedEvent goto Removed;
         edge clicked? goto Removed;
     location BufferEndTransit:
-        equation x' = -boxSpeed, y' = 0;
+        equation x' = Belt.speed, y' = 0;
         edge when x < 546 goto Inactive;
         edge clickedEvent goto Removed;
         edge clicked? goto Removed;
@@ -129,6 +129,7 @@ automaton def Box(event clickedEvent):
         edge ProdBroadcast.prodLeave!x do x:= -200 goto Inactive;
 end
 
+// Broadcast to all products that they should recheck their position
 automaton ProdBroadcast:
     event real prodLeave;
     event void prodUpdate;
@@ -144,6 +145,7 @@ automaton ProdBroadcast:
         edge prodDoUpdate goto Await;
 end
 
+// Keeps track of the position where the next item should go
 automaton ProductCounter:
     disc int rightMostProdX = 681;
     event void prodEnter, prodLeave;

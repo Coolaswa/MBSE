@@ -2,6 +2,7 @@
 //import "testing_buffering_station_plant.cif";
 import "B_ctrl_BFT.cif";
 
+// Sensors
 input bool s_reflective;
 input bool s_capacitive;
 input bool s_elevator_up;
@@ -16,6 +17,8 @@ input bool s_Bstartbutton;
 input bool s_Tstopbutton;
 input bool s_Tautoswitch;
 input bool s_optical;
+
+// Actuators
 alg bool a_elevator_up = Lift2.state = UP;
 alg bool a_elevator_down = Lift2.state = DOWN;
 alg bool a_testingready = Lift2.Waiting;
@@ -23,7 +26,6 @@ alg bool a_pusher = PusherContr.Extending or PusherContr.Malfunction;
 alg bool a_airslide = Airslide.Active;
 alg bool a_TledQ1 = RejectBufferContr.count >=5;
 alg bool a_TledQ2 = Lift2.malfunction or PusherContr.Malfunction;
-
 alg bool systemReady = s_Tinitialized and s_Binitialized;
 
 enum LiftState = UP, STOP, DOWN;
@@ -56,7 +58,7 @@ automaton Lift2:
     alg LiftState state;
     event rejProduct;
     cont timer der 1;
-    const int travelTime = 5;
+    const int travelTime = 10;
     disc bool malfunction;
     location Initializing:
         equation state = STOP;

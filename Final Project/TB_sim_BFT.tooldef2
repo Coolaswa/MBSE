@@ -1,26 +1,17 @@
 from "lib:cif3" import *;
 
-//string name = "testing_buffering";
-
 string gen_dir     = "generated_files";
-//string ctrl_file   = fmt("%s_station_ctrl.cif",                name);
-//string hw_file     = fmt("%s_station_hw.cif",                  name);
 string merged_file = fmt("%s/merged_file.cif", gen_dir);
-//string plc_dir     = fmt("%s_station_plc",                     name);
 
 if not isdir(gen_dir):: mkdir(gen_dir);
 if isfile(merged_file):: rmfile(merged_file);
 
-//cif3merge(fmt("%s %s -o %s", ctrl_file, hw_file, merged_file));
-// cif3plc(fmt("%s -o %s -t twincat", merged_file, plc_dir));
 cif3merge(fmt("%s %s -o %s", "B_ctrl_visual_BFT.cif", "TB_box_BFT.cif", merged_file));
 cif3sim(
     merged_file,
     "--stateviz=1",
     "--speed=1",
     "--env-events=svg",
-    //"--stateviz-filter=m_box1,m_box1.x,m_box2,m_box2.x,m_box3,m_box3.x,m_box4,m_box4.x,m_box5,m_box5.x",
     "-i svg",
     "--auto-choose=Pusher*,push*,tau",
 );
-//, m_box2.x, m_box2, m_box3.x, m_box3, m_box4.x, m_box4, m_box5.x, m_box5
