@@ -16,8 +16,8 @@ group def Create_Box_svg(BoxModel box; alg int idfier; alg string color; alg rea
      svgout id "ProductGraphics_" + <string>idfier attr "fill" value color;
 
      alg string myState = if box.OnBufferMoving: "moving" elif box.DoDelete: "delete" elif box.AwaitConfSep: "sepconf"
-                    elif box.DecreaseCount: "deccount" elif box.OnBufferWaiting: "wait" elif box.ToSeperatorTransit: "tosep"
-                    elif box.InSeperatorWaiting: "insep" else "idk" end;
+                elif box.DecreaseCount: "deccount" elif box.OnBufferWaiting: "wait" elif box.ToSeperatorTransit: "tosep"
+                elif box.InSeperatorWaiting: "insep" else "idk" end;
 end
 
 // Instantiating the svg boxes

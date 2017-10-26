@@ -17,7 +17,8 @@ group def Create_Box_svg(alg int idfier; alg BoxData data; event clicked):
      alg string name = "Product_" + <string>idfier;
      svgcopy id "Product" post "_" + <string>idfier;
      svgin id name event clicked;
-     svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y], data[rotation]);
+     svgout id name attr "transform" value fmt("translate(%f, %f) rotate(%f)", data[bounds][x], data[bounds][y],
+                data[rotation]);
      svgout id "ProductGraphics_" + <string>idfier attr "fill" value data[color];
 
      alg real heightScale = if data[thick]: 1.2 else 1 end;

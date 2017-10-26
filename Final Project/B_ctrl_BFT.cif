@@ -199,7 +199,8 @@ automaton def BoxModel():
     location Waiting:
         equation x' = -boxSpeed, y' = 0;
         initial;
-        edge BoxListener.newBox? do (pastSep, pastEntry) := (false,false), (x,y) := LiftTop, accelTimer := 0, rotDer := -200 goto LiftAirTransit;
+        edge BoxListener.newBox? do (pastSep, pastEntry) := (false,false), (x,y) := LiftTop, accelTimer := 0,
+                                     rotDer := -200 goto LiftAirTransit;
     location LiftAirTransit:
         equation x' = -acccelSpeed*cos(slideAngle), y' = acccelSpeed*sin(slideAngle);
         edge when rotation < -10 do rotDer := 0, accelTimer := 0 goto OnAirslide;
@@ -208,7 +209,8 @@ automaton def BoxModel():
         edge when y > 273 do rotDer := 200 goto SlideBufferTransit;
     location SlideBufferTransit:
         equation x' = if a_conveyer: -beltSpeed1 else 0 end, y' = 0;
-        edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter2.rightMostProdX goto OnBufferMoving;
+        edge ProductCounter2.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter2.rightMostProdX
+             goto OnBufferMoving;
     location OnBufferMoving:                                            //Buffer before sep
         equation x' = if a_conveyer: -beltSpeed1 else 0 end, y' = 0;
         edge when x < bufferPos - (if a_separator: 22 else 0 end) goto OnBufferWaiting;
@@ -234,7 +236,8 @@ automaton def BoxModel():
         edge CountFive.decrease! goto Waiting;
     location OnBufferWaiting:
         equation x' = 0, y' = 0;
-        edge ProductCounter2.prodLeave when bufferPos > 682 and x > ProdBroadcast2.lastXRemoved  do bufferPos := bufferPos - 40 goto OnBufferMoving;
+        edge ProductCounter2.prodLeave when bufferPos > 682 and x > ProdBroadcast2.lastXRemoved
+             do bufferPos := bufferPos - 40 goto OnBufferMoving;
         edge ProdBroadcast2.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
         edge ProdBroadcast2.prodDoUpdate goto OnBufferMoving;
         edge delete goto DoDelete;

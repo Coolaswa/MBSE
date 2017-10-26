@@ -99,7 +99,8 @@ automaton def Box(event clickedEvent):
         edge clicked? goto Removed;
     location SlideBufferTransit:
         equation x' = -boxSpeed, y' = 0;
-        edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter.rightMostProdX goto OnBufferMoving;
+        edge ProductCounter.prodEnter! when rotation > 0 do rotDer := 0, bufferPos := ProductCounter.rightMostProdX
+             goto OnBufferMoving;
         edge clickedEvent goto Removed;
         edge clicked? goto Removed;
 	location OnBufferMoving:											//Buffer before sep
@@ -110,7 +111,8 @@ automaton def Box(event clickedEvent):
 		edge clicked? goto Removed;
 	location OnBufferWaiting:
         equation x' = 0, y' = 0;
-        edge ProductCounter.prodLeave when bufferPos > 682 and x > ProdBroadcast.lastXRemoved do bufferPos := bufferPos - 40 goto OnBufferMoving;
+        edge ProductCounter.prodLeave when bufferPos > 682 and x > ProdBroadcast.lastXRemoved
+             do bufferPos := bufferPos - 40 goto OnBufferMoving;
         edge ProdBroadcast.prodUpdate! when a_separator and bufferPos < 682 goto ToSeperatorTransit;
         edge ProdBroadcast.prodDoUpdate goto OnBufferMoving;
         edge clickedEvent goto Removed;

@@ -248,13 +248,17 @@ automaton Factory:
     cont timer der -1;
     location Waiting:
         initial;
-        edge b_spawn.clicked when a_testingready and UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan) goto SpawnBlock;
+        edge b_spawn.clicked when a_testingready and UseCase.NoCase do (boxColor, isThick) := (boxColorMan, isThickMan)
+             goto SpawnBlock;
         edge when a_testingready and timer < 0 and UseCase.Case1
-                do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1 goto Inter;
+                do (isThick, thickDistrC1) := sample thickDistrC1, (isBlack, blackDistrC1) := sample blackDistrC1
+                goto Inter;
         edge when a_testingready and timer < 0 and UseCase.Case2
-                do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2 goto Inter;
+                do (isThick, thickDistrC2) := sample thickDistrC2, (isBlack, blackDistrC2) := sample blackDistrC2
+                goto Inter;
         edge when a_testingready and timer < 0 and UseCase.Case3
-                do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1 goto Inter;
+                do (isThick, thickDistrC3) := sample thickDistrC3, (isBlack, blackDistrC3) := sample blackDistrC1
+                goto Inter;
     location Inter:
         edge do boxColor := boxColorAuto goto SpawnBlock;
     location SpawnBlock:
