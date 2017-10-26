@@ -884,7 +884,7 @@ automaton Lift2:
     equation state = UP;
     edge BStart.toggle? when not s_Tautoswitch and s_elevator_up do timer := 0.0 goto Delay2;
     edge when s_Tautoswitch and s_elevator_up do timer := 0.0 goto Delay2;
-    edge when timer > travelTime do malfunction := true goto UpMalfunct;
+    edge when timer > travelTime and not s_Tautoswitch do malfunction := true goto UpMalfunct;
   location UpMalfunct:
     equation state = STOP;
     edge when s_Tstartbutton do malfunction := false, timer := 0.0 goto GoingUp;
@@ -898,7 +898,7 @@ automaton Lift2:
   location GoingDownReject:
     equation state = DOWN;
     edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-    edge when timer > travelTime do malfunction := true goto DownRejectMalf;
+    edge when timer > travelTime and not s_Tautoswitch do malfunction := true goto DownRejectMalf;
   location DownRejectMalf:
     equation state = STOP;
     edge when s_Tstartbutton do malfunction := false, timer := 0.0 goto GoingDownReject;
@@ -908,7 +908,7 @@ automaton Lift2:
   location GoingDownEmpty:
     equation state = DOWN;
     edge when s_elevator_down goto Initializing;
-    edge when timer > travelTime do malfunction := true goto DownEmptyMalf;
+    edge when timer > travelTime and not s_Tautoswitch do malfunction := true goto DownEmptyMalf;
   location DownEmptyMalf:
     equation state = STOP;
     edge when s_Tstartbutton do malfunction := false, timer := 0.0 goto GoingDownEmpty;
@@ -2379,6 +2379,48 @@ group svg_s_optical:
   alg bool state = s_optical;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+group svg_a_conv:
+  alg string idfier = "b_conveyor";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_conveyer;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_a_testingrdy:
+  alg string idfier = "b_testingready";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_testingready;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_a_elvup:
+  alg string idfier = "a_lift_up";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_elevator_up;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_a_elvdown:
+  alg string idfier = "a_lift_down";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_elevator_down;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_a_push:
+  alg string idfier = "b_pusher";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_pusher;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+group svg_a_air:
+  alg string idfier = "b_airslide";
+  alg string onColor = "yellow";
+  alg string offColor = "grey";
+  alg bool state = a_airslide;
+  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
 automaton b_spawn:
   event clicked;
   event void toggle;
@@ -2825,32 +2867,6 @@ group svg_b_processing:
   alg string offColor = Const.Sensors.offColor;
   alg bool state = s_processingbusy;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-automaton b_conveyer:
-  event clicked;
-  event void toggle;
-  disc bool state = initialState;
-  alg bool initialState = false;
-  location Released:
-    initial;
-    edge clicked do state := true goto Pressed;
-    edge toggle? do state := true goto Pressed;
-  location Pressed:
-    edge clicked do state := false goto Released;
-    edge toggle? do state := false goto Released;
-end
-group svg_b_conveyer:
-  alg string idfier = "b_conveyor";
-  alg string onColor = "yellow";
-  alg string offColor = "grey";
-  alg bool state = b_conveyer.state;
-  svgin id idfier event b_conveyer.clicked file "../SystemSVG.svg";
-  svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
-end
-automaton b_conv_list:
-  location:
-    initial;
-    edge b_conveyer.toggle! when false;
 end
 group svg_conv:
   alg int idfier = 1;

@@ -32,10 +32,6 @@ svg_s_Q2B: LED_svg("s_q2-5", "yellow", "#f9f9f9", a_BledQ2);
 
 svg_b_processing: LED_svg("s_processing_busy", Const.Sensors.onColor, Const.Sensors.offColor, s_processingbusy);
 
-b_conveyer: Button(false);
-svg_b_conveyer: Button_svg(b_conveyer.clicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
-b_conv_list: Listener(b_conveyer);
-
 svg_conv: Conveyer_svg(1, Belt.wheelRotation);
 
 b_reset_B: Button(false);

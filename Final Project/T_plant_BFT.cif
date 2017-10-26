@@ -74,6 +74,13 @@ svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.o
 svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, s_reflective);
 svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, s_optical);
 
+svg_a_conv: LED_svg("b_conveyor", "yellow", "grey", a_conveyer);
+svg_a_testingrdy: LED_svg("b_testingready", "yellow", "grey", a_testingready);
+svg_a_elvup: LED_svg("a_lift_up", "yellow", "grey", a_elevator_up);
+svg_a_elvdown: LED_svg("a_lift_down", "yellow", "grey", a_elevator_down);
+svg_a_push: LED_svg("b_pusher", "yellow", "grey", a_pusher);
+svg_a_air: LED_svg("b_airslide", "yellow", "grey", a_airslide);
+
 b_spawn: Button(false);
 svg_b_spawn: Button_svg(b_spawn.clicked, "b_spawn", "yellow", "grey", b_spawn.state);
 b_spawn_list: Listener(b_spawn);
