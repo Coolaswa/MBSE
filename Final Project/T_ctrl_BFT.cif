@@ -86,7 +86,7 @@ automaton Lift2:
         equation state = UP;
         edge BStart.toggle? when not s_Tautoswitch and s_elevator_up do timer:= 0 goto Delay2;
         edge when s_Tautoswitch and s_elevator_up do timer:= 0 goto Delay2;
-        edge when timer > travelTime do malfunction := true goto UpMalfunct;
+        edge when timer > travelTime and not s_Tautoswitch do malfunction := true goto UpMalfunct;
     location UpMalfunct:
         equation state = STOP;
         edge when s_Tstartbutton do malfunction := false, timer := 0 goto GoingUp;
@@ -100,7 +100,7 @@ automaton Lift2:
     location GoingDownReject:
         equation state = DOWN;
         edge PusherContr.extent when s_elevator_down and RejectBufferContr.count < 5 goto PushingBlockAtBot;
-        edge when timer > travelTime do malfunction := true goto DownRejectMalf;
+        edge when timer > travelTime and not s_Tautoswitch do malfunction := true goto DownRejectMalf;
     location DownRejectMalf:
         equation state = STOP;
         edge when s_Tstartbutton do malfunction := false, timer := 0 goto GoingDownReject;
@@ -110,7 +110,7 @@ automaton Lift2:
     location GoingDownEmpty:
         equation state = DOWN;
         edge when s_elevator_down goto Initializing;
-        edge when timer > travelTime do malfunction := true goto DownEmptyMalf;
+        edge when timer > travelTime and not s_Tautoswitch do malfunction := true goto DownEmptyMalf;
     location DownEmptyMalf:
         equation state = STOP;
         edge when s_Tstartbutton do malfunction := false, timer := 0 goto GoingDownEmpty;

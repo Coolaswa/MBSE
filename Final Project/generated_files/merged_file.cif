@@ -34,8 +34,8 @@ func bool RectRectColl2(Rectangle rect; Rectangle other):
   end
   return false;
 end
-alg bool s_reflective = ReflexiveSensor.isActive;
-alg bool s_capacitive = CapacitiveSensor.isActive;
+alg bool s_reflective = Arm.armRot < 130;
+alg bool s_capacitive = boxInLift != -1;
 alg bool s_elevator_up = Lift.y <= -Const.Lift.MaxHeight and not b_s_lift_up.Pressed;
 alg bool s_productheight = HeightSensor.isActive;
 alg bool s_elevator_down = Lift.y >= 0 and not b_s_lift_down.Pressed;
@@ -47,7 +47,7 @@ alg bool s_Tstartbutton = b_start.state;
 alg bool s_Bstartbutton = b_start_B.Pressed;
 alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
-alg bool s_optical = OpticalSensor.isActive;
+alg bool s_optical = boxInLift != -1 and BoxUpdater.data[boxInLift][color] != "black";
 alg bool a_elevator_up = Lift2.state = UP;
 alg bool a_elevator_down = Lift2.state = DOWN;
 alg bool a_testingready = Lift2.Waiting;
@@ -68,6 +68,7 @@ event box8Clicked;
 event box9Clicked;
 event box10Clicked;
 const real boxSpeed = 80.0;
+alg int boxInLift = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
 event BoxData spawn_new_block;
 event productRejected;
 event void pusher_activated;
@@ -2361,21 +2362,21 @@ group svg_s_capacitive:
   alg string idfier = "s_capacitive";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = CapacitiveSensor.isActive;
+  alg bool state = s_capacitive;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_reflective:
   alg string idfier = "s_reflective";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = ReflexiveSensor.isActive;
+  alg bool state = s_reflective;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_optical:
   alg string idfier = "s_optical";
   alg string onColor = Const.Sensors.onColor;
   alg string offColor = Const.Sensors.offColor;
-  alg bool state = OpticalSensor.isActive;
+  alg bool state = s_optical;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 automaton b_spawn:
@@ -2527,17 +2528,6 @@ automaton HeightSensor:
   location:
     initial;
     equation y' = if boxI != -1: Lift.speed elif y < 0: 10.0 else 0.0 end;
-end
-group CapacitiveSensor:
-  alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-  alg bool isActive = boxI != -1;
-end
-group OpticalSensor:
-  alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x], Const.Sensors.CapSensorBounds[y] + Lift.y, Const.Sensors.CapSensorBounds[width], Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-  alg bool isActive = boxI != -1 and BoxUpdater.data[boxI][color] != "black";
-end
-group ReflexiveSensor:
-  alg bool isActive = Arm.armRot < 130;
 end
 automaton Arm:
   cont armRot = 180.0 der armSpeed;
@@ -2742,6 +2732,22 @@ automaton StartAutoPresser:
     edge b_start.toggle! when timer < 0 do timer := 0.5 goto ReleaseStart;
   location ReleaseStart:
     edge b_start.toggle! when timer < 0 goto Init;
+end
+automaton FixSensorsWhenStart:
+  location Init:
+    initial;
+    edge when s_Tstartbutton goto WaitForRelease;
+  location WaitForRelease:
+    edge when not s_Tstartbutton goto FixLiftUpSensor;
+  location FixLiftUpSensor:
+    edge b_s_lift_up.toggle! when b_s_lift_up.Pressed goto FixLiftDownSensor;
+    edge when not b_s_lift_up.Pressed goto FixLiftDownSensor;
+  location FixLiftDownSensor:
+    edge b_s_lift_down.toggle! when b_s_lift_down.Pressed goto FixPusher;
+    edge when not b_s_lift_up.Pressed goto FixPusher;
+  location FixPusher:
+    edge b_s_pusher.toggle! when b_s_pusher.Pressed goto Init;
+    edge when not b_s_pusher.Pressed goto Init;
 end
 group svg_b_i_BS01:
   alg string idfier = "i_BS01";

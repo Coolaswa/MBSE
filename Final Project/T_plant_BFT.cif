@@ -3,29 +3,38 @@ import "TB_Defs_BFT.cif";
 import "TB_SVGConstants_BFT.cif";
 import "TB_box_BFT.cif";
 
+// Actuators
 input bool a_elevator_up;
 input bool a_elevator_down;
 input bool a_pusher;
 input bool a_testingready;
 
+// Sensors
 alg bool s_Tautoswitch = b_autoManualSwitch.Pressed;
 alg bool s_pusher = Pusher.Extending and Pusher.x < -35 and not b_s_pusher.Pressed;
 alg bool s_elevator_up = Lift.y <= -Const.Lift.MaxHeight and not b_s_lift_up.Pressed;
 alg bool s_elevator_down = Lift.y >= 0 and not b_s_lift_down.Pressed;
-alg bool s_capacitive = CapacitiveSensor.isActive;
-alg bool s_reflective = ReflexiveSensor.isActive;
+alg bool s_capacitive = boxInLift != -1;
+alg bool s_reflective = Arm.armRot < 130;
 alg bool s_productheight = HeightSensor.isActive;
 alg bool s_Tstartbutton = b_start.state;
 alg bool s_Tstopbutton = b_stop.state;
 alg bool s_Tresetbutton = b_reset.Pressed;
-alg bool s_optical = OpticalSensor.isActive;
+alg bool s_optical = (boxInLift != -1 and BoxUpdater.data[boxInLift][color] != "black");
 alg bool s_Bstartbutton  = b_start_B.Pressed;
-
 alg bool s_Tinitialized = true;
 alg bool s_Binitialized = true;
 
+alg int boxInLift = RectRectColl((Const.Sensors.CapSensorBounds[x],
+                        Const.Sensors.CapSensorBounds[y] + Lift.y,
+                        Const.Sensors.CapSensorBounds[width],
+                        Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
+
+
+// Events
 event BoxData spawn_new_block;
 event productRejected;
+event void pusher_activated;
 
 b_start_B: Button(false);
 b_start_B_svg: Button_svg(b_start_B.clicked, "start_B", "green", "grey",  b_start_B.state);
@@ -61,9 +70,9 @@ b_height_list: Listener(b_height);
 
 svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
 svg_s_height2: LED_svg("s_height2", "red", "grey", HeightSensor.isActive);
-svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, CapacitiveSensor.isActive);
-svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, ReflexiveSensor.isActive);
-svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, OpticalSensor.isActive);
+svg_s_capacitive: LED_svg("s_capacitive", Const.Sensors.onColor, Const.Sensors.offColor, s_capacitive);
+svg_s_reflective: LED_svg("s_reflective", Const.Sensors.onColor, Const.Sensors.offColor, s_reflective);
+svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColor, s_optical);
 
 b_spawn: Button(false);
 svg_b_spawn: Button_svg(b_spawn.clicked, "b_spawn", "yellow", "grey", b_spawn.state);
@@ -77,7 +86,6 @@ b_s_pusher: Button(false);
 svg_s_pusher: ClickLed_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, s_pusher, b_s_pusher);
 b_pusher_list: Listener(b_s_pusher);
 
-event void pusher_activated;
 
 // Responsible for keeping track of the state of the system
 automaton SysState:
@@ -173,6 +181,7 @@ automaton Pusher:
         edge pusher_activated! when a_pusher goto Extending;
 end
 
+// Responsible for controlling the height sensor
 automaton HeightSensor:
     alg int boxI = RectRectColl(Const.Sensors.HeightBounds, BoxUpdater.data);
     alg bool isActive =  (boxI != -1) and not BoxUpdater.data[boxI][thick];
@@ -182,26 +191,7 @@ automaton HeightSensor:
         initial;
 end
 
-group CapacitiveSensor:
-    alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x],
-                                Const.Sensors.CapSensorBounds[y] + Lift.y,
-                                Const.Sensors.CapSensorBounds[width],
-                                Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-    alg bool isActive = (boxI != -1);
-end
-
-group OpticalSensor:
-    alg int boxI = RectRectColl((Const.Sensors.CapSensorBounds[x],
-                                Const.Sensors.CapSensorBounds[y] + Lift.y,
-                                Const.Sensors.CapSensorBounds[width],
-                                Const.Sensors.CapSensorBounds[height]), BoxUpdater.data);
-    alg bool isActive = (boxI != -1 and BoxUpdater.data[boxI][color] != "black");
-end
-
-group ReflexiveSensor:
-    alg bool isActive = Arm.armRot < 130;
-end
-
+// Responsible for simulating the arm
 automaton Arm:
     cont armRot = 180 der armSpeed;
     disc real armSpeed = 0;
@@ -214,6 +204,7 @@ automaton Arm:
         edge when armRot < 99 do armSpeed := 100 goto Returning;
 end
 
+// Responsible for spawning new blocks
 automaton Factory:
     monitor b_spawn.clicked;
     disc string boxColor;
@@ -259,6 +250,8 @@ b_case2_list: Listener(b_case2);
 b_case3: Button(false);
 b_case3_svg: Button_svg(b_case3.clicked, "b_case3", "yellow", "grey", b_case3.state);
 b_case3_list: Listener(b_case3);
+
+// Responsible for keeping track which use case is active
 automaton UseCase:
     location Case1:
         initial;
@@ -273,6 +266,7 @@ automaton UseCase:
         edge when b_case3.Pressed goto Case3;
 end
 
+// Responsible for automatically pressing reset after the buffer is full
 automaton Q1ResetPresser:
     cont timer der 1;
     location Init:
@@ -284,6 +278,7 @@ automaton Q1ResetPresser:
         edge b_reset.toggle! when timer > 1 goto Init;
 end
 
+// Responsible for removing products when in use case 3
 automaton ProdRemoval:
     cont timer der -1;
     location Init:
@@ -317,6 +312,7 @@ automaton ProdRemoval:
         edge box5.clicked! when box5.InSeperatorWaiting goto Stage1;
 end
 
+// Responsible for sensor malfunction when in use case 3
 automaton SensorMalfunctioner:
     cont timer der -1;
     location Init:
@@ -339,6 +335,7 @@ automaton SensorMalfunctioner:
         edge when timer < 0 goto Init;
 end
 
+// Responsible for pressing start when the lift is malfunctioning
 automaton StartAutoPresser:
     cont timer der -1;
     location Init:
@@ -348,4 +345,21 @@ automaton StartAutoPresser:
         edge b_start.toggle! when timer < 0 do timer := 0.5 goto ReleaseStart;
     location ReleaseStart:
         edge b_start.toggle! when timer < 0 goto Init;
+end
+
+automaton FixSensorsWhenStart:
+    location Init:
+        initial;
+        edge when s_Tstartbutton goto WaitForRelease;
+    location WaitForRelease:
+        edge when not s_Tstartbutton goto FixLiftUpSensor;
+    location FixLiftUpSensor:
+        edge b_s_lift_up.toggle! when b_s_lift_up.Pressed goto FixLiftDownSensor;
+        edge when not b_s_lift_up.Pressed goto FixLiftDownSensor;
+    location FixLiftDownSensor:
+        edge b_s_lift_down.toggle! when b_s_lift_down.Pressed goto FixPusher;
+        edge when not b_s_lift_up.Pressed goto FixPusher;
+    location FixPusher:
+        edge b_s_pusher.toggle! when b_s_pusher.Pressed goto Init;
+        edge when not b_s_pusher.Pressed goto Init;
 end
