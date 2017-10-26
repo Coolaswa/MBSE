@@ -1,5 +1,9 @@
-// Controller to test hardware mapping, for all sensors and actuators.
-//import "testing_buffering_station_plant.cif";
+/** Authors of this document:
+ *  L.J. Buijs       0959903
+ *  M.P. Favier      0951737
+ *  M.W. Timmermans  0956838
+ */
+
 import "B_ctrl_BFT.cif";
 
 // Sensors

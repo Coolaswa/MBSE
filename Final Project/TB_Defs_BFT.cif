@@ -1,3 +1,9 @@
+/** Authors of this document:
+ *  L.J. Buijs       0959903
+ *  M.P. Favier      0951737
+ *  M.W. Timmermans  0956838
+ */
+
 type Rectangle = tuple(real x, y, width, height);
 type BoxData = tuple(Rectangle bounds; string color; bool thick; real rotation);
 type Point = tuple(real x, y);
