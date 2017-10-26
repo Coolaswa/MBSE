@@ -23,7 +23,6 @@ func int RectRectColl(Rectangle rect; list[10] BoxData boxes):
 end
 
 automaton def Button(alg bool initialState):
-
     event clicked;
     event void toggle;
     disc bool state = initialState;
@@ -39,5 +38,5 @@ end
 automaton def Listener(Button butt):
     location:
         initial;
-        edge butt.toggle when false;
+        edge butt.toggle! when false;
 end

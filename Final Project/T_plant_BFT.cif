@@ -29,27 +29,35 @@ event productRejected;
 
 b_start_B: Button(false);
 b_start_B_svg: Button_svg(b_start_B.clicked, "start_B", "green", "grey",  b_start_B.state);
+b_startB_list: Listener(b_start_B);
 
 b_start: Button(false);
 b_start_svg: Button_svg(b_start.clicked, "start", "green", "grey",  b_start.state);
+b_start_list: Listener(b_start);
 
 b_reset: Button(false);
 b_reset_svg: Button_svg(b_reset.clicked, "b_reset", "yellow", "grey", b_reset.state);
+b_reset_list: Listener(b_reset);
 
 b_stop: Button(true);
 stop_svg: Button_svg(b_stop.clicked, "stop", "red", "grey",  b_stop.state);
+b_stop_list: Listener(b_stop);
 
 b_s_lift_up: Button(false);
 svg_s_lift_up: ClickLed_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_up, b_s_lift_up);
+b_liftup_list: Listener(b_s_lift_up);
 
 b_s_lift_down: Button(false);
 svg_s_lift_down: ClickLed_svg("s_lift_down", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_down, b_s_lift_down);
+b_liftdown_list: Listener(b_s_lift_down);
 
 b_color: Button(false);
 svg_b_color: Switch_svg(b_color.clicked, b_color.state);
+b_color_list: Listener(b_color);
 
 b_height: Button(false);
 svg_b_height: Switch2_svg(b_height.clicked);
+b_height_list: Listener(b_height);
 
 svg_s_height: LED_svg("s_height", Const.Sensors.onColor, Const.Sensors.offColor, HeightSensor.isActive);
 svg_s_height2: LED_svg("s_height2", "red", "grey", HeightSensor.isActive);
@@ -59,12 +67,15 @@ svg_s_optical: LED_svg("s_optical", Const.Sensors.onColor, Const.Sensors.offColo
 
 b_spawn: Button(false);
 svg_b_spawn: Button_svg(b_spawn.clicked, "b_spawn", "yellow", "grey", b_spawn.state);
+b_spawn_list: Listener(b_spawn);
 
 b_autoManualSwitch: Button(false);
 svg_b_autoManualSwitch: Button_svg(b_autoManualSwitch.clicked, "key", "yellow", "grey", b_autoManualSwitch.state);
+b_autoManualSwitch_list: Listener(b_autoManualSwitch);
 
 b_s_pusher: Button(false);
 svg_s_pusher: ClickLed_svg("s_pusher", Const.Sensors.onColor, Const.Sensors.offColor, s_pusher, b_s_pusher);
+b_pusher_list: Listener(b_s_pusher);
 
 event void pusher_activated;
 
@@ -241,10 +252,13 @@ end
 
 b_case1: Button(false);
 b_case1_svg: Button_svg(b_case1.clicked, "b_case1", "yellow", "grey", b_case1.state);
+b_case1_list: Listener(b_case1);
 b_case2: Button(false);
 b_case2_svg: Button_svg(b_case2.clicked, "b_case2", "yellow", "grey", b_case2.state);
+b_case2_list: Listener(b_case2);
 b_case3: Button(false);
 b_case3_svg: Button_svg(b_case3.clicked, "b_case3", "yellow", "grey", b_case3.state);
+b_case3_list: Listener(b_case3);
 automaton UseCase:
     location Case1:
         initial;

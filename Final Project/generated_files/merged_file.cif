@@ -2157,6 +2157,11 @@ group b_start_B_svg:
   svgin id idfier event b_start_B.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_startB_list:
+  location:
+    initial;
+    edge b_start_B.toggle! when false;
+end
 automaton b_start:
   event clicked;
   event void toggle;
@@ -2177,6 +2182,11 @@ group b_start_svg:
   alg bool state = b_start.state;
   svgin id idfier event b_start.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_start_list:
+  location:
+    initial;
+    edge b_start.toggle! when false;
 end
 automaton b_reset:
   event clicked;
@@ -2199,6 +2209,11 @@ group b_reset_svg:
   svgin id idfier event b_reset.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_reset_list:
+  location:
+    initial;
+    edge b_reset.toggle! when false;
+end
 automaton b_stop:
   event clicked;
   event void toggle;
@@ -2219,6 +2234,11 @@ group stop_svg:
   alg bool state = b_stop.state;
   svgin id idfier event b_stop.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_stop_list:
+  location:
+    initial;
+    edge b_stop.toggle! when false;
 end
 automaton b_s_lift_up:
   event clicked;
@@ -2241,6 +2261,11 @@ group svg_s_lift_up:
   svgin id idfier event b_s_lift_up.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if b_s_lift_up.Pressed: "orange" elif state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_liftup_list:
+  location:
+    initial;
+    edge b_s_lift_up.toggle! when false;
+end
 automaton b_s_lift_down:
   event clicked;
   event void toggle;
@@ -2262,6 +2287,11 @@ group svg_s_lift_down:
   svgin id idfier event b_s_lift_down.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if b_s_lift_down.Pressed: "orange" elif state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_liftdown_list:
+  location:
+    initial;
+    edge b_s_lift_down.toggle! when false;
+end
 automaton b_color:
   event clicked;
   event void toggle;
@@ -2279,6 +2309,11 @@ group svg_b_color:
   alg bool state = b_color.state;
   svgin id "b_colour" event b_color.clicked file "../SystemSVG.svg";
   svgout id "colour_knob" attr "transform" value if state: "rotate(180,4.5,4.5)" else "" end file "../SystemSVG.svg";
+end
+automaton b_color_list:
+  location:
+    initial;
+    edge b_color.toggle! when false;
 end
 automaton b_height:
   event clicked;
@@ -2302,6 +2337,11 @@ automaton svg_b_height:
   location:
     initial;
     edge b_height.clicked do state := (state + 1) mod 3;
+end
+automaton b_height_list:
+  location:
+    initial;
+    edge b_height.toggle! when false;
 end
 group svg_s_height:
   alg string idfier = "s_height";
@@ -2359,6 +2399,11 @@ group svg_b_spawn:
   svgin id idfier event b_spawn.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_spawn_list:
+  location:
+    initial;
+    edge b_spawn.toggle! when false;
+end
 automaton b_autoManualSwitch:
   event clicked;
   event void toggle;
@@ -2380,6 +2425,11 @@ group svg_b_autoManualSwitch:
   svgin id idfier event b_autoManualSwitch.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_autoManualSwitch_list:
+  location:
+    initial;
+    edge b_autoManualSwitch.toggle! when false;
+end
 automaton b_s_pusher:
   event clicked;
   event void toggle;
@@ -2400,6 +2450,11 @@ group svg_s_pusher:
   alg bool state = s_pusher;
   svgin id idfier event b_s_pusher.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if b_s_pusher.Pressed: "orange" elif state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_pusher_list:
+  location:
+    initial;
+    edge b_s_pusher.toggle! when false;
 end
 automaton SysState:
   alg string state;
@@ -2545,6 +2600,11 @@ group b_case1_svg:
   svgin id idfier event b_case1.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_case1_list:
+  location:
+    initial;
+    edge b_case1.toggle! when false;
+end
 automaton b_case2:
   event clicked;
   event void toggle;
@@ -2566,6 +2626,11 @@ group b_case2_svg:
   svgin id idfier event b_case2.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_case2_list:
+  location:
+    initial;
+    edge b_case2.toggle! when false;
+end
 automaton b_case3:
   event clicked;
   event void toggle;
@@ -2586,6 +2651,11 @@ group b_case3_svg:
   alg bool state = b_case3.state;
   svgin id idfier event b_case3.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_case3_list:
+  location:
+    initial;
+    edge b_case3.toggle! when false;
 end
 automaton UseCase:
   location Case1:
@@ -2771,6 +2841,11 @@ group svg_b_conveyer:
   svgin id idfier event b_conveyer.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_conv_list:
+  location:
+    initial;
+    edge b_conveyer.toggle! when false;
+end
 group svg_conv:
   alg int idfier = 1;
   alg real wheelRotation = Belt.wheelRotation;
@@ -2798,6 +2873,11 @@ group svg_b_reset_B:
   svgin id idfier event b_reset_B.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
+automaton b_resetB_list:
+  location:
+    initial;
+    edge b_reset_B.toggle! when false;
+end
 automaton b_BautoManualSwitch:
   event clicked;
   event void toggle;
@@ -2818,6 +2898,11 @@ group svg_b_BautoManualSwitch:
   alg bool state = b_autoManualSwitch.state;
   svgin id idfier event b_BautoManualSwitch.clicked file "../SystemSVG.svg";
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
+end
+automaton b_bauto_list:
+  location:
+    initial;
+    edge b_BautoManualSwitch.toggle! when false;
 end
 automaton ProcessingBusySensor:
   cont timer der -1.0;

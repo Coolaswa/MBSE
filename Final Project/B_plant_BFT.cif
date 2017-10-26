@@ -34,14 +34,17 @@ svg_b_processing: LED_svg("s_processing_busy", Const.Sensors.onColor, Const.Sens
 
 b_conveyer: Button(false);
 svg_b_conveyer: Button_svg(b_conveyer.clicked, "b_conveyor", "yellow", "grey", b_conveyer.state);
+b_conv_list: Listener(b_conveyer);
 
 svg_conv: Conveyer_svg(1, Belt.wheelRotation);
 
 b_reset_B: Button(false);
 svg_b_reset_B: Button_svg(b_reset_B.clicked, "reset_B", "yellow", "grey", b_reset_B.state);
+b_resetB_list: Listener(b_reset_B);
 
 b_BautoManualSwitch: Button(false);
 svg_b_BautoManualSwitch: Button_svg(b_BautoManualSwitch.clicked, "key-2", "yellow", "grey", b_autoManualSwitch.state);
+b_bauto_list: Listener(b_BautoManualSwitch);
 
 // Responsible for simulating when the processing station is busy
 automaton ProcessingBusySensor:
