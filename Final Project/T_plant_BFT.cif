@@ -347,6 +347,7 @@ automaton StartAutoPresser:
         edge b_start.toggle! when timer < 0 goto Init;
 end
 
+// Responsible for fixing the sensors when start is pressed
 automaton FixSensorsWhenStart:
     location Init:
         initial;
