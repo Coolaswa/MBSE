@@ -18,17 +18,17 @@ alg int boxIAtSep = RectRectColl(Const.Sensors.AtSepSensorBounds, BoxUpdater.dat
 alg int boxIAtExit = RectRectColl(Const.Sensors.ExitSensorBounds, BoxUpdater.data);
 alg int boxIAtEntry = RectRectColl(Const.Sensors.EntrySensorBounds, BoxUpdater.data);
 
-svg_b_i_BS01: LED_svg("i_BS01", "red", "grey", s_product);
-svg_b_i_BS02: LED_svg("i_BS02", "red", "grey", s_atseparator);
-svg_b_i_BS03: LED_svg("i_BS03", "red", "grey", s_atexit);
+svg_b_i_BS01: LED_svg("i_BS01", "grey", "red", s_product);
+svg_b_i_BS02: LED_svg("i_BS02", "grey", "red", s_atseparator);
+svg_b_i_BS03: LED_svg("i_BS03", "grey", "red", s_atexit);
 
 svg_s_product: LED_svg("s_product_entry", Const.Sensors.onColor, Const.Sensors.offColor, s_product);
 svg_s_atseparator: LED_svg("s_product_separator", Const.Sensors.onColor, Const.Sensors.offColor, s_atseparator);
 svg_s_atexit: LED_svg("s_product_exit", Const.Sensors.onColor, Const.Sensors.offColor, s_atexit);
 svg_s_separator_opened: LED_svg("s_separator_opened", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Left);
 svg_s_separator_closed: LED_svg("s_separator_closed", Const.Sensors.onColor, Const.Sensors.offColor, Separator.Right);
-svg_s_Q1B: LED_svg("s_q1-7", "yellow", "grey", a_BledQ1);
-svg_s_Q2B: LED_svg("s_q2-5", "yellow", "grey", a_BledQ2);
+svg_s_Q1B: LED_svg("s_q1-7", "yellow", "#f9f9f9", a_BledQ1);
+svg_s_Q2B: LED_svg("s_q2-5", "yellow", "#f9f9f9", a_BledQ2);
 
 svg_b_processing: LED_svg("s_processing_busy", Const.Sensors.onColor, Const.Sensors.offColor, s_processingbusy);
 

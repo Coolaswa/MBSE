@@ -2151,7 +2151,7 @@ automaton b_start_B:
 end
 group b_start_B_svg:
   alg string idfier = "start_B";
-  alg string onColor = "yellow";
+  alg string onColor = "green";
   alg string offColor = "grey";
   alg bool state = b_start_B.state;
   svgin id idfier event b_start_B.clicked file "../SystemSVG.svg";
@@ -2172,7 +2172,7 @@ automaton b_start:
 end
 group b_start_svg:
   alg string idfier = "start";
-  alg string onColor = "yellow";
+  alg string onColor = "green";
   alg string offColor = "grey";
   alg bool state = b_start.state;
   svgin id idfier event b_start.clicked file "../SystemSVG.svg";
@@ -2214,7 +2214,7 @@ automaton b_stop:
 end
 group stop_svg:
   alg string idfier = "stop";
-  alg string onColor = "yellow";
+  alg string onColor = "red";
   alg string offColor = "grey";
   alg bool state = b_stop.state;
   svgin id idfier event b_stop.clicked file "../SystemSVG.svg";
@@ -2675,22 +2675,22 @@ automaton StartAutoPresser:
 end
 group svg_b_i_BS01:
   alg string idfier = "i_BS01";
-  alg string onColor = "red";
-  alg string offColor = "grey";
+  alg string onColor = "grey";
+  alg string offColor = "red";
   alg bool state = s_product;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_b_i_BS02:
   alg string idfier = "i_BS02";
-  alg string onColor = "red";
-  alg string offColor = "grey";
+  alg string onColor = "grey";
+  alg string offColor = "red";
   alg bool state = s_atseparator;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_b_i_BS03:
   alg string idfier = "i_BS03";
-  alg string onColor = "red";
-  alg string offColor = "grey";
+  alg string onColor = "grey";
+  alg string offColor = "red";
   alg bool state = s_atexit;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
@@ -2732,14 +2732,14 @@ end
 group svg_s_Q1B:
   alg string idfier = "s_q1-7";
   alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string offColor = "#f9f9f9";
   alg bool state = a_BledQ1;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
 group svg_s_Q2B:
   alg string idfier = "s_q2-5";
   alg string onColor = "yellow";
-  alg string offColor = "grey";
+  alg string offColor = "#f9f9f9";
   alg bool state = a_BledQ2;
   svgout id idfier attr "fill" value if state: onColor else offColor end file "../SystemSVG.svg";
 end
@@ -2894,8 +2894,8 @@ svgout id "a_height_head" attr "transform" value fmt("translate(0, %f)", HeightS
 svgout id "Rotator" attr "transform" value fmt("rotate(%f,12.5,0)", Arm.armRot) file "../SystemSVG.svg";
 svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,0)", -Arm.armRot) file "../SystemSVG.svg";
 svgout id "Air" attr "opacity" value if a_airslide: 1 else 0 end file "../SystemSVG.svg";
-svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end file "../SystemSVG.svg";
-svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "grey" end file "../SystemSVG.svg";
+svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "#f9f9f9" end file "../SystemSVG.svg";
+svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "#f9f9f9" end file "../SystemSVG.svg";
 svgout id "a_separator" attr "transform" value fmt("translate(%f,0)", if a_separator: -10.0 else -25.0 end) file "../SystemSVG.svg";
 svgout id "key" attr "transform" value fmt("rotate(%f,10,10)", if s_Tautoswitch: 90.0 else 0.0 end) file "../SystemSVG.svg";
 svgout id "key-2" attr "transform" value fmt("rotate(%f,10,10)", if s_Bautoswitch: 90.0 else 0.0 end) file "../SystemSVG.svg";

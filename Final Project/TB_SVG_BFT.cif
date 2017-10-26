@@ -62,8 +62,8 @@ svgout id "Rotator" attr "transform" value fmt("rotate(%f,12.5,0)", Arm.armRot);
 svgout id "Holder" attr "transform" value fmt("rotate(%f,6.25,0)", -Arm.armRot);
 
 svgout id "Air" attr "opacity" value if a_airslide: 1 else 0 end;
-svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "grey" end;
-svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "grey" end;
+svgout id "s_q1" attr "fill" value if a_TledQ1: "yellow" else "#f9f9f9" end;
+svgout id "s_q2" attr "fill" value if a_TledQ2: "yellow" else "#f9f9f9" end;
 
 svgout id "a_separator" attr "transform" value fmt("translate(%f,0)", if a_separator: -10.0 else -25.0 end);
 svgout id "key" attr "transform" value fmt("rotate(%f,10,10)", if s_Tautoswitch: 90.0 else 0.0 end);

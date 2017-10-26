@@ -28,16 +28,16 @@ event BoxData spawn_new_block;
 event productRejected;
 
 b_start_B: Button(false);
-b_start_B_svg: Button_svg(b_start_B.clicked, "start_B", "yellow", "grey",  b_start_B.state);
+b_start_B_svg: Button_svg(b_start_B.clicked, "start_B", "green", "grey",  b_start_B.state);
 
 b_start: Button(false);
-b_start_svg: Button_svg(b_start.clicked, "start", "yellow", "grey",  b_start.state);
+b_start_svg: Button_svg(b_start.clicked, "start", "green", "grey",  b_start.state);
 
 b_reset: Button(false);
 b_reset_svg: Button_svg(b_reset.clicked, "b_reset", "yellow", "grey", b_reset.state);
 
 b_stop: Button(true);
-stop_svg: Button_svg(b_stop.clicked, "stop", "yellow", "grey",  b_stop.state);
+stop_svg: Button_svg(b_stop.clicked, "stop", "red", "grey",  b_stop.state);
 
 b_s_lift_up: Button(false);
 svg_s_lift_up: ClickLed_svg("s_lift_up", Const.Sensors.onColor, Const.Sensors.offColor, s_elevator_up, b_s_lift_up);
